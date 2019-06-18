@@ -1,0 +1,128 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/DodgerBlue</item>
+        <item name="bottomNavigationStyle">@style/Widget.Design.BottomNavigationView</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/sf_pro_display</item>
+    </style>
+    <!-- Base application theme NoActionBar. -->
+    <style name="AppThemeNoBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="bottomNavigationStyle">@style/Widget.Design.BottomNavigationView</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
+    </style>
+    <style name="loginInputStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorControlNormal">@color/DarkGray</item>
+        <item name="colorControlActivated">@color/DarkOrange</item>
+        <item name="colorControlHighlight">@color/DarkOrange</item>
+        <item name="android:background">@drawable/edit_text_background</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:textColor">@drawable/edit_text_color</item>
+        <item name="android:textColorHighlight">@color/Blue</item>
+        <item name="android:paddingRight">@dimen/margin_padding_size_large</item>
+        <item name="android:paddingLeft">@dimen/margin_padding_size_large</item>
+        <item name="android:paddingTop">@dimen/margin_padding_size_medium</item>
+        <item name="android:paddingBottom">@dimen/margin_padding_size_medium</item>
+        <item name="android:paddingEnd">@dimen/margin_padding_size_large</item>
+        <item name="android:paddingStart">@dimen/margin_padding_size_large</item>
+        <item name="android:drawablePadding">@dimen/margin_padding_size_medium</item>
+    </style>
+    <style name="loginInputTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorControlNormal">@color/DarkGray</item>
+        <item name="colorControlActivated">@color/DarkOrange</item>
+        <item name="colorControlHighlight">@color/DarkOrange</item>
+        <item name="android:textColorHint">@color/DarkGray</item>
+    </style>
+    <style name="button" parent="Theme.AppCompat">
+        <item name="android:background">@drawable/btn_rounded_blackyellow</item>
+        <item name="android:paddingLeft">@dimen/margin_padding_size_large</item>
+        <item name="android:paddingRight">@dimen/margin_padding_size_large</item>
+        <item name="android:bottomLeftRadius">10dp</item>
+        <item name="android:bottomRightRadius">10dp</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/White</item>
+    </style>
+
+    <style name="Base.ThemeOverlay.AppCompat.navTheme">
+
+        <!-- Color of text and icon when SELECTED -->
+        <item name="colorPrimary">@color/SteelBlue</item>
+
+        <!-- Background color when SELECTED -->
+        <item name="colorControlHighlight">@color/White</item>
+
+    </style>
+    <style name="buttonSmallPadding">
+        <item name="android:paddingRight">@dimen/margin_padding_size_medium</item>
+        <item name="android:paddingLeft">@dimen/margin_padding_size_medium</item>
+        <item name="android:paddingTop">@dimen/margin_padding_size_small</item>
+        <item name="android:paddingBottom">@dimen/margin_padding_size_small</item>
+    </style>
+    <style name="buttonMediumPadding">
+        <item name="android:paddingRight">@dimen/margin_padding_size_large</item>
+        <item name="android:paddingLeft">@dimen/margin_padding_size_large</item>
+        <item name="android:paddingTop">@dimen/margin_padding_size_medium</item>
+        <item name="android:paddingBottom">@dimen/margin_padding_size_medium</item>
+    </style>
+    <style name="quicksandTheme">
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/quicksand</item>
+        <item name="android:textSize">@dimen/text_size_micro</item>
+        <item name="android:textColor">@color/NormalColorText</item>
+    </style>
+    <style name="sfDisplayFont">
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/sf_pro_display</item>
+        <item name="android:textColor">@color/NormalColorText</item>
+    </style>
+    <style name="boldFont">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="SignUpTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">#8E8E93</item>
+        <item name="android:textColorHint">@color/DarkGray</item>
+        <item name="boxStrokeWidth">0.2dp</item>
+    </style>
+    <style name="SignUpTextInputLayoutTheme" parent="TextAppearance.AppCompat">
+        <item name="android:paddingLeft">@dimen/margin_padding_size_small</item>
+        <item name="android:paddingRight">@dimen/margin_padding_size_small</item>
+        <item name="android:layout_marginBottom">@dimen/margin_padding_size_small</item>
+        <item name="android:layout_marginTop">@dimen/margin_padding_size_small</item>
+    </style>
+    <style name="DialogTheme" parent="Base.AlertDialog.AppCompat">
+        <item name="android:fontFamily" tools:ignore="NewApi">@font/sf_pro_display</item>
+        <item name="android:windowMinWidthMajor">70%</item>
+        <item name="android:windowMinWidthMinor">70%</item>
+    </style>
+    <!--button-->
+    <style name="ButtonDialog" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/Red</item>
+        <item name="colorControlHighlight">@color/Aqua</item>
+    </style>
+    <style name="Theme.Transparent" parent="Base.Theme.AppCompat">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="Base.Theme.AppCompat.Transculent" parent="Base.V7.Theme.AppCompat">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
+    </style>
+    <style name="MyAnimation.Window" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/grow_fade_in_center</item>
+        <item name="android:windowExitAnimation">@anim/grow_fade_in_center</item>
+    </style>
+</resources>

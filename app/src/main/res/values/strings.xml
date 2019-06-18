@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Pakaian Bagus</string>
+    <string name="home">Home</string>
+    <string name="stock_opname">Stock</string>
+    <string name="barang_masuk">Barang Masuk</string>
+    <string name="input_harian">Input Harian</string>
+    <string name="history">History</string>
+    <string name="toolbar_title">Toolbar title</string>
+    <string name="todo">TODO</string>
+    <string name="lorem_ipsum">Lorem Ipsum dolor sit amen lorem ipsum</string>
+    <string name="mark_description_android_src">mark description android:src=</string>
+    <string name="share_description">share description</string>
+    <string name="checklist">CHECKLIST</string>
+    <string name="date">2019 June 25</string>
+    <string name="kunjungan">KUNJUNGAN</string>
+    <string name="spg">SPG</string>
+    <string name="inventaris">INVENTARIS</string>
+    <string name="mutasi_barang">Mutasi Barang</string>
+    <string name="tambah">Tambah</string>
+    <string name="spg_name">Dendi Santoso</string>
+    <string name="spg_address">Jl. Batik Saketi No. 7</string>
+    <string name="tambah_barang">TAMBAH BARANG</string>
+    <string name="nama_barang">NAMA BARANG</string>
+    <string name="qty">QTY</string>
+    <string name="checkin">CHECKIN</string>
+    <string name="deskripsi">DESKRIPSI</string>
+    <string name="laporan_pengeluaran">LAPORAN PENGELUARAN</string>
+    <string name="photo_counter">PHOTO COUNTER</string>
+</resources>
