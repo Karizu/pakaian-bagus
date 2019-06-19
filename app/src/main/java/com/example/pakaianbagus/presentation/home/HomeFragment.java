@@ -28,6 +28,7 @@ import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
+import com.example.pakaianbagus.presentation.inputharian.ScanBarcodeActivity;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
@@ -152,6 +153,11 @@ public class HomeFragment extends Fragment {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    @OnClick(R.id.toolbar_history)
+    public void onClickToolbar(){
+        startActivity(new Intent(getActivity(), ScanBarcodeActivity.class));
     }
 
 }

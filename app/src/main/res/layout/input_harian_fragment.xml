@@ -34,10 +34,11 @@
                     android:gravity="center_vertical"
                     android:maxLength="25"
                     android:maxLines="1"
-                    android:text="@string/input_harian"
+                    android:text="INPUT HARIAN"
                     android:textAllCaps="true"
                     android:textStyle="bold"
-                    android:textColor="@color/SteelBlue" />
+                    android:textColor="@color/SteelBlue"
+                    tools:ignore="HardcodedText" />
 
                 <ImageView
                     android:id="@+id/toolbar_mutasi"

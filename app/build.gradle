@@ -80,4 +80,10 @@ dependencies {
 
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     implementation 'com.romandanylyk:pageindicatorview:1.0.3'
+
+    implementation 'com.journeyapps:zxing-android-embedded:3.3.0@aar'
+    implementation 'com.google.zxing:core:3.2.1'
+
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+    implementation 'q.rorbin:badgeview:1.1.0'
 }

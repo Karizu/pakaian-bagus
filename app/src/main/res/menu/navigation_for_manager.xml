@@ -13,8 +13,9 @@
 
     <item
         android:id="@+id/navigation_mutasi_barang"
-        android:icon="@drawable/ic_local_mall_black_24dp"
-        android:title="@string/mutasi_barang" />
+        android:icon="@drawable/ic_compare_arrows_black_24dp"
+        android:title="@string/mutasi_barang"
+        />
 
     <item
         android:id="@+id/navigation_barang_masuk"

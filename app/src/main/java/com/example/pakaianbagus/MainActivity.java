@@ -1,17 +1,15 @@
 package com.example.pakaianbagus;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
@@ -20,10 +18,13 @@ import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
 import com.example.pakaianbagus.util.IOnBackPressed;
 import com.example.pakaianbagus.util.adapter.ViewPagerAdapter;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.Objects;
 
 import butterknife.ButterKnife;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,14 +65,33 @@ public class MainActivity extends AppCompatActivity {
             case R.id.navigation_stock_opname:
                 viewPager.setCurrentItem(1);
                 break;
+            case R.id.navigation_mutasi_barang:
+                viewPager.setCurrentItem(2);
+                break;
             case R.id.navigation_barang_masuk:
+                viewPager.setCurrentItem(3);
+                break;
+            case R.id.navigation_input_harian:
+                viewPager.setCurrentItem(4);
+                break;
+        }
+        return false;
+    };
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemForKoordinator
+            = item -> {
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                viewPager.setCurrentItem(0);
+                break;
+            case R.id.navigation_barang_masuk:
+                viewPager.setCurrentItem(1);
+                break;
+            case R.id.navigation_mutasi_barang:
                 viewPager.setCurrentItem(2);
                 break;
             case R.id.navigation_input_harian:
                 viewPager.setCurrentItem(3);
-                break;
-            case R.id.navigation_mutasi_barang:
-                viewPager.setCurrentItem(4);
                 break;
         }
         return false;
@@ -130,12 +150,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        showNavigation();
+        showNavigationForManager();
 
         viewPager = findViewById(R.id.viewpager);
-        navigation = findViewById(R.id.navigation);
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation = findViewById(R.id.navigationForManager);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemForManager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -161,8 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        setupViewPager(viewPager);
+        setupViewPagerForManager(viewPager);
     }
 
     private void showNavigationForManager() {
@@ -186,4 +205,5 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
 }
