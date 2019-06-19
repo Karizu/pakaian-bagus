@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_blue_24dp"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/navigation_stock_opname"
+        android:icon="@drawable/ic_store_blue_24dp"
+        android:title="@string/stock_opname" />
+
+    <item
+        android:id="@+id/navigation_mutasi_barang"
+        android:icon="@drawable/ic_local_mall_black_24dp"
+        android:title="@string/mutasi_barang" />
+
+    <item
+        android:id="@+id/navigation_barang_masuk"
+        android:icon="@drawable/ic_local_mall_black_24dp"
+        android:title="@string/barang_masuk" />
+
+    <item
+        android:id="@+id/navigation_input_harian"
+        android:icon="@drawable/ic_archive_blue_24dp"
+        android:title="@string/input_harian" />
+
+</menu>

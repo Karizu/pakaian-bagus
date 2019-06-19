@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/baseLayoutDetailBM"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/LightSteelBlue">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/White"
+            android:minHeight="?attr/actionBarSize">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_black_24dp"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center_vertical"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:text="@string/detail_barang_masuk"
+                    android:textStyle="bold"
+                    android:textColor="@color/SteelBlue" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            tools:ignore="UnknownIdInLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layaoutHeaderBarangMasuk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/no_pengiriman"
+                            android:textColor="@color/SteelBlue"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/date"
+                            android:gravity="right"
+                            android:textColor="@color/SteelBlue"
+                            android:textStyle="bold"
+                            tools:ignore="RtlHardcoded" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvArticleBarang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/SteelBlue"
+                        android:textSize="12sp"
+                        android:text="@string/article_barang"/>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="4dp"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/background_input_kunjungan"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/background_list_inventaris"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp"
+                            android:weightSum="4"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="4"
+                                android:gravity="center_vertical"
+                                android:text="@string/jeans_blue"
+                                android:textSize="13sp"
+                                android:textColor="@color/NormalColorText"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:padding="6dp"
+                                android:text="@string/_1_pcs"
+                                android:textSize="11sp"
+                                tools:ignore="SmallSp" />
+
+                            <ImageView
+                                android:id="@+id/btnMore"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="6dp"
+                                app:srcCompat="@drawable/ic_more_vert_black_24dp"
+                                android:contentDescription="@string/todo" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnVerifikasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentBottom="true"
+            android:text="@string/verifikasi"
+            android:textColor="@color/White"
+            android:background="@drawable/background_button"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
