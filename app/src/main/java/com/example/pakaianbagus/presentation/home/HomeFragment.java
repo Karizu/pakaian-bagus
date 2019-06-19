@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.News;
+import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
 import com.synnapps.carouselview.CarouselView;
@@ -122,11 +123,20 @@ public class HomeFragment extends Fragment {
         ft.commit();
     }
 
+    @OnClick(R.id.btnInventaris)
+    public void onClickBtnInventaris (){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        InventarisFragment inventarisFragment = new InventarisFragment();
+        ft.replace(R.id.baseLayout, inventarisFragment);
+        ft.commit();
+    }
+
     @OnClick(R.id.btnTambah)
     public void btnTambah(){
-        showDialog(R.layout.dialog_tambah_barang);
-        ImageView imgClose = dialog.findViewById(R.id.imgClose);
-        imgClose.setOnClickListener(v -> dialog.dismiss());
+//        showDialog(R.layout.dialog_tambah_barang);
+//        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+//        imgClose.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void showDialog(int layout) {

@@ -21,9 +21,4 @@
         android:icon="@drawable/ic_archive_blue_24dp"
         android:title="@string/input_harian" />
 
-    <item
-        android:id="@+id/navigation_mutasi_barang"
-        android:icon="@drawable/ic_local_mall_black_24dp"
-        android:title="@string/mutasi_barang" />
-
 </menu>

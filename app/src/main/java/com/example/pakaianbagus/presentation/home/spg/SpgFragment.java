@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.home.spg.detailspg.DetailSpgFragment;
 import com.example.pakaianbagus.util.IOnBackPressed;
 
 import java.util.Objects;
@@ -33,10 +34,16 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
         View rootView = inflater.inflate(R.layout.spg_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("SPG");
-
         return rootView;
+    }
+
+    @OnClick(R.id.layoutListSPG)
+    public void onClickLayoutListSPG(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        DetailSpgFragment detailSpgFragment = new DetailSpgFragment();
+        ft.replace(R.id.baseLayoutSpg, detailSpgFragment);
+        ft.commit();
     }
 
     @OnClick(R.id.toolbar_back)
@@ -44,7 +51,7 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         HomeFragment homeFragment = new HomeFragment();
-        ft.replace(R.id.baseLayout, homeFragment);
+        ft.replace(R.id.baseLayoutSpg, homeFragment);
         ft.commit();
     }
 

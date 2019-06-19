@@ -18,6 +18,40 @@
         app:layout_behavior="View Pager" />
 
     <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigationForManager"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        app:theme="@style/Base.ThemeOverlay.AppCompat.navTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:labelVisibilityMode="labeled"
+        android:scrollbars="none"
+        app:menu="@menu/navigation_for_manager"
+        android:visibility="gone"/>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigationForKoordinator"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        app:theme="@style/Base.ThemeOverlay.AppCompat.navTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:labelVisibilityMode="labeled"
+        android:scrollbars="none"
+        app:menu="@menu/navigation_for_koordinator"
+        android:visibility="gone"/>
+
+    <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
@@ -31,6 +65,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:labelVisibilityMode="labeled"
         android:scrollbars="none"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Pakaian Bagus</string>
     <string name="home">Home</string>
     <string name="stock_opname">Stock</string>
@@ -12,7 +12,7 @@
     <string name="share_description">share description</string>
     <string name="checklist">CHECKLIST</string>
     <string name="date">2019 June 25</string>
-    <string name="kunjungan">KUNJUNGAN</string>
+    <string name="kunjungan" tools:ignore="ExtraTranslation">KUNJUNGAN</string>
     <string name="spg">SPG</string>
     <string name="inventaris">INVENTARIS</string>
     <string name="mutasi_barang">Mutasi Barang</string>
@@ -26,4 +26,20 @@
     <string name="deskripsi">DESKRIPSI</string>
     <string name="laporan_pengeluaran">LAPORAN PENGELUARAN</string>
     <string name="photo_counter">PHOTO COUNTER</string>
+    <string name="sapu">Sapu</string>
+    <string name="_1_pcs">1 pcs</string>
+    <string name="ubah">Ubah</string>
+    <string name="jeans_blue">Jeans Blue</string>
+    <string name="no_pengiriman">NO PENGIRIMAN</string>
+    <string name="article_barang">BRG-A1-20</string>
+    <string name="verifikasi">VERIFIKASI</string>
+    <string name="detail_barang_masuk">DETAIL BARANG MASUK</string>
+    <string name="ubah_qty">UBAH QTY</string>
+    <string name="detail_spg">Detail SPG</string>
+    <string name="asal_toko">ASAL TOKO</string>
+    <string name="pindah_toko">PINDAH TOKO</string>
+    <string name="sales_report">Sales Report</string>
+    <string name="penjualan_kompetitor">Penjualan Kompetitor</string>
+    <string name="harga">Harga</string>
+    <string name="diskon">Diskon</string>
 </resources>

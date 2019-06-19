@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.home.kunjungan;
+package com.example.pakaianbagus.presentation.inputharian;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,20 +9,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.HomeFragment;
 
 import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class KunjunganFragment extends Fragment {
+public class PenjualanKompetitorFragment extends Fragment {
 
-    public KunjunganFragment() {
+    View rootView;
 
+    public PenjualanKompetitorFragment() {
     }
 
     @SuppressLint("SetTextI18n")
@@ -30,18 +29,19 @@ public class KunjunganFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.kunjungan_fragment, container, false);
+        rootView = inflater.inflate(R.layout.penjualan_kompetitor_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
         return rootView;
     }
 
-    @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
+    @OnClick(R.id.tabSalesReport)
+    public void toolbarBack() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.replace(R.id.baseLayout, homeFragment);
+        InputHarianFragment inputHarianFragment = new InputHarianFragment();
+        ft.replace(R.id.baseLayoutInputHarianPenjualan, inputHarianFragment);
         ft.commit();
     }
+
 }
