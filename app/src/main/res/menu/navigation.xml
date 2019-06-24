@@ -9,16 +9,16 @@
     <item
         android:id="@+id/navigation_stock_opname"
         android:icon="@drawable/ic_store_blue_24dp"
-        android:title="@string/stock_opname" />
+        android:title="@string/katalog" />
 
     <item
         android:id="@+id/navigation_barang_masuk"
         android:icon="@drawable/ic_local_mall_black_24dp"
-        android:title="@string/barang_masuk" />
+        android:title="@string/mutasi_barang" />
 
     <item
         android:id="@+id/navigation_input_harian"
         android:icon="@drawable/ic_archive_blue_24dp"
-        android:title="@string/input_harian" />
+        android:title="@string/penjualan" />
 
 </menu>

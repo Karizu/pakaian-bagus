@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     android:gravity="center"
-    android:textColor="@color/SteelBlue"
+    android:textColor="@color/DarkSlateBlue"
     android:textSize="13sp"
     android:ellipsize="marquee"
     tools:ignore="PrivateResource" />

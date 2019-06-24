@@ -4,7 +4,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/White"
+    android:background="@color/DarkSlateBlue"
     android:minHeight="?attr/actionBarSize"
     app:contentInsetLeft="0dp"
     app:contentInsetStart="0dp"
@@ -30,7 +30,7 @@
             android:maxLines="1"
             android:text="@string/toolbar_title"
             android:textStyle="bold"
-            android:textColor="@color/SteelBlue" />
+            android:textColor="@color/White" />
 
         <ImageView
             android:id="@+id/toolbar_history"

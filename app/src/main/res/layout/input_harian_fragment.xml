@@ -9,13 +9,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/White"
+            android:background="@color/DarkSlateBlue"
             android:minHeight="?attr/actionBarSize">
 
             <LinearLayout
@@ -37,7 +38,7 @@
                     android:text="INPUT HARIAN"
                     android:textAllCaps="true"
                     android:textStyle="bold"
-                    android:textColor="@color/SteelBlue"
+                    android:textColor="@color/White"
                     tools:ignore="HardcodedText" />
 
                 <ImageView
@@ -66,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="5">
+                android:weightSum="6">
 
                 <TextView
                     android:id="@+id/tabSalesReport"
@@ -74,20 +75,19 @@
                     android:layout_height="match_parent"
                     android:text="@string/sales_report"
                     android:gravity="center"
-                    android:textColor="@color/SteelBlue"
+                    android:textColor="@color/DarkSlateBlue"
                     android:textStyle="bold"
-                    android:layout_weight="2"/>
+                    android:layout_weight="3"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1">
+                    android:gravity="center">
 
                     <View
                         android:layout_width="1dp"
                         android:layout_height="30dp"
-                        android:background="@color/SteelBlue"
+                        android:background="@color/DarkSlateBlue"
                         />
 
                 </LinearLayout>
@@ -98,8 +98,9 @@
                     android:layout_height="match_parent"
                     android:text="@string/penjualan_kompetitor"
                     android:gravity="center"
-                    android:textColor="@color/SteelBlue"
-                    android:layout_weight="2"/>
+                    android:textStyle="bold"
+                    android:textColor="#AB92F0"
+                    android:layout_weight="3"/>
 
             </LinearLayout>
 
@@ -107,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/SteelBlue"
+                android:background="@color/DarkSlateBlue"
                 />
 
         </LinearLayout>
@@ -151,7 +152,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:weightSum="3"
+                    tools:ignore="DisableBaselineAlignment">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -162,7 +164,8 @@
                             android:id="@+id/imgBarang"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/jeans"/>
+                            android:src="@drawable/jeans"
+                            android:contentDescription="@string/todo" />
 
                     </LinearLayout>
 
@@ -178,7 +181,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="2"
+                            tools:ignore="UseCompoundDrawables">
 
                             <TextView
                                 android:id="@+id/tvNamaBarang"
@@ -189,7 +193,8 @@
                                 android:text="@string/jeans_blue"
                                 android:textColor="@color/Black"
                                 android:textSize="13sp"
-                                android:textStyle="bold"/>
+                                android:textStyle="bold"
+                                tools:ignore="TooDeepLayout" />
 
                             <ImageView
                                 android:id="@+id/btnMore"
@@ -197,7 +202,7 @@
                                 android:layout_height="25dp"
                                 android:padding="6dp"
                                 app:srcCompat="@drawable/ic_more_vert_black_24dp"
-                                />
+                                android:contentDescription="@string/todo" />
 
                         </LinearLayout>
 
@@ -225,7 +230,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_vertical|right"
                                 android:text="Rp. 250.000"
-                                android:textColor="@color/DodgerBlue"
+                                android:textColor="@color/DarkSlateBlue"
                                 android:textSize="11sp"
                                 tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
 
@@ -254,7 +259,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_vertical|right"
                                 android:text="Rp. 50.000"
-                                android:textColor="@color/DodgerBlue"
+                                android:textColor="@color/DarkSlateBlue"
                                 android:textSize="11sp"
                                 tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
 
@@ -313,7 +318,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_vertical|right"
                                 android:text="Rp. 200.000"
-                                android:textColor="@color/DodgerBlue"
+                                android:textColor="@color/DarkSlateBlue"
                                 android:textSize="11sp"
                                 tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
 

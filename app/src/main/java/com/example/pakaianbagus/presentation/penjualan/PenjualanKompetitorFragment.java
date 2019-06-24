@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.inputharian;
+package com.example.pakaianbagus.presentation.penjualan;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -36,7 +36,7 @@ public class PenjualanKompetitorFragment extends Fragment {
     }
 
     @OnClick(R.id.tabSalesReport)
-    public void toolbarBack() {
+    public void tabSalesReport() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         InputHarianFragment inputHarianFragment = new InputHarianFragment();

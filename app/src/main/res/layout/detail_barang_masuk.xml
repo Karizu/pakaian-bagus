@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/White"
+            android:background="@color/DarkSlateBlue"
             android:minHeight="?attr/actionBarSize">
 
             <LinearLayout
@@ -32,7 +32,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
                     android:layout_marginEnd="@dimen/margin_padding_size_small"
-                    app:srcCompat="@drawable/ic_keyboard_backspace_black_24dp"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
                     android:contentDescription="@string/todo"
                     tools:ignore="RtlHardcoded" />
 
@@ -47,7 +47,7 @@
                     android:maxLines="1"
                     android:text="@string/detail_barang_masuk"
                     android:textStyle="bold"
-                    android:textColor="@color/SteelBlue" />
+                    android:textColor="@color/White" />
 
             </LinearLayout>
 
@@ -83,7 +83,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/no_pengiriman"
-                            android:textColor="@color/SteelBlue"
+                            android:textColor="@color/DarkSlateBlue"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -92,7 +92,7 @@
                             android:layout_weight="1"
                             android:text="@string/date"
                             android:gravity="right"
-                            android:textColor="@color/SteelBlue"
+                            android:textColor="@color/DarkSlateBlue"
                             android:textStyle="bold"
                             tools:ignore="RtlHardcoded" />
 
@@ -102,7 +102,7 @@
                         android:id="@+id/tvArticleBarang"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/SteelBlue"
+                        android:textColor="@color/DarkSlateBlue"
                         android:textSize="12sp"
                         android:text="@string/article_barang"/>
 

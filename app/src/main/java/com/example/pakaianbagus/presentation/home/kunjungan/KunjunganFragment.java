@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.home.kunjungan.tambahkunjungan.TambahKunjunganFragment;
 
 import java.util.Objects;
 
@@ -42,6 +43,15 @@ public class KunjunganFragment extends Fragment {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         HomeFragment homeFragment = new HomeFragment();
         ft.replace(R.id.baseLayout, homeFragment);
+        ft.commit();
+    }
+
+    @OnClick(R.id.toolbar_tambah_pengeluaran)
+    public void toolbarTambahPengeluaran(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        TambahKunjunganFragment tambahKunjunganFragment = new TambahKunjunganFragment();
+        ft.replace(R.id.baseLayoutKunjungan, tambahKunjunganFragment);
         ft.commit();
     }
 }

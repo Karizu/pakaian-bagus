@@ -1,34 +1,29 @@
 package com.example.pakaianbagus;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
-import com.example.pakaianbagus.presentation.inputharian.InputHarianFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
+import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
-import com.example.pakaianbagus.util.IOnBackPressed;
+import com.example.pakaianbagus.util.adapter.NoSwipePager;
 import com.example.pakaianbagus.util.adapter.ViewPagerAdapter;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.Objects;
 
 import butterknife.ButterKnife;
-import q.rorbin.badgeview.Badge;
-import q.rorbin.badgeview.QBadgeView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
+    private NoSwipePager viewPager;
     private BottomNavigationView navigation;
     MenuItem prevMenuItem;
     HomeFragment fragmentHome;
@@ -56,84 +51,15 @@ public class MainActivity extends AppCompatActivity {
         return false;
     };
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemForManager
-            = item -> {
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-                viewPager.setCurrentItem(0);
-                break;
-            case R.id.navigation_stock_opname:
-                viewPager.setCurrentItem(1);
-                break;
-            case R.id.navigation_mutasi_barang:
-                viewPager.setCurrentItem(2);
-                break;
-            case R.id.navigation_barang_masuk:
-                viewPager.setCurrentItem(3);
-                break;
-            case R.id.navigation_input_harian:
-                viewPager.setCurrentItem(4);
-                break;
-        }
-        return false;
-    };
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemForKoordinator
-            = item -> {
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-                viewPager.setCurrentItem(0);
-                break;
-            case R.id.navigation_barang_masuk:
-                viewPager.setCurrentItem(1);
-                break;
-            case R.id.navigation_mutasi_barang:
-                viewPager.setCurrentItem(2);
-                break;
-            case R.id.navigation_input_harian:
-                viewPager.setCurrentItem(3);
-                break;
-        }
-        return false;
-    };
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         fragmentHome = new HomeFragment();
-        fragmentStockOpname = new StockOpnameFragment();
-        fragmentBarangMasuk = new BarangMasukFragment();
-        fragmentInputHarian = new InputHarianFragment();
-        viewPagerAdapter.addFragment(fragmentHome);
-        viewPagerAdapter.addFragment(fragmentStockOpname);
-        viewPagerAdapter.addFragment(fragmentBarangMasuk);
-        viewPagerAdapter.addFragment(fragmentInputHarian);
-        viewPager.setAdapter(viewPagerAdapter);
-    }
-
-    private void setupViewPagerForManager(ViewPager viewPager) {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        fragmentHome = new HomeFragment();
-        fragmentStockOpname = new StockOpnameFragment();
         fragmentMutasiBarang = new MutasiBarangFragment();
         fragmentBarangMasuk = new BarangMasukFragment();
         fragmentInputHarian = new InputHarianFragment();
         viewPagerAdapter.addFragment(fragmentHome);
         viewPagerAdapter.addFragment(fragmentStockOpname);
-        viewPagerAdapter.addFragment(fragmentMutasiBarang);
         viewPagerAdapter.addFragment(fragmentBarangMasuk);
-        viewPagerAdapter.addFragment(fragmentInputHarian);
-        viewPager.setAdapter(viewPagerAdapter);
-    }
-
-    private void setupViewPagerForKoordinator(ViewPager viewPager) {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        fragmentHome = new HomeFragment();
-        fragmentBarangMasuk = new BarangMasukFragment();
-        fragmentMutasiBarang = new MutasiBarangFragment();
-        fragmentInputHarian = new InputHarianFragment();
-        viewPagerAdapter.addFragment(fragmentHome);
-        viewPagerAdapter.addFragment(fragmentBarangMasuk);
-        viewPagerAdapter.addFragment(fragmentMutasiBarang);
         viewPagerAdapter.addFragment(fragmentInputHarian);
         viewPager.setAdapter(viewPagerAdapter);
     }
@@ -150,12 +76,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        showNavigationForManager();
-
         viewPager = findViewById(R.id.viewpager);
 
-        navigation = findViewById(R.id.navigationForManager);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemForManager);
+        navigation = findViewById(R.id.navigation);
+        navigation.setVisibility(View.VISIBLE);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -181,29 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        setupViewPagerForManager(viewPager);
-    }
-
-    private void showNavigationForManager() {
-        navigation = findViewById(R.id.navigationForManager);
-        navigation.setVisibility(View.VISIBLE);
-    }
-
-    private void showNavigationForKoordinator() {
-        navigation = findViewById(R.id.navigationForKoordinator);
-        navigation.setVisibility(View.VISIBLE);
-    }
-
-    private void showNavigation() {
-        navigation = findViewById(R.id.navigation);
-        navigation.setVisibility(View.VISIBLE);
-    }
-
-    @Override public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.viewpager);
-        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
-            super.onBackPressed();
-        }
+        setupViewPager(viewPager);
     }
 
 }

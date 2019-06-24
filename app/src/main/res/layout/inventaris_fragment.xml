@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/White"
+            android:background="@color/DarkSlateBlue"
             android:minHeight="?attr/actionBarSize">
 
             <LinearLayout
@@ -33,7 +33,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
                     android:layout_marginEnd="@dimen/margin_padding_size_small"
-                    app:srcCompat="@drawable/ic_keyboard_backspace_black_24dp"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
                     android:contentDescription="@string/todo"
                     tools:ignore="RtlHardcoded" />
 
@@ -48,7 +48,7 @@
                     android:maxLines="1"
                     android:text="@string/inventaris"
                     android:textStyle="bold"
-                    android:textColor="@color/SteelBlue" />
+                    android:textColor="@color/White" />
 
             </LinearLayout>
 

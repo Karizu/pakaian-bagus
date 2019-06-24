@@ -86,4 +86,6 @@ dependencies {
 
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
     implementation 'q.rorbin:badgeview:1.1.0'
+
+    implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:3.0.0'
 }

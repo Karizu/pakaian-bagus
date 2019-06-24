@@ -1,7 +1,6 @@
-package com.example.pakaianbagus.presentation.inputharian;
+package com.example.pakaianbagus.presentation.penjualan;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
 
 import java.util.Objects;
 
@@ -41,7 +39,7 @@ public class InputHarianFragment extends Fragment {
     }
 
     @OnClick(R.id.tabPenjualan)
-    public void toolbarBack() {
+    public void tabPenjualan() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         PenjualanKompetitorFragment penjualanFragment = new PenjualanKompetitorFragment();

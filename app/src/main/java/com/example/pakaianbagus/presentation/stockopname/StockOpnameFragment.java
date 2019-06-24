@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,23 +16,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.presentation.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class StockOpnameFragment extends Fragment {
 
-    @BindView(R.id.spinnerStock)
-    Spinner stockSpinner;
+//    @BindView(R.id.spinnerStock)
+//    Spinner stockSpinner;
 
     View rootView;
     Dialog dialog;
@@ -47,14 +48,16 @@ public class StockOpnameFragment extends Fragment {
         rootView = inflater.inflate(R.layout.stock_opname_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("STOCK OPNAME");
-        ImageView toolbarHistory = rootView.findViewById(R.id.toolbar_history);
-        toolbarHistory.setVisibility(View.GONE);
-
-        settingGenderSpinner();
-
         return rootView;
+    }
+
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        HomeFragment homeFragment = new HomeFragment();
+        ft.replace(R.id.baseLayoutStock, homeFragment);
+        ft.commit();
     }
 
     @OnClick(R.id.btnMore)
@@ -75,12 +78,20 @@ public class StockOpnameFragment extends Fragment {
         pm.show();
     }
 
+    @OnClick(R.id.toolbar_search)
+    public void btnSearch() {
+        showDialog();
+        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(v -> dialog.dismiss());
+    }
+
 
     private void settingGenderSpinner() {
         // Spinner Drop down elements
         List<String> filter = new ArrayList<>();
         filter.add("ARTIKEL");
         filter.add("KATEGORI");
+
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), R.layout.spinner_item, filter);
@@ -89,13 +100,13 @@ public class StockOpnameFragment extends Fragment {
         dataAdapter.setDropDownViewResource(R.layout.spinner_stock_dropdown_item);
 
         // attaching data adapter to spinner
-        stockSpinner.setAdapter(dataAdapter);
+//        stockSpinner.setAdapter(dataAdapter);
     }
 
     private void showDialog() {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(R.layout.dialog_ubah_qty);
+        dialog.setContentView(R.layout.dialog_search_stockopname);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));

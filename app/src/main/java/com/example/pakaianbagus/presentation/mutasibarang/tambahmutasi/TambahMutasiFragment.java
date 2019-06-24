@@ -1,6 +1,5 @@
-package com.example.pakaianbagus.presentation.home.spg.detailspg;
+package com.example.pakaianbagus.presentation.mutasibarang.tambahmutasi;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,70 +12,46 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
+import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DetailSpgFragment extends Fragment {
+public class TambahMutasiFragment extends Fragment {
 
     Dialog dialog;
 
-    public DetailSpgFragment() {
+    public TambahMutasiFragment() {
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.detail_spg_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.tambah_mutasi_barang_fragment, container, false);
         ButterKnife.bind(this, rootView);
-
-        TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("DARNADI SANTOSO");
 
         return rootView;
     }
 
     @OnClick(R.id.toolbar_back)
-    public void toolbarBack() {
+    public void toolbarBack(){
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgFragment spgFragment = new SpgFragment();
-        ft.replace(R.id.baseLayoutDetailSpg, spgFragment);
+        MutasiBarangFragment mutasiFragment = new MutasiBarangFragment();
+        ft.replace(R.id.baseLayoutTambahMutasi, mutasiFragment);
         ft.commit();
     }
 
-    private void settingFilterSpinner() {
-        // Spinner Drop down elements
-        List<String> filter = new ArrayList<>();
-        filter.add("1 BULAN");
-        filter.add("2 BULAN");
 
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), R.layout.spinner_item, filter);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(R.layout.spinner_stock_dropdown_item);
-
-        // attaching data adapter to spinner
-//        spgSpinner.setAdapter(dataAdapter);
-    }
-
-    @OnClick(R.id.toolbar_mutasi)
-    public void onClickToolbarMutasi(){
+    @OnClick(R.id.btnAddMutasi)
+    public void onCLickBtnAddBarang(){
         showDialog();
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> dialog.dismiss());
@@ -85,7 +60,7 @@ public class DetailSpgFragment extends Fragment {
     private void showDialog() {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(R.layout.dialog_mutasi_spg);
+        dialog.setContentView(R.layout.dialog_tambah_barang);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
@@ -96,4 +71,5 @@ public class DetailSpgFragment extends Fragment {
         dialog.show();
         dialog.getWindow().setAttributes(lp);
     }
+
 }

@@ -56,7 +56,7 @@
     <style name="Base.ThemeOverlay.AppCompat.navTheme">
 
         <!-- Color of text and icon when SELECTED -->
-        <item name="colorPrimary">@color/SteelBlue</item>
+        <item name="colorPrimary">@color/DarkSlateBlue</item>
 
         <!-- Background color when SELECTED -->
         <item name="colorControlHighlight">@color/White</item>

@@ -7,11 +7,6 @@
         android:title="@string/home" />
 
     <item
-        android:id="@+id/navigation_stock_opname"
-        android:icon="@drawable/ic_store_blue_24dp"
-        android:title="@string/stock_opname" />
-
-    <item
         android:id="@+id/navigation_mutasi_barang"
         android:icon="@drawable/ic_compare_arrows_black_24dp"
         android:title="@string/mutasi_barang"

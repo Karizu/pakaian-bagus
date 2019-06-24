@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.inputharian;
+package com.example.pakaianbagus.presentation.penjualan;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

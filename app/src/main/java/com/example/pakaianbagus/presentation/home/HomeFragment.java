@@ -7,13 +7,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -28,7 +25,8 @@ import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
-import com.example.pakaianbagus.presentation.inputharian.ScanBarcodeActivity;
+import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
+import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
@@ -45,13 +43,6 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.carousel)
     CarouselView customCarouselView;
     Dialog dialog;
-
-    String[] sampleNetworkImageURLs = {
-            "https://placeholdit.imgix.net/~text?txtsize=15&txt=image1&txt=350%C3%97150&w=350&h=150",
-            "https://placeholdit.imgix.net/~text?txtsize=15&txt=image4&txt=350%C3%97150&w=350&h=150",
-            "https://placeholdit.imgix.net/~text?txtsize=15&txt=image5&txt=350%C3%97150&w=350&h=150"
-    };
-
     List<News> newsPager = new ArrayList<>();
     View rootView;
 
@@ -104,6 +95,15 @@ public class HomeFragment extends Fragment {
 
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.btnStock)
+    public void onClickBtnStock (){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        StockOpnameFragment stockFragment = new StockOpnameFragment();
+        ft.replace(R.id.baseLayout, stockFragment);
+        ft.commit();
     }
 
     @OnClick(R.id.btnSPG)

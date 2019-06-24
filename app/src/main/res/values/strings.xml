@@ -2,8 +2,8 @@
     <string name="app_name">Pakaian Bagus</string>
     <string name="home">Home</string>
     <string name="stock_opname">Stock</string>
-    <string name="barang_masuk">Barang</string>
-    <string name="input_harian">Input</string>
+    <string name="barang_masuk">Barang Masuk</string>
+    <string name="input_harian">Input Harian</string>
     <string name="history">History</string>
     <string name="toolbar_title">Toolbar title</string>
     <string name="todo">TODO</string>
@@ -15,7 +15,7 @@
     <string name="kunjungan" tools:ignore="ExtraTranslation">KUNJUNGAN</string>
     <string name="spg">SPG</string>
     <string name="inventaris">INVENTARIS</string>
-    <string name="mutasi_barang">Mutasi</string>
+    <string name="mutasi_barang">Mutasi Barang</string>
     <string name="tambah">Tambah</string>
     <string name="spg_name">Dendi Santoso</string>
     <string name="spg_address">Jl. Batik Saketi No. 7</string>
@@ -44,4 +44,6 @@
     <string name="diskon">Diskon</string>
     <string name="tujuan_mutasi">TUJUAN MUTASI</string>
     <string name="barang">BARANG</string>
+    <string name="katalog">Katalog</string>
+    <string name="penjualan">Penjualan</string>
 </resources>

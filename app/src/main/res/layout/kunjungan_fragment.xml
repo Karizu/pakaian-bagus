@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/baseLayout"
+    android:id="@+id/baseLayoutKunjungan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,106 +16,143 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/White"
+            android:background="#6f3df8"
             android:minHeight="?attr/actionBarSize">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2"
+                android:weightSum="4"
                 android:paddingStart="8dp"
                 tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
                 <ImageView
                     android:id="@+id/toolbar_back"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginEnd="@dimen/margin_padding_size_small"
-                    app:srcCompat="@drawable/ic_keyboard_backspace_black_24dp"
                     android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="4"
                     android:layout_marginStart="6dp"
                     android:gravity="center_vertical"
                     android:maxLength="25"
                     android:maxLines="1"
                     android:text="@string/kunjungan"
                     android:textStyle="bold"
-                    android:textColor="@color/SteelBlue" />
+                    android:textColor="@color/White" />
+
+                <ImageView
+                    android:id="@+id/toolbar_calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_date_range_black_24dp"
+                    tools:ignore="RtlHardcoded" />
+
+                <ImageView
+                    android:id="@+id/toolbar_tambah_pengeluaran"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_local_pharmacy_black_24dp"
+                    tools:ignore="RtlHardcoded" />
 
             </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <EditText
-                android:id="@+id/etCheckIn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textSize="13sp"
-                android:background="@drawable/background_input_kunjungan"
-                android:hint="@string/checkin"/>
-
-            <EditText
-                android:id="@+id/etDeskripsi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:padding="16dp"
-                android:textSize="13sp"
-                android:background="@drawable/background_input_kunjungan"
-                android:hint="@string/deskripsi"/>
-
-
-            <EditText
-                android:id="@+id/etLaporanPengeluaran"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:padding="16dp"
-                android:textSize="13sp"
-                android:background="@drawable/background_input_kunjungan"
-                android:hint="@string/laporan_pengeluaran"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="13sp"
-                android:text="@string/photo_counter"
-                android:textColor="@color/Black"/>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            tools:ignore="UnknownIdInLayout">
 
             <LinearLayout
-                android:id="@+id/btnAddPhotoCounter"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/background_input_kunjungan"
-                android:padding="16dp">
+                android:paddingBottom="8dp"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_add_black_24dp"/>
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="4dp"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/background_input_kunjungan"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <LinearLayout
+                            android:id="@+id/layoutListKunjungan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/background_list_inventaris"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp"
+                            android:weightSum="4"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp">
+
+                            <TextView
+                                android:id="@+id/tvNamaToko"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="4"
+                                android:gravity="center_vertical"
+                                android:text="TOKO ADIL MAKMUR"
+                                android:textSize="13sp"
+                                android:textColor="@color/NormalColorText"/>
+
+                            <TextView
+                                android:id="@+id/tvDateTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:padding="6dp"
+                                android:text="08:00|21 Juni 2019"
+                                android:textSize="11sp"
+                                tools:ignore="HardcodedText,SmallSp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
         <Button
             android:id="@+id/btnDialogTambah"

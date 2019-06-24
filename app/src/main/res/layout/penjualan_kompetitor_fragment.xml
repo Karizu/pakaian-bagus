@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/White"
+            android:background="@color/DarkSlateBlue"
             android:minHeight="?attr/actionBarSize">
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:text="@string/input_harian"
                     android:textAllCaps="true"
                     android:textStyle="bold"
-                    android:textColor="@color/SteelBlue" />
+                    android:textColor="@color/White" />
 
             </LinearLayout>
 
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="5">
+                android:weightSum="6">
 
                 <TextView
                     android:id="@+id/tabSalesReport"
@@ -63,19 +63,19 @@
                     android:layout_height="match_parent"
                     android:text="@string/sales_report"
                     android:gravity="center"
-                    android:textColor="@color/SteelBlue"
-                    android:layout_weight="2"/>
+                    android:textStyle="bold"
+                    android:textColor="#AB92F0"
+                    android:layout_weight="3"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1">
+                    android:gravity="center">
 
                     <View
                         android:layout_width="1dp"
                         android:layout_height="30dp"
-                        android:background="@color/SteelBlue"
+                        android:background="@color/DarkSlateBlue"
                         />
 
                 </LinearLayout>
@@ -86,9 +86,9 @@
                     android:layout_height="match_parent"
                     android:text="@string/penjualan_kompetitor"
                     android:gravity="center"
-                    android:textColor="@color/SteelBlue"
+                    android:textColor="@color/DarkSlateBlue"
                     android:textStyle="bold"
-                    android:layout_weight="2"/>
+                    android:layout_weight="3"/>
 
             </LinearLayout>
 
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/SteelBlue"
+                android:background="@color/DarkSlateBlue"
                 />
 
         </LinearLayout>
@@ -202,7 +202,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center_vertical|right"
                                     android:text="Rp. 250.000"
-                                    android:textColor="@color/DodgerBlue"
+                                    android:textColor="@color/DarkSlateBlue"
                                     android:textSize="11sp"
                                     tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
 
