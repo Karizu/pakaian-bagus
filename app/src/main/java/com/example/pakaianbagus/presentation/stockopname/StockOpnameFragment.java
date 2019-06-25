@@ -56,8 +56,16 @@ public class StockOpnameFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         HomeFragment homeFragment = new HomeFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayoutStock, homeFragment);
         ft.commit();
+    }
+
+    @OnClick(R.id.toolbar_filter)
+    public void toolbarFilter(){
+        showDialog(R.layout.dialog_filter_stock);
+        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(v -> dialog.dismiss());
     }
 
     @OnClick(R.id.btnMore)
@@ -68,7 +76,7 @@ public class StockOpnameFragment extends Fragment {
         pm.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.navigation_ubah:
-                    showDialog();
+                    showDialog(R.layout.dialog_ubah_qty);
                     ImageView imgClose = dialog.findViewById(R.id.imgClose);
                     imgClose.setOnClickListener(v1 -> dialog.dismiss());
                     break;
@@ -80,7 +88,7 @@ public class StockOpnameFragment extends Fragment {
 
     @OnClick(R.id.toolbar_search)
     public void btnSearch() {
-        showDialog();
+        showDialog(R.layout.dialog_search_stockopname);
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> dialog.dismiss());
     }
@@ -103,10 +111,10 @@ public class StockOpnameFragment extends Fragment {
 //        stockSpinner.setAdapter(dataAdapter);
     }
 
-    private void showDialog() {
+    private void showDialog(int layout) {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(R.layout.dialog_search_stockopname);
+        dialog.setContentView(layout);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));

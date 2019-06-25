@@ -10,7 +10,20 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         tools:ignore="UselessParent">
+
+        <Button
+            android:id="@+id/btnDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="DOWNLOAD"
+            android:textColor="@color/White"
+            android:background="@drawable/background_button"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            tools:ignore="HardcodedText" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -35,7 +48,7 @@
                     android:gravity="center_vertical"
                     android:maxLength="25"
                     android:maxLines="1"
-                    android:text="INPUT HARIAN"
+                    android:text="PENJUALAN"
                     android:textAllCaps="true"
                     android:textStyle="bold"
                     android:textColor="@color/White"
@@ -129,6 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
             app:cardCornerRadius="4dp"
             app:cardElevation="2dp"
             android:layout_marginStart="16dp"
@@ -152,6 +166,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@drawable/background_list_inventaris"
                     android:weightSum="3"
                     tools:ignore="DisableBaselineAlignment">
 

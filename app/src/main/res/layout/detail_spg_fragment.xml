@@ -63,7 +63,7 @@
                     android:layout_gravity="right"
                     android:layout_marginEnd="12dp"
                     android:contentDescription="@string/todo"
-                    app:srcCompat="@drawable/ic_compare_arrows_white_24dp"
+                    app:srcCompat="@drawable/mutasi_spg"
                     tools:ignore="RtlHardcoded" />
 
             </LinearLayout>

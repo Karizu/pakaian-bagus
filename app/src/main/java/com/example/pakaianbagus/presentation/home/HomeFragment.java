@@ -24,7 +24,9 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
+import com.example.pakaianbagus.presentation.home.notification.NotificationFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
+import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
 import com.synnapps.carouselview.CarouselView;
@@ -60,9 +62,9 @@ public class HomeFragment extends Fragment {
 
 //        hideItemForSPGScreen();
         TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("PAKAIAN BAGUS");
+        toolbarTitle.setText("Hallo Rizal");
 
-        newsPager.add(new News("Title", "Lorem Ipsum Lorem Ipsum", "https://s2.bukalapak.com/uploads/promo_partnerinfo_bloggy/2842/Bloggy_1_puncak.jpg"));
+        newsPager.add(new News("Title", "Lorem Ipsum Lorem Ipsum", "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/purple-ramadan-charity-event-invitation-banner-design-template-c8a1a4d8e5747a5a4f75d56b7974d233_screen.jpg?ts=1556628102"));
         initSlider(rootView);
         return rootView;
     }
@@ -102,8 +104,24 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         StockOpnameFragment stockFragment = new StockOpnameFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayout, stockFragment);
         ft.commit();
+    }
+
+    @OnClick(R.id.btnPenjualan)
+    public void onClickBtnPenjualan (){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        InputHarianFragment inputFragment = new InputHarianFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayout, inputFragment);
+        ft.commit();
+    }
+
+    @OnClick(R.id.btnCheck)
+    public void onClickBtnCheck (){
+        startActivity(new Intent(getActivity(), ScanBarcodeActivity.class));
     }
 
     @OnClick(R.id.btnSPG)
@@ -111,6 +129,7 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgFragment spgFragment = new SpgFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayout, spgFragment);
         ft.commit();
     }
@@ -120,6 +139,7 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         KunjunganFragment kunjunganFragment = new KunjunganFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayout, kunjunganFragment);
         ft.commit();
     }
@@ -129,6 +149,7 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         InventarisFragment inventarisFragment = new InventarisFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayout, inventarisFragment);
         ft.commit();
     }
@@ -155,9 +176,20 @@ public class HomeFragment extends Fragment {
         dialog.getWindow().setAttributes(lp);
     }
 
-    @OnClick(R.id.toolbar_history)
+    @OnClick(R.id.toolbar_logout)
     public void onClickToolbar(){
-        startActivity(new Intent(getActivity(), ScanBarcodeActivity.class));
+        Objects.requireNonNull(getActivity()).finishAffinity();
+        getActivity().finish();
+    }
+
+    @OnClick(R.id.toolbar_notif)
+    public void onClickToolbarNotif(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        NotificationFragment notifFragment = new NotificationFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayout, notifFragment);
+        ft.commit();
     }
 
 }

@@ -47,6 +47,7 @@ public class MutasiBarangFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         TambahMutasiFragment tambahMutasiFragment = new TambahMutasiFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayoutMutasi, tambahMutasiFragment);
         ft.commit();
     }

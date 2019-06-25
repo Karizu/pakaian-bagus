@@ -9,13 +9,12 @@
     android:theme="@style/quicksandTheme"
     tools:context=".MainActivity">
 
-    <com.example.pakaianbagus.util.adapter.NoSwipePager
-        android:id="@+id/viewpager"
+    <include
+        layout="@layout/content_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/navigation"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        app:layout_behavior="View Pager" />
+        android:layout_above="@id/navigation"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -26,9 +25,6 @@
         android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
         app:theme="@style/Base.ThemeOverlay.AppCompat.navTheme"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/navigation"/>
 

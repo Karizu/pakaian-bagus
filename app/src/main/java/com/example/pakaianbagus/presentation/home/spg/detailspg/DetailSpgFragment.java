@@ -55,6 +55,7 @@ public class DetailSpgFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgFragment spgFragment = new SpgFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayoutDetailSpg, spgFragment);
         ft.commit();
     }

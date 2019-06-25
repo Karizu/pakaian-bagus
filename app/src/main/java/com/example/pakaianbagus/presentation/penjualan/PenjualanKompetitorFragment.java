@@ -40,6 +40,7 @@ public class PenjualanKompetitorFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         InputHarianFragment inputHarianFragment = new InputHarianFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayoutInputHarianPenjualan, inputHarianFragment);
         ft.commit();
     }

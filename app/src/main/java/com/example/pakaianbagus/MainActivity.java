@@ -3,19 +3,17 @@ package com.example.pakaianbagus;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
-import com.example.pakaianbagus.util.adapter.NoSwipePager;
-import com.example.pakaianbagus.util.adapter.ViewPagerAdapter;
 
 import java.util.Objects;
 
@@ -23,46 +21,40 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NoSwipePager viewPager;
     private BottomNavigationView navigation;
-    MenuItem prevMenuItem;
-    HomeFragment fragmentHome;
-    StockOpnameFragment fragmentStockOpname;
-    BarangMasukFragment fragmentBarangMasuk;
-    InputHarianFragment fragmentInputHarian;
-    MutasiBarangFragment fragmentMutasiBarang;
+    final Fragment fragmentHome = new HomeFragment();
+    final Fragment fragmentStockOpname = new StockOpnameFragment();
+    final Fragment fragmentBarangMasuk = new BarangMasukFragment();
+    final Fragment fragmentInputHarian = new InputHarianFragment();
+    final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
+    final Fragment katalogFragment = new KatalogFragment();
+    FragmentManager fm = getSupportFragmentManager();
+    FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+    Fragment active = fragmentHome;
 
+    @SuppressLint("CommitTransaction")
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                viewPager.setCurrentItem(0);
-                break;
-            case R.id.navigation_stock_opname:
-                viewPager.setCurrentItem(1);
-                break;
-            case R.id.navigation_barang_masuk:
-                viewPager.setCurrentItem(2);
-                break;
-            case R.id.navigation_input_harian:
-                viewPager.setCurrentItem(3);
-                break;
+                setFragments(fragmentHome, "1");
+                active = fragmentHome;
+                return true;
+            case R.id.navigation_katalog:
+                setFragments(katalogFragment, "2");
+                active = fragmentMutasiBarang;
+                return true;
+            case R.id.navigation_mutasi_barang:
+                setFragments(fragmentMutasiBarang, "3");
+                active = fragmentMutasiBarang;
+                return true;
+            case R.id.navigation_penjualan:
+                setFragments(fragmentInputHarian, "4");
+                active = fragmentInputHarian;
+                return true;
         }
         return false;
     };
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        fragmentHome = new HomeFragment();
-        fragmentMutasiBarang = new MutasiBarangFragment();
-        fragmentBarangMasuk = new BarangMasukFragment();
-        fragmentInputHarian = new InputHarianFragment();
-        viewPagerAdapter.addFragment(fragmentHome);
-        viewPagerAdapter.addFragment(fragmentStockOpname);
-        viewPagerAdapter.addFragment(fragmentBarangMasuk);
-        viewPagerAdapter.addFragment(fragmentInputHarian);
-        viewPager.setAdapter(viewPagerAdapter);
-    }
 
     @SuppressLint("NewApi")
     @Override
@@ -75,38 +67,18 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        viewPager = findViewById(R.id.viewpager);
-
         navigation = findViewById(R.id.navigation);
-        navigation.setVisibility(View.VISIBLE);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        fm.beginTransaction().add(R.id.main_container, fragmentHome, "1").commit();
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (prevMenuItem != null) {
-                    prevMenuItem.setChecked(false);
-                } else {
-                    navigation.getMenu().getItem(0).setChecked(false);
-                }
-                Log.d("page", "onPageSelected: " + position);
-                navigation.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = navigation.getMenu().getItem(position);
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        setupViewPager(viewPager);
+    private void setFragments(Fragment fragment, String string){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        ft.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
+        ft.replace(R.id.main_container, fragment, string);
+        ft.commit();
     }
 
 }

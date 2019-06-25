@@ -47,6 +47,7 @@ public class BarangMasukFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         DetailBarangMasuk detailBMFragment = new DetailBarangMasuk();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayoutBM, detailBMFragment);
         ft.commit();
     }

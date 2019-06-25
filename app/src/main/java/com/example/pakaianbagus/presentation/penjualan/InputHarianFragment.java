@@ -43,6 +43,7 @@ public class InputHarianFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         PenjualanKompetitorFragment penjualanFragment = new PenjualanKompetitorFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.replace(R.id.baseLayoutInputHarian, penjualanFragment);
         ft.commit();
     }

@@ -68,6 +68,7 @@ public class DetailBarangMasuk extends Fragment {
     public void toolbarBack() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         BarangMasukFragment bmFragment = new BarangMasukFragment();
         ft.replace(R.id.baseLayoutDetailBM, bmFragment);
         ft.commit();

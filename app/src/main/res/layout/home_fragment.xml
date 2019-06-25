@@ -12,7 +12,63 @@
         android:layout_height="wrap_content"
         tools:ignore="UselessParent">
 
-        <include layout="@layout/row_toolbar"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/DarkSlateBlue"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:titleTextColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:paddingStart="8dp"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center_vertical"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:text="@string/toolbar_title"
+                    android:textStyle="bold"
+                    android:textColor="@color/White" />
+
+                <ImageView
+                    android:id="@+id/toolbar_notif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="16dp"
+                    app:srcCompat="@drawable/notification"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
+                <ImageView
+                    android:id="@+id/toolbar_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="12dp"
+                    app:srcCompat="@drawable/logout"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.Toolbar>
+
 
         <ScrollView
             android:layout_width="match_parent"
@@ -23,7 +79,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="4dp"
                 tools:ignore="ScrollViewSize,UnknownIdInLayout">
@@ -33,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="12dp"
+                    android:layout_marginBottom="16dp"
                     tools:ignore="UnknownIdInLayout">
 
                     <com.synnapps.carouselview.CarouselView
@@ -77,7 +134,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_location_city_blue_24dp"
+                                        app:srcCompat="@drawable/penjualan"
                                         android:contentDescription="@string/todo"
                                         tools:ignore="TooDeepLayout" />
 
@@ -105,7 +162,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_perm_identity_blue_24dp"
+                                        app:srcCompat="@drawable/checkin"
                                         tools:ignore="ContentDescription" />
 
                                 </LinearLayout>
@@ -132,7 +189,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_featured_play_list_blue_24dp"
+                                        app:srcCompat="@drawable/stockopname"
                                         tools:ignore="ContentDescription" />
 
                                 </LinearLayout>
@@ -187,7 +244,7 @@
                         android:id="@+id/layoutHeaderButton2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -217,7 +274,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_location_city_blue_24dp"
+                                        app:srcCompat="@drawable/kunjungan"
                                         android:contentDescription="@string/todo"
                                         tools:ignore="TooDeepLayout" />
 
@@ -245,7 +302,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_perm_identity_blue_24dp"
+                                        app:srcCompat="@drawable/spg"
                                         tools:ignore="ContentDescription" />
 
                                 </LinearLayout>
@@ -272,7 +329,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_featured_play_list_blue_24dp"
+                                        app:srcCompat="@drawable/inventaris"
                                         tools:ignore="ContentDescription" />
 
                                 </LinearLayout>

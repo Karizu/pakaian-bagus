@@ -23,7 +23,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="4"
-                android:paddingStart="8dp"
                 tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
                 <ImageView

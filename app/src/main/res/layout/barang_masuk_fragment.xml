@@ -43,8 +43,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/background_input_kunjungan"
-                        android:orientation="vertical"
-                        android:padding="12dp">
+                        android:orientation="vertical">
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/recyclerView"
@@ -59,8 +58,8 @@
                             android:orientation="horizontal"
                             android:layout_marginBottom="8dp"
                             android:weightSum="4"
-                            android:paddingTop="6dp"
-                            android:paddingBottom="6dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp">
 
@@ -84,11 +83,11 @@
                                 android:textSize="11sp"
                                 tools:ignore="SmallSp" />
 
-                            <CheckBox
+                            <ImageView
                                 android:id="@+id/checkBoxBM"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:button="@drawable/custom_check_box"
+                                android:src="@drawable/checked"
                                 />
 
                         </LinearLayout>
