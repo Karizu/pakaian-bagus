@@ -144,9 +144,8 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="4dp"
                     app:cardCornerRadius="4dp"
@@ -154,17 +153,18 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="16dp"
+                        android:paddingBottom="8dp"
                         android:background="@drawable/background_input_kunjungan"
                         android:orientation="vertical">
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/recyclerView"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="match_parent" />
 
                         <LinearLayout
                             android:id="@+id/layoutListKunjungan"
@@ -177,7 +177,8 @@
                             android:paddingTop="10dp"
                             android:paddingBottom="10dp"
                             android:paddingStart="12dp"
-                            android:paddingEnd="12dp">
+                            android:paddingEnd="12dp"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/tvNamaToko"

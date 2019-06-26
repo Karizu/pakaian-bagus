@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout
+    android:id="@+id/layoutPenjualan"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_weight="2"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingStart="14dp"
-    android:paddingEnd="14dp"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/background_list_inventaris"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -14,92 +12,106 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        tools:ignore="UseCompoundDrawables">
+        android:orientation="vertical"
+        android:background="@drawable/custom_ripple"
+        android:layout_weight="2"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        >
 
-        <TextView
-            android:id="@+id/tvNamaBarang"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/jeans_blue"
-            android:textColor="@color/Black"
-            android:textSize="13sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical|right"
-            android:text="@string/date"
-            android:textColor="@color/Black"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            tools:ignore="RtlHardcoded" />
+            android:orientation="horizontal"
+            android:weightSum="2"
+            tools:ignore="UseCompoundDrawables">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvNamaBarang"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/jeans_blue"
+                android:textColor="@color/Black"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/date"
+                android:textColor="@color/Black"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:ignore="RtlHardcoded" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/harga"
-            android:textColor="@color/Black"
-            android:textSize="11sp"
-            tools:ignore="SmallSp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvHarga"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical|right"
-            android:text="Rp. 250.000"
-            android:textColor="@color/DodgerBlue"
-            android:textSize="11sp"
-            tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/harga"
+                android:textColor="@color/Black"
+                android:textSize="11sp"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tvHarga"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="Rp. 250.000"
+                android:textColor="@color/DodgerBlue"
+                android:textSize="11sp"
+                tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+
+        </LinearLayout>
 
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Qty"
-            android:textColor="@color/Black"
-            android:textSize="11sp"
-            tools:ignore="HardcodedText,SmallSp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Qty"
+                android:textColor="@color/Black"
+                android:textSize="11sp"
+                tools:ignore="HardcodedText,SmallSp" />
 
-        <TextView
-            android:id="@+id/tvQty"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical|right"
-            android:text="1 pcs"
-            android:textSize="11sp"
-            tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+            <TextView
+                android:id="@+id/tvQty"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="1 pcs"
+                android:textSize="11sp"
+                tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

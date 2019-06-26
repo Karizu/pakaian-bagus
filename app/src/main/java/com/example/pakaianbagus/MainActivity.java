@@ -1,19 +1,21 @@
 package com.example.pakaianbagus;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
-import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
 
 import java.util.Objects;
 
@@ -21,6 +23,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    private long backPressedTime = 0;
     private BottomNavigationView navigation;
     final Fragment fragmentHome = new HomeFragment();
     final Fragment fragmentStockOpname = new StockOpnameFragment();
@@ -67,9 +70,20 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        Intent i = getIntent();
+        String data = i.getStringExtra("FromHome");
+
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        fm.beginTransaction().add(R.id.main_container, fragmentHome, "1").commit();
+
+        if (data != null && data.contentEquals("1")) {
+            fm.beginTransaction().add(R.id.main_container, fragmentInputHarian, "4").commit();
+            navigation.setSelectedItemId(R.id.navigation_penjualan);
+        } else {
+            fm.beginTransaction().add(R.id.main_container, fragmentHome, "1").commit();
+        }
+
 
     }
 
@@ -81,4 +95,16 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        long t = System.currentTimeMillis();
+        if (t - backPressedTime > 2000) {    // 2 secs
+            backPressedTime = t;
+            Toast.makeText(this, "Klik sekali lagi untuk keluar",
+                    Toast.LENGTH_SHORT).show();
+        } else {    // this guy is serious
+            // clean up
+            super.onBackPressed();       // bye
+        }
+    }
 }

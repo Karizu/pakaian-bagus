@@ -20,15 +20,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.pakaianbagus.MainActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.notification.NotificationFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
-import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
-import com.example.pakaianbagus.presentation.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
@@ -111,12 +111,10 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.btnPenjualan)
     public void onClickBtnPenjualan (){
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        InputHarianFragment inputFragment = new InputHarianFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, inputFragment);
-        ft.commit();
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra("FromHome", "1");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @OnClick(R.id.btnCheck)

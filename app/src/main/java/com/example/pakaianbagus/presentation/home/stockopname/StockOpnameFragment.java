@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.stockopname;
+package com.example.pakaianbagus.presentation.home.stockopname;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -9,22 +9,27 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
+import com.example.pakaianbagus.presentation.home.stockopname.model.StockOpnameModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -35,6 +40,10 @@ public class StockOpnameFragment extends Fragment {
 
     View rootView;
     Dialog dialog;
+    private List<StockOpnameModel> stockOpnameModels;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     public StockOpnameFragment() {
 
@@ -48,7 +57,22 @@ public class StockOpnameFragment extends Fragment {
         rootView = inflater.inflate(R.layout.stock_opname_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        stockOpnameModels = new ArrayList<>();
+        setRecylerView();
+
         return rootView;
+    }
+
+    private void setRecylerView(){
+        for (int i = 0; i < 20; i++){
+            stockOpnameModels.add(new StockOpnameModel("Celana Jeans", "2 pcs"));
+        }
+
+        StockOpnameAdapter stockOpnameAdapter = new StockOpnameAdapter(stockOpnameModels, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL,
+                false));
+        recyclerView.setAdapter(stockOpnameAdapter);
     }
 
     @OnClick(R.id.toolbar_back)
@@ -66,24 +90,6 @@ public class StockOpnameFragment extends Fragment {
         showDialog(R.layout.dialog_filter_stock);
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> dialog.dismiss());
-    }
-
-    @OnClick(R.id.btnMore)
-    public void btnMore() {
-        View v = rootView.findViewById(R.id.btnMore);
-        PopupMenu pm = new PopupMenu(Objects.requireNonNull(getActivity()), v);
-        pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
-        pm.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.navigation_ubah:
-                    showDialog(R.layout.dialog_ubah_qty);
-                    ImageView imgClose = dialog.findViewById(R.id.imgClose);
-                    imgClose.setOnClickListener(v1 -> dialog.dismiss());
-                    break;
-            }
-            return true;
-        });
-        pm.show();
     }
 
     @OnClick(R.id.toolbar_search)

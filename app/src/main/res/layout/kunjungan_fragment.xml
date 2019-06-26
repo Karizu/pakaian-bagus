@@ -73,27 +73,23 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            tools:ignore="UnknownIdInLayout">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/toolbar"
+                android:layout_above="@id/btnDialogTambah"
                 android:paddingBottom="8dp"
                 android:orientation="vertical">
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="4dp"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="2dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp">
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -109,58 +105,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
-                        <LinearLayout
-                            android:id="@+id/layoutListKunjungan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/background_list_inventaris"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="8dp"
-                            android:weightSum="4"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp">
-
-                            <TextView
-                                android:id="@+id/tvNamaToko"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="4"
-                                android:gravity="center_vertical"
-                                android:text="TOKO ADIL MAKMUR"
-                                android:textSize="13sp"
-                                android:textColor="@color/NormalColorText"/>
-
-                            <TextView
-                                android:id="@+id/tvDateTime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:gravity="center_vertical"
-                                android:padding="6dp"
-                                android:text="08:00|21 Juni 2019"
-                                android:textSize="11sp"
-                                tools:ignore="HardcodedText,SmallSp" />
-
-                        </LinearLayout>
-
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
 
             </LinearLayout>
 
-        </ScrollView>
-
         <Button
             android:id="@+id/btnDialogTambah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="12dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp"
             android:textSize="13sp"
             android:clickable="true"
             android:background="@drawable/background_button"

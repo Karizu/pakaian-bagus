@@ -1,32 +1,37 @@
 package com.example.pakaianbagus.presentation.mutasibarang;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.kunjungan.tambahkunjungan.TambahKunjunganFragment;
+import com.example.pakaianbagus.presentation.mutasibarang.adapter.MutasiBarangAdapter;
+import com.example.pakaianbagus.presentation.mutasibarang.model.MutasiBarangModel;
 import com.example.pakaianbagus.presentation.mutasibarang.tambahmutasi.TambahMutasiFragment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MutasiBarangFragment extends Fragment {
 
     View rootView;
-    Dialog dialog;
+    private List<MutasiBarangModel> mbModels;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     public MutasiBarangFragment() {
 
@@ -39,7 +44,23 @@ public class MutasiBarangFragment extends Fragment {
         rootView = inflater.inflate(R.layout.mutasi_barang_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        mbModels = new ArrayList<>();
+
+        setRecylerView();
+
         return rootView;
+    }
+
+    private void setRecylerView(){
+        for (int i = 0; i < 20; i++){
+            mbModels.add(new MutasiBarangModel("Toko Adil Makmur", "08:00 | 29 Juni 2019"));
+        }
+
+        MutasiBarangAdapter mbAdapter = new MutasiBarangAdapter(mbModels, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL,
+                false));
+        recyclerView.setAdapter(mbAdapter);
     }
 
     @OnClick(R.id.toolbar_add)
