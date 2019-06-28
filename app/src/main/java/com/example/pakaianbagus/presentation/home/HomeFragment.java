@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -158,11 +159,17 @@ public class HomeFragment extends Fragment {
         etQty.setHint("Jumlah Qty");
         Button btnOK = dialog.findViewById(R.id.btnDialogTambah);
         btnOK.setText("OK");
-        btnOK.setOnClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
-            startActivity(intent);
-        });
+            btnOK.setOnClickListener(v -> {
+                if (etQty.getText().toString().length() >= 1){
+                    dialog.dismiss();
+                    Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
+                    startActivity(intent);
+                } else {
+                    Snackbar.make(rootView, "Qty Tidak Boleh Kosong", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+
 //        Intent intent = new Intent(getActivity(), MainActivity.class);
 //        intent.putExtra("FromHome", "1");
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
