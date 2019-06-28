@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.mutasibarang.model.MutasiBarangModel;
+import com.example.pakaianbagus.models.MutasiBarangModel;
 
 import java.util.List;
 

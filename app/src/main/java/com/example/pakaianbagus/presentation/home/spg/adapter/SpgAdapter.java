@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
-import com.example.pakaianbagus.presentation.home.spg.model.SpgModel;
+import com.example.pakaianbagus.models.SpgModel;
 
 import java.util.List;
 

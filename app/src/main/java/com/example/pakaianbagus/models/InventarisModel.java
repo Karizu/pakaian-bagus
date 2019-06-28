@@ -1,11 +1,11 @@
-package com.example.pakaianbagus.presentation.home.stockopname.model;
+package com.example.pakaianbagus.models;
 
-public class StockOpnameModel {
+public class InventarisModel {
     private String id;
     private String name;
     private String qty;
 
-    public StockOpnameModel(String name, String qty) {
+    public InventarisModel(String name, String qty) {
         this.name = name;
         this.qty = qty;
     }

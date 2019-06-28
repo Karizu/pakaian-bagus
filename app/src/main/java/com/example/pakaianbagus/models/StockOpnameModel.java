@@ -1,11 +1,11 @@
-package com.example.pakaianbagus.presentation.barangmasuk.detailbm.model;
+package com.example.pakaianbagus.models;
 
-public class DetailBarangMasukModel {
+public class StockOpnameModel {
     private String id;
     private String name;
     private String qty;
 
-    public DetailBarangMasukModel(String name, String qty) {
+    public StockOpnameModel(String name, String qty) {
         this.name = name;
         this.qty = qty;
     }

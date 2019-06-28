@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.kunjungan.model.KunjunganModel;
+import com.example.pakaianbagus.models.KunjunganModel;
 
 import java.util.List;
 

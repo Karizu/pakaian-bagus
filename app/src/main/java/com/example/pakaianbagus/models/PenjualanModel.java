@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.penjualan.model;
+package com.example.pakaianbagus.models;
 
 public class PenjualanModel {
 

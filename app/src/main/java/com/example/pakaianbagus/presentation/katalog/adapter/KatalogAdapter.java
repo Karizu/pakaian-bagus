@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.katalog.model.KatalogModel;
+import com.example.pakaianbagus.models.KatalogModel;
 
 import java.util.List;
 

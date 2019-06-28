@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.adapter.KunjunganAdapter;
-import com.example.pakaianbagus.presentation.home.kunjungan.model.KunjunganModel;
+import com.example.pakaianbagus.models.KunjunganModel;
 import com.example.pakaianbagus.presentation.home.kunjungan.tambahkunjungan.TambahKunjunganFragment;
 
 import java.util.ArrayList;

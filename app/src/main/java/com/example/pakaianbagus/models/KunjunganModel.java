@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.home.kunjungan.model;
+package com.example.pakaianbagus.models;
 
 public class KunjunganModel {
     private String id;

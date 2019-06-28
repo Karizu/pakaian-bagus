@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.barangmasuk.model;
+package com.example.pakaianbagus.models;
 
 public class BarangMasukModel {
     private String id;

@@ -15,8 +15,7 @@ import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.penjualan.adapter.PenjualanAdapter;
-import com.example.pakaianbagus.presentation.penjualan.model.PenjualanModel;
-import com.example.pakaianbagus.presentation.penjualan.model.SalesReportModel;
+import com.example.pakaianbagus.models.PenjualanModel;
 
 import java.util.ArrayList;
 import java.util.List;

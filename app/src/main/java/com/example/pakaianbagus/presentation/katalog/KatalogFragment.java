@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
-import com.example.pakaianbagus.presentation.katalog.model.KatalogModel;
+import com.example.pakaianbagus.models.KatalogModel;
 
 import java.util.ArrayList;
 import java.util.List;

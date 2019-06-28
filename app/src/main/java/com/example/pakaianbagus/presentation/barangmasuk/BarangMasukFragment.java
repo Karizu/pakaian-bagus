@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.barangmasuk.adapter.BarangMasukAdapter;
 import com.example.pakaianbagus.presentation.barangmasuk.detailbm.DetailBarangMasuk;
-import com.example.pakaianbagus.presentation.barangmasuk.model.BarangMasukModel;
+import com.example.pakaianbagus.models.BarangMasukModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class BarangMasukFragment extends Fragment {
 

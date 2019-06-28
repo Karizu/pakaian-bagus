@@ -17,7 +17,7 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.spg.adapter.SpgAdapter;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.DetailSpgFragment;
-import com.example.pakaianbagus.presentation.home.spg.model.SpgModel;
+import com.example.pakaianbagus.models.SpgModel;
 import com.example.pakaianbagus.util.IOnBackPressed;
 
 import java.util.ArrayList;

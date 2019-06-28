@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.penjualan.adapter.SalesReportAdapter;
-import com.example.pakaianbagus.presentation.penjualan.model.SalesReportModel;
+import com.example.pakaianbagus.models.SalesReportModel;
 
 import java.util.ArrayList;
 import java.util.List;

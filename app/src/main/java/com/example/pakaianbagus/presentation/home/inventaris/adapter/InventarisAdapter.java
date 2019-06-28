@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.inventaris.model.InventarisModel;
+import com.example.pakaianbagus.models.InventarisModel;
 
 import java.util.List;
 import java.util.Objects;

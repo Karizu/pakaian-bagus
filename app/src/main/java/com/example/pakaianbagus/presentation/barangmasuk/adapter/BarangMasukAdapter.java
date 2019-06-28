@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
-import com.example.pakaianbagus.presentation.barangmasuk.model.BarangMasukModel;
+import com.example.pakaianbagus.models.BarangMasukModel;
 
 import java.util.List;
 

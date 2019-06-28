@@ -1,13 +1,14 @@
-package com.example.pakaianbagus.presentation.home.inventaris.model;
+package com.example.pakaianbagus.models;
 
-public class InventarisModel {
+public class SpgModel {
+
     private String id;
     private String name;
-    private String qty;
+    private String toko;
 
-    public InventarisModel(String name, String qty) {
+    public SpgModel(String name, String toko) {
         this.name = name;
-        this.qty = qty;
+        this.toko = toko;
     }
 
     public String getId() {
@@ -26,11 +27,11 @@ public class InventarisModel {
         this.name = name;
     }
 
-    public String getQty() {
-        return qty;
+    public String getToko() {
+        return toko;
     }
 
-    public void setQty(String qty) {
-        this.qty = qty;
+    public void setToko(String toko) {
+        this.toko = toko;
     }
 }

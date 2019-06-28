@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.penjualan.model.SalesReportModel;
+import com.example.pakaianbagus.models.SalesReportModel;
 
 import java.text.NumberFormat;
 import java.util.List;

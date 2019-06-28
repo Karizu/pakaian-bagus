@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.mutasibarang.adapter.MutasiBarangAdapter;
-import com.example.pakaianbagus.presentation.mutasibarang.model.MutasiBarangModel;
+import com.example.pakaianbagus.models.MutasiBarangModel;
 import com.example.pakaianbagus.presentation.mutasibarang.tambahmutasi.TambahMutasiFragment;
 
 import java.util.ArrayList;

@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import android.widget.LinearLayout;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
-import com.example.pakaianbagus.presentation.home.stockopname.model.StockOpnameModel;
+import com.example.pakaianbagus.models.StockOpnameModel;
 
 import java.util.ArrayList;
 import java.util.List;

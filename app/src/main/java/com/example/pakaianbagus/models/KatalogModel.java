@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.katalog.model;
+package com.example.pakaianbagus.models;
 
 public class KatalogModel {
 

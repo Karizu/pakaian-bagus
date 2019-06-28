@@ -10,23 +10,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.barangmasuk.detailbm.adapter.DetailBarangMasukAdapter;
-import com.example.pakaianbagus.presentation.barangmasuk.detailbm.model.DetailBarangMasukModel;
-import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.models.DetailBarangMasukModel;
 
 import java.util.ArrayList;
 import java.util.List;
