@@ -9,21 +9,30 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
+import com.example.pakaianbagus.presentation.barangmasuk.detailbm.adapter.DetailBarangMasukAdapter;
+import com.example.pakaianbagus.presentation.barangmasuk.detailbm.model.DetailBarangMasukModel;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -31,6 +40,10 @@ public class DetailBarangMasuk extends Fragment {
 
     View rootView;
     Dialog dialog;
+    private List<DetailBarangMasukModel> detailBarangMasukModels;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     public DetailBarangMasuk() {
     }
@@ -43,25 +56,23 @@ public class DetailBarangMasuk extends Fragment {
         rootView = inflater.inflate(R.layout.detail_barang_masuk, container, false);
         ButterKnife.bind(this, rootView);
 
+
+        detailBarangMasukModels = new ArrayList<>();
+        setRecylerView();
+
         return rootView;
     }
 
-    @OnClick(R.id.btnMore)
-    public void btnMore() {
-        View v = rootView.findViewById(R.id.btnMore);
-        PopupMenu pm = new PopupMenu(Objects.requireNonNull(getActivity()), v);
-        pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
-        pm.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.navigation_ubah:
-                    showDialog(R.layout.dialog_ubah_qty);
-                    ImageView imgClose = dialog.findViewById(R.id.imgClose);
-                    imgClose.setOnClickListener(v1 -> dialog.dismiss());
-                    break;
-            }
-            return true;
-        });
-        pm.show();
+    private void setRecylerView(){
+        for (int i = 0; i < 20; i++){
+            detailBarangMasukModels.add(new DetailBarangMasukModel("BRG-A1-23", "1pcs"));
+        }
+
+        DetailBarangMasukAdapter detailBarangMasukAdapter = new DetailBarangMasukAdapter(detailBarangMasukModels, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL,
+                false));
+        recyclerView.setAdapter(detailBarangMasukAdapter);
     }
 
     @OnClick(R.id.toolbar_back)
@@ -74,10 +85,17 @@ public class DetailBarangMasuk extends Fragment {
         ft.commit();
     }
 
-    private void showDialog(int layout) {
+    @OnClick(R.id.btnVerifikasi)
+    public void btnVerifikasi(){
+        showDialog();
+        Button btnOK = dialog.findViewById(R.id.btnOK);
+        btnOK.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    private void showDialog() {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(layout);
+        dialog.setContentView(R.layout.dialog_submit_verifikasi);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));

@@ -6,22 +6,35 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.home.spg.adapter.SpgAdapter;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.DetailSpgFragment;
+import com.example.pakaianbagus.presentation.home.spg.model.SpgModel;
 import com.example.pakaianbagus.util.IOnBackPressed;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SpgFragment extends Fragment implements IOnBackPressed {
+
+
+    private List<SpgModel> spgModels;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     public SpgFragment() {
     }
@@ -34,10 +47,23 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
         View rootView = inflater.inflate(R.layout.spg_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        spgModels = new ArrayList<>();
+        setRecylerView();
         return rootView;
     }
 
-    @OnClick(R.id.layoutListSPG)
+    private void setRecylerView(){
+        for (int i = 0; i < 20; i++){
+            spgModels.add(new SpgModel("Darnadi Santoso", "Toko Adiguna"));
+        }
+
+        SpgAdapter spgAdapter = new SpgAdapter(spgModels, getContext(), SpgFragment.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL,
+                false));
+        recyclerView.setAdapter(spgAdapter);
+    }
+
     public void onClickLayoutListSPG(){
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

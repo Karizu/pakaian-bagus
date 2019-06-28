@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView android:layout_width="match_parent"
+    android:id="@+id/cvSpg"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,11 +17,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
-        android:padding="12dp"
+        android:background="@drawable/custom_ripple"
+        android:padding="16dp"
         android:layout_weight="2"
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -28,10 +31,10 @@
             android:text="@string/spg_name"/>
 
         <TextView
+            android:id="@+id/tvNamaToko"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="11sp"
-            android:text="@string/spg_address"
             tools:ignore="SmallSp" />
 
     </LinearLayout>

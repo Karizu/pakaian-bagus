@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="2"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             android:layout_width="0dp"
@@ -21,7 +22,8 @@
             android:layout_weight="2"
             android:text="STOCK BERDASARKAN"
             android:textColor="@color/Black"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/imgClose"
@@ -41,7 +43,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:orientation="vertical"
         android:padding="16dp">
 

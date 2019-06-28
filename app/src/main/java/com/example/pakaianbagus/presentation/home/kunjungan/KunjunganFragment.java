@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
@@ -46,6 +47,11 @@ public class KunjunganFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.kunjungan_fragment, container, false);
         ButterKnife.bind(this, rootView);
+
+        TextView tvTitle = rootView.findViewById(R.id.toolbar_title);
+        if ((getArguments() != null ? getArguments().getString("kunjunganSaya") : null)!= null){
+            tvTitle.setText(getArguments().getString("kunjunganSaya"));
+        }
 
         kunjunganModels = new ArrayList<>();
         setRecylerView();

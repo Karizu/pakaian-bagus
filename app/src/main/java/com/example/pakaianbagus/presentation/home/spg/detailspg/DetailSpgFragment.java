@@ -9,17 +9,22 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
+import com.example.pakaianbagus.presentation.home.spg.detailspg.adapter.DetailSpgAdapter;
+import com.example.pakaianbagus.presentation.home.spg.detailspg.model.DetailSpgModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +37,10 @@ import butterknife.OnClick;
 public class DetailSpgFragment extends Fragment {
 
     Dialog dialog;
+    private List<DetailSpgModel> detailSpgModels;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     public DetailSpgFragment() {
     }
@@ -47,7 +56,22 @@ public class DetailSpgFragment extends Fragment {
         TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
         toolbarTitle.setText("DARNADI SANTOSO");
 
+        detailSpgModels = new ArrayList<>();
+        setRecylerView();
+
         return rootView;
+    }
+
+    private void setRecylerView(){
+        for (int i = 0; i < 20; i++){
+            detailSpgModels.add(new DetailSpgModel("2019 June 25", "07:30", "17:30"));
+        }
+
+        DetailSpgAdapter detailSpgAdapter = new DetailSpgAdapter(detailSpgModels, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL,
+                false));
+        recyclerView.setAdapter(detailSpgAdapter);
     }
 
     @OnClick(R.id.toolbar_back)

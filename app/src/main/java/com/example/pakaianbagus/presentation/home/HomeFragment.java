@@ -10,11 +10,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,6 +52,7 @@ public class HomeFragment extends Fragment {
     Dialog dialog;
     List<News> newsPager = new ArrayList<>();
     View rootView;
+    int Flag = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -92,11 +98,42 @@ public class HomeFragment extends Fragment {
     };
 
     private void hideItemForSPGScreen() {
-        LinearLayout layout = rootView.findViewById(R.id.layoutHeaderButton);
+        LinearLayout layout = rootView.findViewById(R.id.layoutHeaderButton2);
         layout.setVisibility(View.GONE);
-
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.GONE);
+    }
+
+    private void hideItemForKoordinatorScreen() {
+        LinearLayout layout2 = rootView.findViewById(R.id.layoutHeaderButton2);
+        layout2.setVisibility(View.VISIBLE);
+        Button button = rootView.findViewById(R.id.btnTambah);
+        button.setVisibility(View.VISIBLE);
+
+        LinearLayout layout1 = rootView.findViewById(R.id.layoutBtnCard);
+        layout1.setWeightSum(2f);
+        LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle1);
+        layoutTitle.setWeightSum(2f);
+        CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
+        cardViewPenjualan.setVisibility(View.GONE);
+        TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
+        tvTitlePenjualan.setVisibility(View.GONE);
+    }
+
+    private void hideItemForManagerScreen() {
+        LinearLayout layout2 = rootView.findViewById(R.id.layoutHeaderButton2);
+        layout2.setVisibility(View.VISIBLE);
+        Button button = rootView.findViewById(R.id.btnTambah);
+        button.setVisibility(View.VISIBLE);
+
+        LinearLayout layout1 = rootView.findViewById(R.id.layoutBtnCard);
+        layout1.setWeightSum(3f);
+        LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle1);
+        layoutTitle.setWeightSum(3f);
+        CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
+        cardViewPenjualan.setVisibility(View.VISIBLE);
+        TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
+        tvTitlePenjualan.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.btnStock)
@@ -109,12 +146,27 @@ public class HomeFragment extends Fragment {
         ft.commit();
     }
 
+    @SuppressLint("SetTextI18n")
     @OnClick(R.id.btnPenjualan)
     public void onClickBtnPenjualan (){
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra("FromHome", "1");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        showDialog(R.layout.dialog_ubah_qty);
+        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(v -> dialog.dismiss());
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+        tvTitle.setText("MASUKAN QTY");
+        EditText etQty = dialog.findViewById(R.id.etDialogNamaBarang);
+        etQty.setHint("Jumlah Qty");
+        Button btnOK = dialog.findViewById(R.id.btnDialogTambah);
+        btnOK.setText("OK");
+        btnOK.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
+            startActivity(intent);
+        });
+//        Intent intent = new Intent(getActivity(), MainActivity.class);
+//        intent.putExtra("FromHome", "1");
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
     }
 
     @OnClick(R.id.btnCheck)
@@ -134,12 +186,40 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.btnKunjungan)
     public void onClickBtnKunjungan (){
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        KunjunganFragment kunjunganFragment = new KunjunganFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, kunjunganFragment);
-        ft.commit();
+        if (Flag == 3){
+            showDialog(R.layout.dialog_pilih_kunjungan);
+            Button btnKunjunganKoordinator = dialog.findViewById(R.id.btnKunjunganKoordinator);
+            btnKunjunganKoordinator.setOnClickListener(v -> {
+                dialog.dismiss();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+                KunjunganFragment kunjunganFragment = new KunjunganFragment();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                ft.replace(R.id.baseLayout, kunjunganFragment);
+                ft.commit();
+            });
+
+            Button btnKunjunganSaya = dialog.findViewById(R.id.btnKunjunganSaya);
+            btnKunjunganSaya.setOnClickListener(v -> {
+                dialog.dismiss();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+                KunjunganFragment kunjunganFragment = new KunjunganFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
+                kunjunganFragment.setArguments(bundle);
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                ft.replace(R.id.baseLayout, kunjunganFragment);
+                ft.commit();
+            });
+        } else {
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+            KunjunganFragment kunjunganFragment = new KunjunganFragment();
+            ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+            ft.replace(R.id.baseLayout, kunjunganFragment);
+            ft.commit();
+        }
     }
 
     @OnClick(R.id.btnInventaris)
@@ -176,8 +256,46 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.toolbar_logout)
     public void onClickToolbar(){
-        Objects.requireNonNull(getActivity()).finishAffinity();
-        getActivity().finish();
+//        Objects.requireNonNull(getActivity()).finishAffinity();
+//        getActivity().finish();
+        View v1 = rootView.findViewById(R.id.toolbar_logout);
+        PopupMenu pm = new PopupMenu(Objects.requireNonNull(getActivity()), v1);
+        pm.getMenuInflater().inflate(R.menu.menu_switch_account, pm.getMenu());
+        switch (Flag){
+            case 1:
+                pm.getMenu().findItem(R.id.navigation_spg).setVisible(false);
+                pm.getMenu().findItem(R.id.navigation_manager).setVisible(true);
+                pm.getMenu().findItem(R.id.navigation_koordinator).setVisible(true);
+                break;
+            case 2:
+                pm.getMenu().findItem(R.id.navigation_spg).setVisible(true);
+                pm.getMenu().findItem(R.id.navigation_manager).setVisible(true);
+                pm.getMenu().findItem(R.id.navigation_koordinator).setVisible(false);
+                break;
+            case 3:
+                pm.getMenu().findItem(R.id.navigation_spg).setVisible(true);
+                pm.getMenu().findItem(R.id.navigation_manager).setVisible(false);
+                pm.getMenu().findItem(R.id.navigation_koordinator).setVisible(true);
+                break;
+        }
+        pm.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.navigation_spg:
+                    Flag = 1;
+                    hideItemForSPGScreen();
+                    break;
+                case R.id.navigation_koordinator:
+                    Flag = 2;
+                    hideItemForKoordinatorScreen();
+                    break;
+                case R.id.navigation_manager:
+                    Flag = 3;
+                    hideItemForManagerScreen();
+                    break;
+            }
+            return true;
+        });
+        pm.show();
     }
 
     @OnClick(R.id.toolbar_notif)

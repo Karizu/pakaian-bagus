@@ -1,13 +1,18 @@
 package com.example.pakaianbagus;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fm = getSupportFragmentManager();
     FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
     Fragment active = fragmentHome;
+    Dialog dialog;
 
     @SuppressLint("CommitTransaction")
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -48,8 +54,19 @@ public class MainActivity extends AppCompatActivity {
                 active = fragmentMutasiBarang;
                 return true;
             case R.id.navigation_mutasi_barang:
-                setFragments(fragmentMutasiBarang, "3");
-                active = fragmentMutasiBarang;
+                showDialog();
+                Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
+                btnBM.setOnClickListener(v -> {
+                    setFragments(fragmentBarangMasuk, "3");
+                    active = fragmentBarangMasuk;
+                    dialog.dismiss();
+                });
+                Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
+                btnMB.setOnClickListener(v -> {
+                    setFragments(fragmentMutasiBarang, "3");
+                    active = fragmentMutasiBarang;
+                    dialog.dismiss();
+                });
                 return true;
             case R.id.navigation_penjualan:
                 setFragments(fragmentInputHarian, "4");
@@ -106,5 +123,20 @@ public class MainActivity extends AppCompatActivity {
             // clean up
             super.onBackPressed();       // bye
         }
+    }
+
+    private void showDialog() {
+        dialog = new Dialog(this);
+        //set content
+        dialog.setContentView(R.layout.dialog_pilih);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 }
