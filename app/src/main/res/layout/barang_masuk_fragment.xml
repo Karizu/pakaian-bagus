@@ -12,7 +12,58 @@
         android:layout_height="wrap_content"
         android:paddingBottom="16dp">
 
-        <include layout="@layout/row_toolbar"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/DarkSlateBlue"
+            android:minHeight="?attr/actionBarSize"
+            app:titleTextColor="@android:color/white"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                tools:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:id="@+id/toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center_vertical"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:text="@string/toolbar_title"
+                    android:textStyle="bold"
+                    android:textColor="@color/White" />
+
+                <ImageView
+                    android:id="@+id/toolbar_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    app:srcCompat="@drawable/ic_phone_blue_24dp"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -27,6 +78,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/layoutHeaderBM"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -36,6 +88,7 @@
                     android:weightSum="2">
 
                     <TextView
+                        android:id="@+id/tvList"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

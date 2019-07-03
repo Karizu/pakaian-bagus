@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
+import com.example.pakaianbagus.presentation.barangmasuk.ListTokoBMFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentHome = new HomeFragment();
     final Fragment fragmentStockOpname = new StockOpnameFragment();
     final Fragment fragmentBarangMasuk = new BarangMasukFragment();
+    final Fragment fragmentListTokoBM = new ListTokoBMFragment();
     final Fragment fragmentInputHarian = new InputHarianFragment();
     final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
     final Fragment katalogFragment = new KatalogFragment();
@@ -57,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
                 showDialog();
                 Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
                 btnBM.setOnClickListener(v -> {
-                    setFragments(fragmentBarangMasuk, "3");
-                    active = fragmentBarangMasuk;
+                    setFragments(fragmentListTokoBM, "3");
+                    active = fragmentListTokoBM;
                     dialog.dismiss();
                 });
                 Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
@@ -129,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
         dialog = new Dialog(this);
         //set content
         dialog.setContentView(R.layout.dialog_pilih);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());

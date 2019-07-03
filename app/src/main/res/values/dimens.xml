@@ -10,7 +10,7 @@
     <dimen name="margin_padding_size_semi_large">24dp</dimen>
     <dimen name="margin_padding_size_large">32dp</dimen>
     <!--New Margin from adobe xd-->
-<dimen name="d_13">13dp</dimen>
+    <dimen name="d_13">13dp</dimen>
     <!-- Icon sizes -->
     <dimen name="standard_icon_size">32dp</dimen>
     <dimen name="launcher_icon_size">48dp</dimen>

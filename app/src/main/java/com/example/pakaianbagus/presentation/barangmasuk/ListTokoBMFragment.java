@@ -16,9 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.barangmasuk.adapter.BarangMasukAdapter;
-import com.example.pakaianbagus.presentation.barangmasuk.detailbm.DetailBarangMasuk;
-import com.example.pakaianbagus.models.BarangMasukModel;
+import com.example.pakaianbagus.models.Toko;
+import com.example.pakaianbagus.presentation.barangmasuk.adapter.ListTokoBMAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,16 +25,14 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class BarangMasukFragment extends Fragment {
-
-    private List<BarangMasukModel> barangMasukModels;
+public class ListTokoBMFragment extends Fragment {
+    private List<Toko> tokos;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    public BarangMasukFragment() {
+    public ListTokoBMFragment() {
 
     }
 
@@ -51,8 +48,12 @@ public class BarangMasukFragment extends Fragment {
         toolbarTitle.setText("BARANG MASUK");
         ImageView toolbarHistory = rootView.findViewById(R.id.toolbar_history);
         toolbarHistory.setVisibility(View.GONE);
+        ImageView toolbarBack = rootView.findViewById(R.id.toolbar_back);
+        toolbarBack.setVisibility(View.GONE);
+        TextView tvList = rootView.findViewById(R.id.tvList);
+        tvList.setText("LIST TOKO");
 
-        barangMasukModels = new ArrayList<>();
+        tokos = new ArrayList<>();
         setRecylerView();
 
         return rootView;
@@ -60,33 +61,22 @@ public class BarangMasukFragment extends Fragment {
 
     private void setRecylerView(){
         for (int i = 0; i < 20; i++){
-            barangMasukModels.add(new BarangMasukModel("BRG-A1-23", "1pcs", "1"));
+            tokos.add(new Toko("Toko Adil Makmur", "08.00 | 29 Juni 2019"));
         }
 
-        BarangMasukAdapter barangMasukAdapter = new BarangMasukAdapter(barangMasukModels, getContext(), BarangMasukFragment.this);
+        ListTokoBMAdapter listTokoBMAdapter = new ListTokoBMAdapter(tokos, getContext(), ListTokoBMFragment.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayout.VERTICAL,
                 false));
-        recyclerView.setAdapter(barangMasukAdapter);
+        recyclerView.setAdapter(listTokoBMAdapter);
     }
 
     public void layoutListBarangMasuk(){
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        DetailBarangMasuk detailBMFragment = new DetailBarangMasuk();
+        BarangMasukFragment barangMasukFragment = new BarangMasukFragment();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayoutBM, detailBMFragment);
+        ft.replace(R.id.baseLayoutBM, barangMasukFragment);
         ft.commit();
     }
-
-    @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        ListTokoBMFragment listTokoBMFragment = new ListTokoBMFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayoutBM, listTokoBMFragment);
-        ft.commit();
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.example.pakaianbagus.presentation.home;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,10 +13,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -26,34 +28,67 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pakaianbagus.MainActivity;
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.api.HomeHelper;
+import com.example.pakaianbagus.models.ApiResponse;
+import com.example.pakaianbagus.models.Checklist;
 import com.example.pakaianbagus.models.News;
+import com.example.pakaianbagus.models.RoleChecklist;
+import com.example.pakaianbagus.models.RoleChecklistModel;
+import com.example.pakaianbagus.presentation.home.adapter.ChecklistAdapter;
 import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.notification.NotificationFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
-import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
+import com.example.pakaianbagus.util.SessionManagement;
+import com.example.pakaianbagus.util.dialog.Loading;
+import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
+import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Headers;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class HomeFragment extends Fragment {
 
     @BindView(R.id.carousel)
     CarouselView customCarouselView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.tvDateChecklist)
+    TextView tvDateChecklist;
+    @BindView(R.id.imgCheck)
+    ImageView imgCheck;
     Dialog dialog;
     List<News> newsPager = new ArrayList<>();
     View rootView;
+    List<RoleChecklistModel> roleChecklistModels;
+    ChecklistAdapter checklistAdapter;
+    SessionManagement sessionManagement;
     int Flag = 0;
+    Calendar myCalendar;
+    EditText startDate;
+    EditText endDate;
+    private final int REQEUST_CAMERA = 1;
+    File imageCheck;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -67,16 +102,97 @@ public class HomeFragment extends Fragment {
         rootView = inflater.inflate(R.layout.home_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
 //        hideItemForSPGScreen();
         TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Hallo Rizal");
 
-        newsPager.add(new News("Title", "Lorem Ipsum Lorem Ipsum", "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/purple-ramadan-charity-event-invitation-banner-design-template-c8a1a4d8e5747a5a4f75d56b7974d233_screen.jpg?ts=1556628102"));
-        initSlider(rootView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL,
+                false);
+        recyclerView.setLayoutManager(layoutManager);
+        roleChecklistModels = new ArrayList<>();
+
+        getCurrentDateChecklist();
+
+        initSlider();
+
+        getListChecklist();
+
         return rootView;
     }
 
-    private void initSlider(View v) {
+    private void getCurrentDateChecklist() {
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        String formattedDate = df.format(c);
+        tvDateChecklist.setText(formattedDate);
+    }
+
+    @OnClick(R.id.btnTambah)
+    public void tambahChecklist() {
+        showDialog(R.layout.dialog_tambah_checklist);
+        EditText etChecklist = dialog.findViewById(R.id.etDialogChecklist);
+        ImageView btnClose = dialog.findViewById(R.id.imgClose);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        Button btnTambah = dialog.findViewById(R.id.btnDialogTambah);
+        btnTambah.setOnClickListener(v -> {
+            if (etChecklist.getText().length() < 1) {
+                etChecklist.setError("Field ini harus diisi");
+            } else {
+                Checklist checklist = new Checklist();
+                checklist.setName(etChecklist.getText().toString());
+                roleChecklistModels.add(new RoleChecklistModel("id", "null", checklist));
+                sessionManagement.setArraylistChecklist(roleChecklistModels);
+                Log.d("ArrayList", sessionManagement.getArrayListChecklist());
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void getListChecklist() {
+        Loading.show(getActivity());
+        HomeHelper.getListChecklist(getContext(), new RestCallback<ApiResponse<List<RoleChecklist>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<RoleChecklist>> body) {
+                Loading.hide(getActivity());
+                if (body != null) {
+                    List<RoleChecklist> res = body.getData();
+                    for (int i = 0; i < res.size(); i++) {
+                        RoleChecklist roleChecklist = res.get(i);
+                        roleChecklistModels.add(new RoleChecklistModel(roleChecklist.getId(),
+                                roleChecklist.getChecklist_id(),
+                                roleChecklist.getChecklist()));
+                    }
+
+                    if (sessionManagement.getArrayListChecklist() != null) {
+                        Log.d("ArrayList IF", sessionManagement.getArrayListChecklist());
+                        checklistAdapter = new ChecklistAdapter(sessionManagement.getArrayListChecklist(), getActivity(), 0);
+                    } else {
+                        checklistAdapter = new ChecklistAdapter(roleChecklistModels, getActivity());
+                    }
+                    recyclerView.setAdapter(checklistAdapter);
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getActivity());
+                Log.d("Error Get Checklist", error.getMessage());
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+    }
+
+    private void initSlider() {
+        newsPager.add(new News("Title", "Lorem Ipsum Lorem Ipsum", "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/purple-ramadan-charity-event-invitation-banner-design-template-c8a1a4d8e5747a5a4f75d56b7974d233_screen.jpg?ts=1556628102"));
+
         //customCarouselView.setPageCount(sampleTitles.length);
         customCarouselView.setViewListener(viewListener);
         customCarouselView.setPageCount(newsPager.size());
@@ -115,10 +231,18 @@ public class HomeFragment extends Fragment {
         layout1.setWeightSum(2f);
         LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle1);
         layoutTitle.setWeightSum(2f);
+        LinearLayout layout = rootView.findViewById(R.id.layoutBtnCard2);
+        layout.setWeightSum(2f);
+        LinearLayout layoutTitle2 = rootView.findViewById(R.id.layoutHeaderTitle2);
+        layoutTitle2.setWeightSum(2f);
         CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
         cardViewPenjualan.setVisibility(View.GONE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
         tvTitlePenjualan.setVisibility(View.GONE);
+        CardView cardViewInventaris = rootView.findViewById(R.id.btnInventaris);
+        cardViewInventaris.setVisibility(View.GONE);
+        TextView tvTitleInventaris = rootView.findViewById(R.id.tvInventaris);
+        tvTitleInventaris.setVisibility(View.GONE);
     }
 
     private void hideItemForManagerScreen() {
@@ -131,6 +255,17 @@ public class HomeFragment extends Fragment {
         layout1.setWeightSum(3f);
         LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle1);
         layoutTitle.setWeightSum(3f);
+
+
+        LinearLayout layout = rootView.findViewById(R.id.layoutBtnCard2);
+        layout.setWeightSum(3f);
+        LinearLayout layoutTitle2 = rootView.findViewById(R.id.layoutHeaderTitle2);
+        layoutTitle2.setWeightSum(3f);
+
+        CardView cardViewInventaris = rootView.findViewById(R.id.btnInventaris);
+        cardViewInventaris.setVisibility(View.VISIBLE);
+        TextView tvTitleInventaris = rootView.findViewById(R.id.tvInventaris);
+        tvTitleInventaris.setVisibility(View.VISIBLE);
         CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
         cardViewPenjualan.setVisibility(View.VISIBLE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
@@ -138,7 +273,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnStock)
-    public void onClickBtnStock (){
+    public void onClickBtnStock() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         StockOpnameFragment stockFragment = new StockOpnameFragment();
@@ -149,26 +284,46 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     @OnClick(R.id.btnPenjualan)
-    public void onClickBtnPenjualan (){
-        showDialog(R.layout.dialog_ubah_qty);
+    public void onClickBtnPenjualan() {
+        showDialog(R.layout.dialog_filter_penjualan);
+        myCalendar = Calendar.getInstance();
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> dialog.dismiss());
-        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
-        tvTitle.setText("MASUKAN QTY");
-        EditText etQty = dialog.findViewById(R.id.etDialogNamaBarang);
-        etQty.setHint("Jumlah Qty");
+        startDate = dialog.findViewById(R.id.etDialogStartDate);
+        DatePickerDialog.OnDateSetListener date = (view, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        };
+        startDate.setOnClickListener(v -> {
+            new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+        endDate = dialog.findViewById(R.id.etDialogEndDate);
+        DatePickerDialog.OnDateSetListener date2 = (view, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel2();
+        };
+        endDate.setOnClickListener(v -> {
+            new DatePickerDialog(Objects.requireNonNull(getActivity()), date2, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
         Button btnOK = dialog.findViewById(R.id.btnDialogTambah);
         btnOK.setText("OK");
-            btnOK.setOnClickListener(v -> {
-                if (etQty.getText().toString().length() >= 1){
-                    dialog.dismiss();
-                    Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
-                    startActivity(intent);
-                } else {
-                    Snackbar.make(rootView, "Qty Tidak Boleh Kosong", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
+        btnOK.setOnClickListener(v -> {
+            if (startDate.getText().toString().length() >= 1 && endDate.getText().toString().length() >= 1) {
+                dialog.dismiss();
+
+            } else {
+                Snackbar.make(rootView, "Field Tidak Boleh Kosong", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
 //        Intent intent = new Intent(getActivity(), MainActivity.class);
 //        intent.putExtra("FromHome", "1");
@@ -176,13 +331,62 @@ public class HomeFragment extends Fragment {
 //        startActivity(intent);
     }
 
+    private void updateLabel() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        startDate.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void updateLabel2() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        endDate.setText(sdf.format(myCalendar.getTime()));
+    }
+
     @OnClick(R.id.btnCheck)
-    public void onClickBtnCheck (){
-        startActivity(new Intent(getActivity(), ScanBarcodeActivity.class));
+    public void onClickBtnCheck() {
+        selectImage();
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder.setTitle("Select Option");
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Take Photo")) {
+                EasyImage.openCamera(this, REQEUST_CAMERA);
+            } else if (options[item].equals("Cancel")) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+            }
+
+            @Override
+            public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                Glide.with(Objects.requireNonNull(getContext()))
+                        .load(imageFile)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(imgCheck);
+                imageCheck = imageFile;
+            }
+        });
     }
 
     @OnClick(R.id.btnSPG)
-    public void onClickBtnSPG (){
+    public void onClickBtnSPG() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgFragment spgFragment = new SpgFragment();
@@ -192,8 +396,8 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnKunjungan)
-    public void onClickBtnKunjungan (){
-        if (Flag == 3){
+    public void onClickBtnKunjungan() {
+        if (Flag == 3) {
             showDialog(R.layout.dialog_pilih_kunjungan);
             Button btnKunjunganKoordinator = dialog.findViewById(R.id.btnKunjunganKoordinator);
             btnKunjunganKoordinator.setOnClickListener(v -> {
@@ -212,7 +416,7 @@ public class HomeFragment extends Fragment {
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
                 KunjunganFragment kunjunganFragment = new KunjunganFragment();
-                Bundle bundle=new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
                 kunjunganFragment.setArguments(bundle);
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -230,7 +434,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnInventaris)
-    public void onClickBtnInventaris (){
+    public void onClickBtnInventaris() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         InventarisFragment inventarisFragment = new InventarisFragment();
@@ -240,7 +444,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnTambah)
-    public void btnTambah(){
+    public void btnTambah() {
 //        showDialog(R.layout.dialog_tambah_barang);
 //        ImageView imgClose = dialog.findViewById(R.id.imgClose);
 //        imgClose.setOnClickListener(v -> dialog.dismiss());
@@ -262,13 +466,13 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.toolbar_logout)
-    public void onClickToolbar(){
+    public void onClickToolbar() {
 //        Objects.requireNonNull(getActivity()).finishAffinity();
 //        getActivity().finish();
         View v1 = rootView.findViewById(R.id.toolbar_logout);
         PopupMenu pm = new PopupMenu(Objects.requireNonNull(getActivity()), v1);
         pm.getMenuInflater().inflate(R.menu.menu_switch_account, pm.getMenu());
-        switch (Flag){
+        switch (Flag) {
             case 1:
                 pm.getMenu().findItem(R.id.navigation_spg).setVisible(false);
                 pm.getMenu().findItem(R.id.navigation_manager).setVisible(true);
@@ -306,7 +510,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.toolbar_notif)
-    public void onClickToolbarNotif(){
+    public void onClickToolbarNotif() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         NotificationFragment notifFragment = new NotificationFragment();

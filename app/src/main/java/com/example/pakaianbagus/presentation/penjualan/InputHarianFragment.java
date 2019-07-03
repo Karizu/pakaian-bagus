@@ -1,8 +1,13 @@
 package com.example.pakaianbagus.presentation.penjualan;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +17,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -19,8 +27,11 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.penjualan.adapter.SalesReportAdapter;
 import com.example.pakaianbagus.models.SalesReportModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -34,6 +45,11 @@ public class InputHarianFragment extends Fragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    Dialog dialog;
+    Calendar myCalendar;
+    EditText startDate;
+    EditText endDate;
 
     public InputHarianFragment() {
 
@@ -65,6 +81,61 @@ public class InputHarianFragment extends Fragment {
         recyclerView.setAdapter(salesReportAdapter);
     }
 
+    @OnClick(R.id.toolbar_input)
+    public void onClickToolbarInput(){
+        showDialog(R.layout.dialog_filter_penjualan);
+        myCalendar = Calendar.getInstance();
+        startDate = dialog.findViewById(R.id.etDialogStartDate);
+        DatePickerDialog.OnDateSetListener date = (view, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        };
+        startDate.setOnClickListener(v -> {
+            new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+        endDate = dialog.findViewById(R.id.etDialogEndDate);
+        DatePickerDialog.OnDateSetListener date2 = (view, year, month, dayOfMonth) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel2();
+        };
+        endDate.setOnClickListener(v -> {
+            new DatePickerDialog(Objects.requireNonNull(getActivity()), date2, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+        Button btnOK = dialog.findViewById(R.id.btnDialogTambah);
+        btnOK.setText("OK");
+        btnOK.setOnClickListener(v -> {
+            if (startDate.getText().toString().length() >= 1 && endDate.getText().toString().length() >= 1) {
+                dialog.dismiss();
+
+            } else {
+                Snackbar.make(rootView, "Field Tidak Boleh Kosong", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void updateLabel() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        startDate.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void updateLabel2() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        endDate.setText(sdf.format(myCalendar.getTime()));
+    }
+
     @OnClick(R.id.tabPenjualan)
     public void tabPenjualan() {
         FragmentManager fm = getFragmentManager();
@@ -89,5 +160,20 @@ public class InputHarianFragment extends Fragment {
             return true;
         });
         pm.show();
+    }
+
+    private void showDialog(int layout) {
+        dialog = new Dialog(Objects.requireNonNull(getActivity()));
+        //set content
+        dialog.setContentView(layout);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 }

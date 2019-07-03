@@ -55,7 +55,7 @@
                     tools:ignore="HardcodedText" />
 
                 <ImageView
-                    android:id="@+id/toolbar_mutasi"
+                    android:id="@+id/toolbar_input"
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"

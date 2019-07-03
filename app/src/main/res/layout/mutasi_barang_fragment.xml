@@ -123,7 +123,7 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:padding="12dp"
-                        android:text="LIST MUTASI BARANG"
+                        android:text="LIST TOKO"
                         android:textColor="@color/DarkSlateBlue"
                         android:textSize="13sp"
                         android:textStyle="bold"

@@ -1,14 +1,23 @@
 package com.example.pakaianbagus.api;
 
+import com.example.pakaianbagus.models.ApiResponse;
+import com.example.pakaianbagus.models.LoginRequest;
+import com.example.pakaianbagus.models.RoleChecklist;
+import com.example.pakaianbagus.models.Toko;
+import com.example.pakaianbagus.models.User;
+
 import java.util.List;
 
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -17,7 +26,7 @@ public interface ApiInterface {
 
 //    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
 
-    String BASE_URL = "http://68.183.226.23/rumah-cemara-api/public/api/";
+    String BASE_URL = "http://192.168.1.15/api/";
 
 //    @GET("userLocation/nearMe")
 //    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
@@ -28,11 +37,20 @@ public interface ApiInterface {
 //    @POST("register")
 //    Call<ApiResponse> postRegister(@Body RequestBody registerRequest);
 //
-//    @POST("login")
-//    Call<ApiResponse<User>> postLogin(@Body LoginRequest loginRequest);
-//
-//    @GET("treatment")
-//    Call<ApiResponse<List<Treatment>>> getAllTreatment();
+    @POST("login")
+    Call<ApiResponse<User>> postLogin(@Body LoginRequest loginRequest);
+
+    @FormUrlEncoded
+    @POST("login")
+    Call<ResponseBody> loginRequest(@Field("login") String username,
+                                    @Field("password") String password);
+
+    @GET("public/roleChecklists")
+    Call<ApiResponse<List<RoleChecklist>>> getRoleChecklist(@Query("role_id") String role_id,
+                                                            @Header("Authorization") String token);
+
+    @GET("public/store/all")
+    Call<ApiResponse<List<Toko>>> getListToko(@Header("Authorization") String token);
 //
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

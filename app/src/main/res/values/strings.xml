@@ -46,4 +46,8 @@
     <string name="barang">BARANG</string>
     <string name="katalog">Katalog</string>
     <string name="penjualan">Penjualan</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_email">This username is invalid</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
 </resources>

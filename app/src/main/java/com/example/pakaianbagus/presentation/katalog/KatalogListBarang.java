@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,8 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.models.KatalogTokoModel;
-import com.example.pakaianbagus.presentation.katalog.adapter.KatalogTokoAdapter;
+import com.example.pakaianbagus.models.KatalogModel;
+import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +32,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class KatalogFragment extends Fragment {
+public class KatalogListBarang extends Fragment {
 
     Dialog dialog;
     View rootView;
-    private List<KatalogTokoModel> katalogTokoModels;
+    private List<KatalogModel> katalogModels;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    public KatalogFragment() {
+    public KatalogListBarang() {
     }
 
     @SuppressLint("SetTextI18n")
@@ -51,41 +52,40 @@ public class KatalogFragment extends Fragment {
         rootView = inflater.inflate(R.layout.katalog_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        ImageView imgBack = rootView.findViewById(R.id.toolbar_back);
-        imgBack.setVisibility(View.GONE);
+        LinearLayout layout = rootView.findViewById(R.id.layoutHeaderKatalog);
+        layout.setVisibility(View.GONE);
 
-        katalogTokoModels = new ArrayList<>();
+        katalogModels = new ArrayList<>();
 
         setRecylerView();
 
         return rootView;
     }
 
-    private void setRecylerView(){
-        for (int i = 0; i < 20; i++){
-            katalogTokoModels.add(new KatalogTokoModel("Toko Adil Makmur", "Jl. Asia Afrika"));
-        }
+    private void setRecylerView() {
 
-        KatalogTokoAdapter katalogTokoAdapter = new KatalogTokoAdapter(katalogTokoModels, getContext(), KatalogFragment.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayout.VERTICAL,
-                false));
-        recyclerView.setAdapter(katalogTokoAdapter);
+            for (int i = 0; i < 8; i++) {
+                katalogModels.add(new KatalogModel("Celana Jeans", "https://dynamic.zacdn.com/i1u-lU78jY9deauWcBDjl8aM66k=/fit-in/236x345/filters:quality(90):fill(ffffff)/http://static.id.zalora.net/p/levi-s-0303-5995591-1.jpg", "2 pcs", "AB102B23"));
+            }
 
+            KatalogAdapter katalogAdapter = new KatalogAdapter(katalogModels, getContext());
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            recyclerView.setAdapter(katalogAdapter);
     }
 
-    public void onClickItem(){
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack(){
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        KatalogListBarang katalogListBarang = new KatalogListBarang();
+        KatalogFragment katalogFragment = new KatalogFragment();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.layoutKatalog, katalogListBarang);
+        ft.replace(R.id.layoutKatalog, katalogFragment);
         ft.commit();
     }
 
     @SuppressLint("SetTextI18n")
     @OnClick(R.id.toolbar_search)
-    public void toolbarSearch(){
+    public void toolbarSearch() {
         showDialog();
         TextView toolbar = dialog.findViewById(R.id.tvToolbar);
         toolbar.setText("SEARCH KATALOG");
@@ -108,3 +108,4 @@ public class KatalogFragment extends Fragment {
         dialog.getWindow().setAttributes(lp);
     }
 }
+
