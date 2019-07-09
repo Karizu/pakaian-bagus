@@ -56,7 +56,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/toolbar"
-                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/LightSteelBlue"
+                android:layout_margin="8dp"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="4dp"
                 tools:ignore="ScrollViewSize,UnknownIdInLayout">
@@ -65,8 +66,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
                     tools:ignore="UnknownIdInLayout">
+
+                    <LinearLayout
+                        android:id="@+id/layoutHeaderKatalog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="LIST TOKO"
+                            android:textColor="@color/DarkSlateBlue"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tvDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_weight="1"
+                            android:text="2019 JUNE 24"
+                            android:textSize="13sp"
+                            android:textColor="@color/DarkSlateBlue"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText,RtlHardcoded" />
+
+                    </LinearLayout>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recyclerView"

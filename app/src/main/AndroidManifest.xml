@@ -40,16 +40,22 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
             android:name=".presentation.auth.SignInActivity">
+        </activity>
+        <activity android:name=".presentation.auth.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.auth.LoginActivity">
-        </activity>
         <activity android:name=".presentation.penjualan.ScanBarcodeActivity" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name=".MainActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.presentation.barangmasuk.detailbm.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +43,7 @@ public class DetailBarangMasukAdapter extends RecyclerView.Adapter<DetailBarangM
         return new DetailBarangMasukAdapter.ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull DetailBarangMasukAdapter.ViewHolder holder, int position){
         final DetailBarangMasukModel detailBarangMasukModel = detailBarangMasukModels.get(position);
@@ -48,7 +52,7 @@ public class DetailBarangMasukAdapter extends RecyclerView.Adapter<DetailBarangM
         final String qty = detailBarangMasukModel.getQty();
 
         holder.textViewName.setText(name);
-        holder.textViewQty.setText(qty);
+        holder.textViewQty.setText(qty+" pcs");
         holder.imageViewMore.setOnClickListener(v -> {
             View v1 = v.findViewById(R.id.btnMore);
             PopupMenu pm = new PopupMenu(Objects.requireNonNull(context), v1);
@@ -58,6 +62,13 @@ public class DetailBarangMasukAdapter extends RecyclerView.Adapter<DetailBarangM
                     showDialog();
                     ImageView imgClose = dialog.findViewById(R.id.imgClose);
                     imgClose.setOnClickListener(v2 -> dialog.dismiss());
+                    EditText etQty = dialog.findViewById(R.id.etQty);
+                    Button btnUbah = dialog.findViewById(R.id.btnUbah);
+                    btnUbah.setOnClickListener(view -> {
+                        holder.textViewQty.setText(etQty.getText().toString()+" pcs");
+                        dialog.dismiss();
+                    });
+
                 }
                 return true;
             });

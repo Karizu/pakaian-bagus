@@ -21,15 +21,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.penjualan.adapter.SalesReportAdapter;
 import com.example.pakaianbagus.models.SalesReportModel;
+import com.example.pakaianbagus.presentation.penjualan.adapter.SalesReportAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -45,6 +47,8 @@ public class InputHarianFragment extends Fragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.tvDate)
+    TextView tvDate;
 
     Dialog dialog;
     Calendar myCalendar;
@@ -65,6 +69,7 @@ public class InputHarianFragment extends Fragment {
 
         salesReportModels = new ArrayList<>();
         setRecylerView();
+        getCurrentDateChecklist();
 
         return rootView;
     }
@@ -81,9 +86,27 @@ public class InputHarianFragment extends Fragment {
         recyclerView.setAdapter(salesReportAdapter);
     }
 
+    private void getCurrentDateChecklist() {
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        String formattedDate = df.format(c);
+        tvDate.setText(formattedDate);
+    }
+
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        PenjualanListTokoFragment penjualanListTokoFragment = new PenjualanListTokoFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.replace(R.id.baseLayoutInputHarian, penjualanListTokoFragment);
+        ft.commit();
+    }
+
+    @SuppressLint("SetTextI18n")
     @OnClick(R.id.toolbar_input)
     public void onClickToolbarInput(){
-        showDialog(R.layout.dialog_filter_penjualan);
+        showDialog();
         myCalendar = Calendar.getInstance();
         startDate = dialog.findViewById(R.id.etDialogStartDate);
         DatePickerDialog.OnDateSetListener date = (view, year, month, dayOfMonth) -> {
@@ -92,11 +115,11 @@ public class InputHarianFragment extends Fragment {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateLabel();
         };
-        startDate.setOnClickListener(v -> {
+        startDate.setOnClickListener(v ->
             new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+        );
         endDate = dialog.findViewById(R.id.etDialogEndDate);
         DatePickerDialog.OnDateSetListener date2 = (view, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR, year);
@@ -104,11 +127,11 @@ public class InputHarianFragment extends Fragment {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateLabel2();
         };
-        endDate.setOnClickListener(v -> {
+        endDate.setOnClickListener(v ->
             new DatePickerDialog(Objects.requireNonNull(getActivity()), date2, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+        );
         Button btnOK = dialog.findViewById(R.id.btnDialogTambah);
         btnOK.setText("OK");
         btnOK.setOnClickListener(v -> {
@@ -141,7 +164,7 @@ public class InputHarianFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         PenjualanKompetitorFragment penjualanFragment = new PenjualanKompetitorFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutInputHarian, penjualanFragment);
         ft.commit();
     }
@@ -152,20 +175,18 @@ public class InputHarianFragment extends Fragment {
         PopupMenu pm = new PopupMenu(Objects.requireNonNull(getActivity()), v);
         pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
         pm.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.navigation_ubah:
-                    Toast.makeText(getActivity(), String.valueOf(menuItem.getTitle()), Toast.LENGTH_SHORT).show();
-                    break;
+            if (menuItem.getItemId() == R.id.navigation_ubah) {
+                Toast.makeText(getActivity(), String.valueOf(menuItem.getTitle()), Toast.LENGTH_SHORT).show();
             }
             return true;
         });
         pm.show();
     }
 
-    private void showDialog(int layout) {
+    private void showDialog() {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(layout);
+        dialog.setContentView(R.layout.dialog_filter_penjualan);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));

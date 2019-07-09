@@ -38,6 +38,16 @@
                 android:weightSum="2"
                 tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
+                <ImageView
+                    android:id="@+id/toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
                 <TextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="0dp"

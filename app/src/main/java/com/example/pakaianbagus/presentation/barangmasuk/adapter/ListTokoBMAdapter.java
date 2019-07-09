@@ -3,7 +3,6 @@ package com.example.pakaianbagus.presentation.barangmasuk.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.models.Toko;
+import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.presentation.barangmasuk.ListTokoBMFragment;
 
 import java.util.List;
 
 public class ListTokoBMAdapter extends RecyclerView.Adapter<ListTokoBMAdapter.ViewHolder> {
-    private List<Toko> tokos;
-    private Context context;
+    private List<KatalogTokoModel> katalogTokoModels;
     private ListTokoBMFragment listTokoBMFragment;
 
-    public ListTokoBMAdapter(List<Toko> tokos, Context context, ListTokoBMFragment listTokoBMFragment){
-        this.tokos = tokos;
-        this.context = context;
+    public ListTokoBMAdapter(List<KatalogTokoModel> katalogTokoModels, ListTokoBMFragment listTokoBMFragment){
+        this.katalogTokoModels = katalogTokoModels;
         this.listTokoBMFragment = listTokoBMFragment;
     }
 
@@ -31,43 +28,41 @@ public class ListTokoBMAdapter extends RecyclerView.Adapter<ListTokoBMAdapter.Vi
     @Override
     public ListTokoBMAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.content_item_mutasi_barang, parent, false);
+                .inflate(R.layout.content_item_katalog_list_toko, parent, false);
 
         return new ListTokoBMAdapter.ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ListTokoBMAdapter.ViewHolder holder, int position){
-        final Toko mbModel = tokos.get(position);
-
-        final String name = mbModel.getName();
-        final String datetime = mbModel.getDatetime();
+        final KatalogTokoModel katalogTokoModel = katalogTokoModels.get(position);
+        final String id = katalogTokoModel.getId();
+        final String name = katalogTokoModel.getName();
+        final String address = katalogTokoModel.getAddress();
 
         holder.textViewName.setText(name);
-        holder.textViewDateTime.setText(datetime);
+        holder.textViewAddress.setText(address);
+//        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
 
-        holder.layoutListKunjungan.setOnClickListener(view -> {
-            listTokoBMFragment.layoutListBarangMasuk();
-        });
+        holder.layout.setOnClickListener(view ->
+            listTokoBMFragment.layoutListBarangMasuk(id)
+        );
     }
 
     @Override
-    public int getItemCount(){
-        Log.d("itemCount", String.valueOf(tokos.size()));
-        return tokos.size();
-    }
+    public int getItemCount(){ return katalogTokoModels.size();}
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
-        TextView textViewDateTime;
-        LinearLayout layoutListKunjungan;
+        TextView textViewAddress;
+        LinearLayout layout;
 
         ViewHolder(View v){
             super(v);
 
             textViewName = v.findViewById(R.id.tvNamaToko);
-            textViewDateTime = v.findViewById(R.id.tvDateTime);
-            layoutListKunjungan = v.findViewById(R.id.layoutListKunjungan);
+            textViewAddress = v.findViewById(R.id.tvAlamat);
+            layout = v.findViewById(R.id.layoutListToko);
         }
     }
 }

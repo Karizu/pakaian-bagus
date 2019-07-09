@@ -1,19 +1,11 @@
 package com.example.pakaianbagus.models;
 
 public class ApiResponse<T> {
-    private boolean status;
     private String message;
     private String error;
+    private T available_sort;
     private T data;
     private String token;
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
 
     public String getMessage() {
         return message;
@@ -29,6 +21,14 @@ public class ApiResponse<T> {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public T getAvailable_sort() {
+        return available_sort;
+    }
+
+    public void setAvailable_sort(T available_sort) {
+        this.available_sort = available_sort;
     }
 
     public T getData() {

@@ -1,8 +1,18 @@
 package com.example.pakaianbagus.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Toko {
+
+    @SerializedName("id_store")
+    @Expose
     private String id;
+    @SerializedName("nama_store")
+    @Expose
     private String name;
+    @SerializedName("alamat")
+    @Expose
     private String datetime;
 
     public Toko(String name, String datetime) {

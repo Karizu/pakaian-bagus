@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.presentation.barangmasuk.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -37,22 +38,25 @@ public class BarangMasukAdapter extends RecyclerView.Adapter<BarangMasukAdapter.
         return new BarangMasukAdapter.ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull BarangMasukAdapter.ViewHolder holder, int position){
         final BarangMasukModel barangMasukModel = barangMasukModels.get(position);
-//        final String id = katalogModel.getId();
+        final String id = barangMasukModel.getId();
         final String kodeArtikel = barangMasukModel.getKodeArtikel();
         final String qty = barangMasukModel.getQty();
         final String status = barangMasukModel.getStatus();
 
         holder.textViewName.setText(kodeArtikel);
-        holder.textViewDateTime.setText(qty);
+        holder.textViewDateTime.setText(qty +" pcs");
         if (status.equals("1")){
             holder.imageViewStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.checked));
+        } else {
+            holder.imageViewStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_close_black_24dp));
         }
 
         holder.layoutListBarangMasuk.setOnClickListener(view ->
-            barangMasukFragment.layoutListBarangMasuk()
+            barangMasukFragment.layoutListBarangMasuk(id)
         );
     }
 

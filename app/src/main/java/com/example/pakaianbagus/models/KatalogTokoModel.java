@@ -6,7 +6,8 @@ public class KatalogTokoModel {
     private String name;
     private String address;
 
-    public KatalogTokoModel(String name, String address) {
+    public KatalogTokoModel(String id, String name, String address) {
+        this.id = id;
         this.name = name;
         this.address = address;
     }

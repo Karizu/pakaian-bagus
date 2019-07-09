@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,6 +23,9 @@ import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.util.Objects;
 
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentBarangMasuk = new BarangMasukFragment();
     final Fragment fragmentListTokoBM = new ListTokoBMFragment();
     final Fragment fragmentInputHarian = new InputHarianFragment();
+    final Fragment fragmentPenjualanListToko = new PenjualanListTokoFragment();
     final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
     final Fragment katalogFragment = new KatalogFragment();
     FragmentManager fm = getSupportFragmentManager();
@@ -56,23 +61,34 @@ public class MainActivity extends AppCompatActivity {
                 active = fragmentMutasiBarang;
                 return true;
             case R.id.navigation_mutasi_barang:
-                showDialog();
-                Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
-                btnBM.setOnClickListener(v -> {
-                    setFragments(fragmentListTokoBM, "3");
-                    active = fragmentListTokoBM;
-                    dialog.dismiss();
-                });
-                Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
-                btnMB.setOnClickListener(v -> {
-                    setFragments(fragmentMutasiBarang, "3");
-                    active = fragmentMutasiBarang;
-                    dialog.dismiss();
-                });
+                try {
+                    if (Session.get("RoleId").getValue().equals("3") || Session.get("RoleId").getValue().equals("4")){
+                        showDialog();
+                        Log.d("Masuk", "Role id 3 || 4");
+                        Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
+                        btnBM.setOnClickListener(v -> {
+                            setFragments(fragmentListTokoBM, "3");
+                            active = fragmentListTokoBM;
+                            dialog.dismiss();
+                        });
+                        Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
+                        btnMB.setOnClickListener(v -> {
+                            setFragments(fragmentMutasiBarang, "3");
+                            active = fragmentMutasiBarang;
+                            dialog.dismiss();
+                        });
+                    } else {
+                        setFragments(fragmentListTokoBM, "3");
+                        active = fragmentListTokoBM;
+                    }
+
+                } catch (SessionNotFoundException e) {
+                    e.printStackTrace();
+                }
                 return true;
             case R.id.navigation_penjualan:
-                setFragments(fragmentInputHarian, "4");
-                active = fragmentInputHarian;
+                setFragments(fragmentPenjualanListToko, "4");
+                active = fragmentPenjualanListToko;
                 return true;
         }
         return false;
@@ -102,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             fm.beginTransaction().add(R.id.main_container, fragmentHome, "1").commit();
         }
-
 
     }
 

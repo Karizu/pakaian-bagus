@@ -21,7 +21,7 @@ public class AuthHelper {
 //        service.getEndpoint().postRegister(registerRequest).enqueue(callback);
 //    }
 
-    public static void login(LoginRequest loginRequest, RestCallback<ApiResponse<User>> callback){
+    public static void login(LoginRequest loginRequest, Callback<ApiResponse<User>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
         service.getEndpoint().postLogin(loginRequest).enqueue(callback);
     }

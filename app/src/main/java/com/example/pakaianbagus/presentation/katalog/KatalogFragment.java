@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +21,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.api.KatalogHelper;
+import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogTokoModel;
+import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogTokoAdapter;
+import com.example.pakaianbagus.util.dialog.Loading;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Headers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class KatalogFragment extends Fragment {
 
@@ -39,6 +51,12 @@ public class KatalogFragment extends Fragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.toolbar_back)
+    ImageView imgBack;
+    @BindView(R.id.toolbar_search)
+    ImageView toolbarSeacrh;
+    @BindView(R.id.tvDate)
+    TextView tvDate;
 
     public KatalogFragment() {
     }
@@ -50,35 +68,64 @@ public class KatalogFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.katalog_fragment, container, false);
         ButterKnife.bind(this, rootView);
-
-        ImageView imgBack = rootView.findViewById(R.id.toolbar_back);
         imgBack.setVisibility(View.GONE);
+        toolbarSeacrh.setVisibility(View.GONE);
+        getCurrentDateChecklist();
 
         katalogTokoModels = new ArrayList<>();
 
-        setRecylerView();
+        getListToko();
 
         return rootView;
     }
 
-    private void setRecylerView(){
-        for (int i = 0; i < 20; i++){
-            katalogTokoModels.add(new KatalogTokoModel("Toko Adil Makmur", "Jl. Asia Afrika"));
-        }
-
-        KatalogTokoAdapter katalogTokoAdapter = new KatalogTokoAdapter(katalogTokoModels, getContext(), KatalogFragment.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayout.VERTICAL,
-                false));
-        recyclerView.setAdapter(katalogTokoAdapter);
-
+    private void getCurrentDateChecklist() {
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        String formattedDate = df.format(c);
+        tvDate.setText(formattedDate);
     }
 
-    public void onClickItem(){
+    public void getListToko(){
+        Loading.show(getActivity());
+        KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<TokoResponse>>> call, Response<ApiResponse<List<TokoResponse>>> response) {
+                Loading.hide(getActivity());
+                if (response.body().getData() != null){
+                    List<TokoResponse> tokoResponse = response.body().getData();
+                    for (int i = 0; i < tokoResponse.size(); i++){
+                        TokoResponse dataToko = tokoResponse.get(i);
+                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
+                                dataToko.getName(),
+                                dataToko.getAlamat()));
+                    }
+                    KatalogTokoAdapter katalogTokoAdapter = new KatalogTokoAdapter(katalogTokoModels, getContext(), KatalogFragment.this);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                            LinearLayout.VERTICAL,
+                            false));
+                    recyclerView.setAdapter(katalogTokoAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<TokoResponse>>> call, Throwable t) {
+                Loading.hide(getActivity());
+                Log.d("List Toko Katalog", t.getMessage());
+
+            }
+        });
+    }
+
+    public void onClickItem(String id){
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         KatalogListBarang katalogListBarang = new KatalogListBarang();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        katalogListBarang.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.layoutKatalog, katalogListBarang);
         ft.commit();
     }

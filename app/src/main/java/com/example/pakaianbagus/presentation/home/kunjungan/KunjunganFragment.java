@@ -76,7 +76,7 @@ public class KunjunganFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, homeFragment);
         ft.commit();
     }

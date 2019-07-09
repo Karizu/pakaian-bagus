@@ -39,6 +39,16 @@
                 android:weightSum="2"
                 tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
+                <ImageView
+                    android:id="@+id/toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
                 <TextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="0dp"
@@ -137,6 +147,37 @@
                         android:layout_marginTop="4dp"
                         android:background="@color/DarkSlateBlue"
                         />
+
+                    <LinearLayout
+                        android:id="@+id/layoutHeaderKatalog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="@color/DarkSlateBlue"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tvDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_weight="1"
+                            android:text="2019 JUNE 24"
+                            android:textSize="13sp"
+                            android:textColor="@color/DarkSlateBlue"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText,RtlHardcoded" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

@@ -38,7 +38,7 @@ public class KatalogTokoAdapter extends RecyclerView.Adapter<KatalogTokoAdapter.
     @Override
     public void onBindViewHolder(@NonNull KatalogTokoAdapter.ViewHolder holder, int position){
         final KatalogTokoModel katalogTokoModel = katalogTokoModels.get(position);
-//        final String id = katalogModel.getId();
+        final String id = katalogTokoModel.getId();
         final String name = katalogTokoModel.getName();
         final String address = katalogTokoModel.getAddress();
 
@@ -47,7 +47,7 @@ public class KatalogTokoAdapter extends RecyclerView.Adapter<KatalogTokoAdapter.
 //        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
 
         holder.layout.setOnClickListener(view -> {
-            katalogFragment.onClickItem();
+            katalogFragment.onClickItem(id);
         });
     }
 

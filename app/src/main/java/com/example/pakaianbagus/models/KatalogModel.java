@@ -8,7 +8,8 @@ public class KatalogModel {
     private String qty;
     private String kode;
 
-    public KatalogModel(String name, String image, String qty, String kode) {
+    public KatalogModel(String id, String name, String image, String qty, String kode) {
+        this.id = id;
         this.name = name;
         this.image = image;
         this.qty = qty;

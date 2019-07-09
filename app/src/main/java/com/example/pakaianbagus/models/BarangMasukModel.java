@@ -6,7 +6,8 @@ public class BarangMasukModel {
     private String qty;
     private String status;
 
-    public BarangMasukModel(String kodeArtikel, String qty, String status) {
+    public BarangMasukModel(String id, String kodeArtikel, String qty, String status) {
+        this.id = id;
         this.kodeArtikel = kodeArtikel;
         this.qty = qty;
         this.status = status;

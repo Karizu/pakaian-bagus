@@ -2,8 +2,11 @@ package com.example.pakaianbagus.api;
 
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
+import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.RoleChecklist;
+import com.example.pakaianbagus.models.StokToko;
 import com.example.pakaianbagus.models.Toko;
+import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
 
 import java.util.List;
@@ -26,7 +29,7 @@ public interface ApiInterface {
 
 //    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
 
-    String BASE_URL = "http://192.168.1.15/api/";
+    String BASE_URL = "http://192.168.1.17/api/";
 
 //    @GET("userLocation/nearMe")
 //    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
@@ -50,7 +53,33 @@ public interface ApiInterface {
                                                             @Header("Authorization") String token);
 
     @GET("public/store/all")
-    Call<ApiResponse<List<Toko>>> getListToko(@Header("Authorization") String token);
+    Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
+
+    @GET("public/stok_toko/getAllArtikel")
+    Call<ApiResponse<List<StokToko>>> getListStokToko(@Query("id_store") String id_store,
+                                                      @Query("limit") int limit,
+                                                      @Query("offset") int offset);
+
+    @GET("public/stok_toko/getAllArtikel")
+    Call<ApiResponse<List<StokToko>>> searchKatalog(@Query("id_store") String id_store,
+                                                    @Query("is_exist") String is_exist,
+                                                    @Query("is_vip") String is_vip,
+                                                    @Query("keyword") String keyword,
+                                                    @Query("limit") int limit,
+                                                    @Query("offset") int offset,
+                                                    @Query("order_by") String order_by,
+                                                    @Query("order_type") String order_type);
+
+    @GET("public/users")
+    Call<ApiResponse<List<User>>> getListKoordinator(@Query("role_id") String role_id);
+
+    @GET("public/penerimaan/all")
+    Call<ApiResponse<List<PenerimaanBarangResponse>>> getListBarangMasuk(@Query("id_store") String id_store,
+                                                                         @Query("limit") int limit,
+                                                                         @Query("offset") int offset);
+
+    @GET("public/penerimaan/byid/{id}")
+    Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Path("id") String id);
 //
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

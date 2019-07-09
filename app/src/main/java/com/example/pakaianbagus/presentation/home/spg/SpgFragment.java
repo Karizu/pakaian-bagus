@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.models.SpgModel;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.spg.adapter.SpgAdapter;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.DetailSpgFragment;
-import com.example.pakaianbagus.models.SpgModel;
 import com.example.pakaianbagus.util.IOnBackPressed;
 
 import java.util.ArrayList;
@@ -47,8 +47,12 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
         View rootView = inflater.inflate(R.layout.spg_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+//        String id = Objects.requireNonNull(getArguments()).getString("id");
+
         spgModels = new ArrayList<>();
+
         setRecylerView();
+
         return rootView;
     }
 
@@ -68,7 +72,7 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         DetailSpgFragment detailSpgFragment = new DetailSpgFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutSpg, detailSpgFragment);
         ft.commit();
     }
@@ -77,8 +81,8 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
     public void toolbarBack(){
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        SpgListTokoFragment homeFragment = new SpgListTokoFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutSpg, homeFragment);
         ft.commit();
     }

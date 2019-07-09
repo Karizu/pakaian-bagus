@@ -28,16 +28,11 @@ import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 import com.rezkyatinnov.kyandroid.session.SessionObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Headers;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -109,29 +104,30 @@ public class LoginActivity extends AppCompatActivity {
             loginRequest.setLogin(etUsername.getText().toString());
             loginRequest.setPassword(etPassword.getText().toString());
 
-            AuthHelper.login(loginRequest, new RestCallback<ApiResponse<User>>() {
+            AuthHelper.login(loginRequest, new Callback<ApiResponse<User>>() {
                 @Override
-                public void onSuccess(Headers headers, ApiResponse<User> body) {
+                public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                     Loading.hide(getApplicationContext());
-                    Log.d("Masuk onSuccess", body.getMessage());
-//                    if (body != null && body.isStatus()) {
-//                        Log.d("TOKEN : ", body.getToken());
-//                        Session.save(new SessionObject("Authorization", "Bearer " + body.getToken(), true));
-//                        LocalData.saveOrUpdate(body.getData());
-//                    } else {
-//                        Toast.makeText(LoginActivity.this, Objects.requireNonNull(body).getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
+                    Log.d("Masuk onSuccess", response.body().getMessage());
+                    if (response.body().getData() != null) {
+                        Log.d("TOKEN : ", response.body().getToken());
+                        Session.save(new SessionObject("Authorization", "Bearer " + response.body().getToken(), true));
+                        Session.save(new SessionObject("UserId", response.body().getData().getId()));
+                        Session.save(new SessionObject("RoleId", response.body().getData().getRoleId()));
+                        LocalData.saveOrUpdate(response.body().getData());
+                    } else {
+                        Toast.makeText(LoginActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
                 @Override
-                public void onFailed(ErrorResponse error) {
+                public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
                     Loading.hide(getApplicationContext());
-                    Log.d("OnFailed", error.getMessage());
-                }
-
-                @Override
-                public void onCanceled() {
-
+                    Log.d("onFailed Login", t.getMessage());
+                    t.printStackTrace();
                 }
             });
         }

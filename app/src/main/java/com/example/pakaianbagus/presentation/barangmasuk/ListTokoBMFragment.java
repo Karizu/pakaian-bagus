@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +17,41 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.models.Toko;
+import com.example.pakaianbagus.api.KatalogHelper;
+import com.example.pakaianbagus.models.ApiResponse;
+import com.example.pakaianbagus.models.KatalogTokoModel;
+import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.barangmasuk.adapter.ListTokoBMAdapter;
+import com.example.pakaianbagus.util.dialog.Loading;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListTokoBMFragment extends Fragment {
-    private List<Toko> tokos;
+    private List<KatalogTokoModel> katalogTokoModels;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.tvDate)
+    TextView tvDate;
+    @BindView(R.id.toolbar_title)
+    TextView toolbar_title;
+    @BindView(R.id.toolbar_history)
+    ImageView toolbar_history;
+    @BindView(R.id.toolbar_back)
+    ImageView toolbar_back;
+    @BindView(R.id.tvList)
+    TextView tvList;
 
     public ListTokoBMFragment() {
 
@@ -44,38 +65,65 @@ public class ListTokoBMFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.barang_masuk_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("BARANG MASUK");
-        ImageView toolbarHistory = rootView.findViewById(R.id.toolbar_history);
-        toolbarHistory.setVisibility(View.GONE);
-        ImageView toolbarBack = rootView.findViewById(R.id.toolbar_back);
-        toolbarBack.setVisibility(View.GONE);
-        TextView tvList = rootView.findViewById(R.id.tvList);
+        toolbar_title.setText("BARANG MASUK");
+        toolbar_history.setVisibility(View.GONE);
+        toolbar_back.setVisibility(View.GONE);
         tvList.setText("LIST TOKO");
 
-        tokos = new ArrayList<>();
-        setRecylerView();
+        katalogTokoModels = new ArrayList<>();
+        getCurrentDateChecklist();
+        getListToko();
 
         return rootView;
     }
 
-    private void setRecylerView(){
-        for (int i = 0; i < 20; i++){
-            tokos.add(new Toko("Toko Adil Makmur", "08.00 | 29 Juni 2019"));
-        }
-
-        ListTokoBMAdapter listTokoBMAdapter = new ListTokoBMAdapter(tokos, getContext(), ListTokoBMFragment.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayout.VERTICAL,
-                false));
-        recyclerView.setAdapter(listTokoBMAdapter);
+    private void getCurrentDateChecklist() {
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        String formattedDate = df.format(c);
+        tvDate.setText(formattedDate);
     }
 
-    public void layoutListBarangMasuk(){
+    public void getListToko(){
+        Loading.show(getActivity());
+        KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
+                Loading.hide(getActivity());
+                if (Objects.requireNonNull(response.body()).getData() != null){
+                    List<TokoResponse> tokoResponse = response.body().getData();
+                    for (int i = 0; i < tokoResponse.size(); i++){
+                        TokoResponse dataToko = tokoResponse.get(i);
+                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
+                                dataToko.getName(),
+                                dataToko.getAlamat()));
+                    }
+                    ListTokoBMAdapter listTokoBMAdapter = new ListTokoBMAdapter(katalogTokoModels, ListTokoBMFragment.this);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                            LinearLayout.VERTICAL,
+                            false));
+                    recyclerView.setAdapter(listTokoBMAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Throwable t) {
+                Loading.hide(getActivity());
+                Log.d("List Toko Katalog", t.getMessage());
+
+            }
+        });
+    }
+
+    public void layoutListBarangMasuk(String id){
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         BarangMasukFragment barangMasukFragment = new BarangMasukFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        barangMasukFragment.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutBM, barangMasukFragment);
         ft.commit();
     }

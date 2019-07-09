@@ -26,7 +26,11 @@ public class User extends RealmObject {
 
     @SerializedName("username")
     @Expose
-    private Integer username;
+    private String username;
+
+    @SerializedName("firstname")
+    @Expose
+    private String firstname;
 
     public String getEmail() {
         return email;
@@ -60,11 +64,19 @@ public class User extends RealmObject {
         this.name = name;
     }
 
-    public Integer getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(Integer status) {
-        this.username = status;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 }

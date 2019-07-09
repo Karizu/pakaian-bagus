@@ -38,16 +38,15 @@ import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
 import com.example.pakaianbagus.presentation.home.adapter.ChecklistAdapter;
-import com.example.pakaianbagus.presentation.home.inventaris.InventarisFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
+import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganKoordinatorFragment;
 import com.example.pakaianbagus.presentation.home.notification.NotificationFragment;
-import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
-import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
-import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
+import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
+import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
-import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
-import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
@@ -63,9 +62,11 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Headers;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
@@ -88,6 +89,7 @@ public class HomeFragment extends Fragment {
     EditText startDate;
     EditText endDate;
     private final int REQEUST_CAMERA = 1;
+    private String TAG = "Home Fragment";
     File imageCheck;
 
     public HomeFragment() {
@@ -112,6 +114,22 @@ public class HomeFragment extends Fragment {
                 false);
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
+
+
+        try {
+            if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)
+                    || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_ADMIN)){
+                hideItemForManagerScreen();
+                Log.d(TAG, "masuk if");
+            } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SALES)){
+                hideItemForSales();
+            } else {
+                hideItemForSPGScreen();
+            }
+
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
 
         getCurrentDateChecklist();
 
@@ -142,7 +160,12 @@ public class HomeFragment extends Fragment {
             } else {
                 Checklist checklist = new Checklist();
                 checklist.setName(etChecklist.getText().toString());
+                List<RoleChecklistModel> roleChecklistModelList = new ArrayList<>();
+//                roleChecklistModelList.add(new RoleChecklistModel("id", "null", checklist));
+//                roleChecklistModels.addAll(roleChecklistModelList);
+//                checklistAdapter.notifyDataSetChanged();
                 roleChecklistModels.add(new RoleChecklistModel("id", "null", checklist));
+                checklistAdapter.notifyDataSetChanged();
                 sessionManagement.setArraylistChecklist(roleChecklistModels);
                 Log.d("ArrayList", sessionManagement.getArrayListChecklist());
                 Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -154,12 +177,11 @@ public class HomeFragment extends Fragment {
 
     private void getListChecklist() {
         Loading.show(getActivity());
-        HomeHelper.getListChecklist(getContext(), new RestCallback<ApiResponse<List<RoleChecklist>>>() {
+        HomeHelper.getListChecklist(getContext(), new Callback<ApiResponse<List<RoleChecklist>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<RoleChecklist>> body) {
-                Loading.hide(getActivity());
-                if (body != null) {
-                    List<RoleChecklist> res = body.getData();
+            public void onResponse(Call<ApiResponse<List<RoleChecklist>>> call, Response<ApiResponse<List<RoleChecklist>>> response) {
+                Loading.hide(getContext());
+                List<RoleChecklist> res = response.body().getData();
                     for (int i = 0; i < res.size(); i++) {
                         RoleChecklist roleChecklist = res.get(i);
                         roleChecklistModels.add(new RoleChecklistModel(roleChecklist.getId(),
@@ -174,21 +196,53 @@ public class HomeFragment extends Fragment {
                         checklistAdapter = new ChecklistAdapter(roleChecklistModels, getActivity());
                     }
                     recyclerView.setAdapter(checklistAdapter);
-                }
             }
 
             @Override
-            public void onFailed(ErrorResponse error) {
-                Loading.hide(getActivity());
-                Log.d("Error Get Checklist", error.getMessage());
-            }
-
-            @Override
-            public void onCanceled() {
-
+            public void onFailure(Call<ApiResponse<List<RoleChecklist>>> call, Throwable t) {
+                Loading.hide(getContext());
+                Log.d("onFailure", t.getMessage());
             }
         });
     }
+
+//    private void getListChecklist() {
+//        Loading.show(getActivity());
+//        HomeHelper.getListChecklist(getContext(), new RestCallback<ApiResponse<List<RoleChecklist>>>() {
+//            @Override
+//            public void onSuccess(Headers headers, ApiResponse<List<RoleChecklist>> body) {
+//                Loading.hide(getActivity());
+//                if (body != null) {
+//                    List<RoleChecklist> res = body.getData();
+//                    for (int i = 0; i < res.size(); i++) {
+//                        RoleChecklist roleChecklist = res.get(i);
+//                        roleChecklistModels.add(new RoleChecklistModel(roleChecklist.getId(),
+//                                roleChecklist.getChecklist_id(),
+//                                roleChecklist.getChecklist()));
+//                    }
+//
+//                    if (sessionManagement.getArrayListChecklist() != null) {
+//                        Log.d("ArrayList IF", sessionManagement.getArrayListChecklist());
+//                        checklistAdapter = new ChecklistAdapter(sessionManagement.getArrayListChecklist(), getActivity(), 0);
+//                    } else {
+//                        checklistAdapter = new ChecklistAdapter(roleChecklistModels, getActivity());
+//                    }
+//                    recyclerView.setAdapter(checklistAdapter);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailed(ErrorResponse error) {
+//                Loading.hide(getActivity());
+//                Log.d("Error Get Checklist", error.getMessage());
+//            }
+//
+//            @Override
+//            public void onCanceled() {
+//
+//            }
+//        });
+//    }
 
     private void initSlider() {
         newsPager.add(new News("Title", "Lorem Ipsum Lorem Ipsum", "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/purple-ramadan-charity-event-invitation-banner-design-template-c8a1a4d8e5747a5a4f75d56b7974d233_screen.jpg?ts=1556628102"));
@@ -219,6 +273,15 @@ public class HomeFragment extends Fragment {
         layout.setVisibility(View.GONE);
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.GONE);
+
+        LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
+        layout1.setWeightSum(3f);
+        LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle02);
+        layoutTitle.setWeightSum(3f);
+        CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
+        cardViewPenjualan.setVisibility(View.VISIBLE);
+        TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
+        tvTitlePenjualan.setVisibility(View.VISIBLE);
     }
 
     private void hideItemForKoordinatorScreen() {
@@ -227,22 +290,14 @@ public class HomeFragment extends Fragment {
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.VISIBLE);
 
-        LinearLayout layout1 = rootView.findViewById(R.id.layoutBtnCard);
+        LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
         layout1.setWeightSum(2f);
-        LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle1);
+        LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle02);
         layoutTitle.setWeightSum(2f);
-        LinearLayout layout = rootView.findViewById(R.id.layoutBtnCard2);
-        layout.setWeightSum(2f);
-        LinearLayout layoutTitle2 = rootView.findViewById(R.id.layoutHeaderTitle2);
-        layoutTitle2.setWeightSum(2f);
         CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
         cardViewPenjualan.setVisibility(View.GONE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
         tvTitlePenjualan.setVisibility(View.GONE);
-        CardView cardViewInventaris = rootView.findViewById(R.id.btnInventaris);
-        cardViewInventaris.setVisibility(View.GONE);
-        TextView tvTitleInventaris = rootView.findViewById(R.id.tvInventaris);
-        tvTitleInventaris.setVisibility(View.GONE);
     }
 
     private void hideItemForManagerScreen() {
@@ -251,33 +306,45 @@ public class HomeFragment extends Fragment {
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.VISIBLE);
 
-        LinearLayout layout1 = rootView.findViewById(R.id.layoutBtnCard);
-        layout1.setWeightSum(3f);
-        LinearLayout layoutTitle = rootView.findViewById(R.id.layoutHeaderTitle1);
-        layoutTitle.setWeightSum(3f);
-
-
-        LinearLayout layout = rootView.findViewById(R.id.layoutBtnCard2);
-        layout.setWeightSum(3f);
-        LinearLayout layoutTitle2 = rootView.findViewById(R.id.layoutHeaderTitle2);
-        layoutTitle2.setWeightSum(3f);
-
-        CardView cardViewInventaris = rootView.findViewById(R.id.btnInventaris);
-        cardViewInventaris.setVisibility(View.VISIBLE);
-        TextView tvTitleInventaris = rootView.findViewById(R.id.tvInventaris);
-        tvTitleInventaris.setVisibility(View.VISIBLE);
+        LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
+        layout1.setWeightSum(2f);
+        LinearLayout layoutTitle1 = rootView.findViewById(R.id.layoutHeaderTitle02);
+        layoutTitle1.setWeightSum(2f);
         CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
-        cardViewPenjualan.setVisibility(View.VISIBLE);
+        cardViewPenjualan.setVisibility(View.GONE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
-        tvTitlePenjualan.setVisibility(View.VISIBLE);
+        tvTitlePenjualan.setVisibility(View.GONE);
+    }
+
+    private void hideItemForSales(){
+        LinearLayout layout2 = rootView.findViewById(R.id.layoutHeaderButton2);
+        layout2.setVisibility(View.VISIBLE);
+        Button button = rootView.findViewById(R.id.btnTambah);
+        button.setVisibility(View.VISIBLE);
+
+        LinearLayout layoutHead = rootView.findViewById(R.id.layoutHeaderIcon01);
+        layoutHead.setWeightSum(3f);
+        CardView cardViewPiutang = rootView.findViewById(R.id.btnPiutang);
+        cardViewPiutang.setVisibility(View.VISIBLE);
+        TextView tvTitlePiutang = rootView.findViewById(R.id.tvPiutang);
+        tvTitlePiutang.setVisibility(View.VISIBLE);
+
+        LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
+        layout1.setWeightSum(2f);
+        LinearLayout layoutTitle1 = rootView.findViewById(R.id.layoutHeaderTitle02);
+        layoutTitle1.setWeightSum(2f);
+        CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
+        cardViewPenjualan.setVisibility(View.GONE);
+        TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
+        tvTitlePenjualan.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.btnStock)
     public void onClickBtnStock() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        StockOpnameFragment stockFragment = new StockOpnameFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        StockListTokoFragment stockFragment = new StockListTokoFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, stockFragment);
         ft.commit();
     }
@@ -389,23 +456,27 @@ public class HomeFragment extends Fragment {
     public void onClickBtnSPG() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgFragment spgFragment = new SpgFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        SpgListTokoFragment spgFragment = new SpgListTokoFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, spgFragment);
         ft.commit();
     }
 
     @OnClick(R.id.btnKunjungan)
     public void onClickBtnKunjungan() {
-        if (Flag == 3) {
+        if (Flag == 3
+        ) {
             showDialog(R.layout.dialog_pilih_kunjungan);
             Button btnKunjunganKoordinator = dialog.findViewById(R.id.btnKunjunganKoordinator);
             btnKunjunganKoordinator.setOnClickListener(v -> {
                 dialog.dismiss();
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-                KunjunganFragment kunjunganFragment = new KunjunganFragment();
-                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                KunjunganKoordinatorFragment kunjunganFragment = new KunjunganKoordinatorFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("kunjunganKoordinator", "KUNJUNGAN KOORDINATOR");
+                kunjunganFragment.setArguments(bundle);
+                ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
                 ft.replace(R.id.baseLayout, kunjunganFragment);
                 ft.commit();
             });
@@ -419,7 +490,7 @@ public class HomeFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
                 kunjunganFragment.setArguments(bundle);
-                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
                 ft.replace(R.id.baseLayout, kunjunganFragment);
                 ft.commit();
             });
@@ -427,21 +498,21 @@ public class HomeFragment extends Fragment {
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
             KunjunganFragment kunjunganFragment = new KunjunganFragment();
-            ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+            ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
             ft.replace(R.id.baseLayout, kunjunganFragment);
             ft.commit();
         }
     }
 
-    @OnClick(R.id.btnInventaris)
-    public void onClickBtnInventaris() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        InventarisFragment inventarisFragment = new InventarisFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, inventarisFragment);
-        ft.commit();
-    }
+//    @OnClick(R.id.btnInventaris)
+//    public void onClickBtnInventaris() {
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        InventarisFragment inventarisFragment = new InventarisFragment();
+//        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+//        ft.replace(R.id.baseLayout, inventarisFragment);
+//        ft.commit();
+//    }
 
     @OnClick(R.id.btnTambah)
     public void btnTambah() {
@@ -514,7 +585,7 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         NotificationFragment notifFragment = new NotificationFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, notifFragment);
         ft.commit();
     }

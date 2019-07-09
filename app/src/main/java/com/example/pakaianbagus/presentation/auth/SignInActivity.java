@@ -20,14 +20,9 @@ import android.widget.Toast;
 import com.example.pakaianbagus.MainActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.AuthHelper;
-import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
-import com.rezkyatinnov.kyandroid.localdata.LocalData;
-import com.rezkyatinnov.kyandroid.session.Session;
-import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
-import com.rezkyatinnov.kyandroid.session.SessionObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -108,10 +108,10 @@
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/layoutBtnCard2"
+                            android:id="@+id/layoutHeaderIcon01"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:weightSum="3"
+                            android:weightSum="2"
                             android:padding="4dp"
                             android:orientation="horizontal">
 
@@ -173,14 +173,15 @@
                             </android.support.v7.widget.CardView>
 
                             <android.support.v7.widget.CardView
-                                android:id="@+id/btnInventaris"
+                                android:id="@+id/btnPiutang"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_margin="4dp"
                                 android:background="?android:attr/selectableItemBackground"
                                 app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp">
+                                app:cardCornerRadius="3dp"
+                                android:visibility="gone">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -193,7 +194,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/inventaris"
+                                        app:srcCompat="@drawable/piutang"
                                         tools:ignore="ContentDescription" />
 
                                 </LinearLayout>
@@ -203,10 +204,10 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/layoutHeaderTitle2"
+                            android:id="@+id/layoutHeaderTitle01"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:weightSum="3"
+                            android:weightSum="2"
                             android:orientation="horizontal">
 
                             <TextView
@@ -230,7 +231,7 @@
                                 android:text="@string/spg"/>
 
                             <TextView
-                                android:id="@+id/tvInventaris"
+                                android:id="@+id/tvPiutang"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -238,7 +239,8 @@
                                 android:textSize="12sp"
                                 android:gravity="center"
                                 android:textColor="@color/Black"
-                                android:text="@string/inventaris"/>
+                                android:visibility="gone"
+                                android:text="Piutang"/>
 
                         </LinearLayout>
 
@@ -251,7 +253,7 @@
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/layoutBtnCard"
+                            android:id="@+id/layoutHeaderIcon02"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:weightSum="3"
@@ -347,7 +349,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/layoutHeaderTitle1"
+                            android:id="@+id/layoutHeaderTitle02"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:weightSum="3"

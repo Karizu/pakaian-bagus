@@ -12,12 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.penjualan.adapter.PenjualanAdapter;
 import com.example.pakaianbagus.models.PenjualanModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +36,9 @@ public class PenjualanKompetitorFragment extends Fragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.tvDate)
+    TextView tvDate;
+
     public PenjualanKompetitorFragment() {
     }
 
@@ -45,6 +52,7 @@ public class PenjualanKompetitorFragment extends Fragment {
 
         penjualanModels = new ArrayList<>();
         setRecylerView();
+        getCurrentDateChecklist();
 
         return rootView;
     }
@@ -61,12 +69,29 @@ public class PenjualanKompetitorFragment extends Fragment {
         recyclerView.setAdapter(penjualanAdapter);
     }
 
+    private void getCurrentDateChecklist() {
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        String formattedDate = df.format(c);
+        tvDate.setText(formattedDate);
+    }
+
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        PenjualanListTokoFragment penjualanListTokoFragment = new PenjualanListTokoFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.replace(R.id.baseLayoutInputHarianPenjualan, penjualanListTokoFragment);
+        ft.commit();
+    }
+
     @OnClick(R.id.tabSalesReport)
     public void tabSalesReport() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         InputHarianFragment inputHarianFragment = new InputHarianFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutInputHarianPenjualan, inputHarianFragment);
         ft.commit();
     }
