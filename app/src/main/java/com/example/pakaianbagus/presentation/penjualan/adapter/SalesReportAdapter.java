@@ -54,7 +54,10 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         final String total = salesReportModel.getTotal();
 
         int mHarga = Integer.parseInt(harga);
-        int mDiskon = Integer.parseInt(diskon);
+        int mDiskon = 0;
+        if (diskon != null){
+            mDiskon = Integer.parseInt(diskon);
+        }
         int mTotal = Integer.parseInt(total);
 
         holder.textViewName.setText(name);
@@ -62,7 +65,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         holder.textViewHarga.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mHarga));
         holder.textViewDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mDiskon));
         holder.textViewTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mTotal));
-        Glide.with(context).load(image).into(holder.imageViewSalesReport);
+//        Glide.with(context).load(image).into(holder.imageViewSalesReport);
 //        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
 
         holder.imageViewMore.setOnClickListener(v -> {

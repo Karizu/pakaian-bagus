@@ -1,8 +1,10 @@
 package com.example.pakaianbagus.api;
 
+import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
+import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.StokToko;
 import com.example.pakaianbagus.models.Toko;
@@ -29,7 +31,7 @@ public interface ApiInterface {
 
 //    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
 
-    String BASE_URL = "http://192.168.1.17/api/";
+    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
 
 //    @GET("userLocation/nearMe")
 //    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
@@ -80,7 +82,24 @@ public interface ApiInterface {
 
     @GET("public/penerimaan/byid/{id}")
     Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Path("id") String id);
-//
+
+    @POST("public/presensi/checkIn")
+    Call<ApiResponse> postCheckIn(@Body RequestBody checkInData);
+
+    @POST("public/presensi/checkOut")
+    Call<ApiResponse> postCheckOut(@Body RequestBody checkInData);
+
+    @GET("public/announcements")
+    Call<ApiResponse<List<AnnouncementResponse>>> getAnnouncement();
+
+    @GET("public/pos/history")
+    Call<ApiResponse<List<PenjualanResponse>>> getPenjualan(@Query("id_store") String id_store,
+                                                               @Query("is_vip") Boolean is_vip,
+                                                               @Query("limit") int limit,
+                                                               @Query("offset") int offset,
+                                                               @Query("order_by") String order_by,
+                                                               @Query("order_type") String order_type);
+
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);
 //

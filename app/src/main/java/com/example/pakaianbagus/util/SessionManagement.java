@@ -31,6 +31,8 @@ public class SessionManagement {
     public static final String ROLE_KOORDINATOR = "3";
     public static final String ROLE_SPG = "2";
     public static final String ROLE_SALES = "1";
+    public static final String CHECK_IN = "CHECK IN";
+    public static final String CHECK_OUT = "CHECK OUT";
 
     @SuppressLint("CommitPrefEdits")
     public SessionManagement(Context context) {

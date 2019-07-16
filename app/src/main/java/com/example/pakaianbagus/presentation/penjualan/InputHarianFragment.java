@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.api.PenjualanHelper;
+import com.example.pakaianbagus.models.ApiResponse;
+import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.SalesReportModel;
+import com.example.pakaianbagus.presentation.penjualan.adapter.PenjualanAdapter;
 import com.example.pakaianbagus.presentation.penjualan.adapter.SalesReportAdapter;
+import com.example.pakaianbagus.util.dialog.Loading;
+import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
+import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +47,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Headers;
 
 public class InputHarianFragment extends Fragment {
 
@@ -50,10 +59,13 @@ public class InputHarianFragment extends Fragment {
     @BindView(R.id.tvDate)
     TextView tvDate;
 
+    int limit = 10;
+    int offset = 0;
     Dialog dialog;
     Calendar myCalendar;
     EditText startDate;
     EditText endDate;
+    String id;
 
     public InputHarianFragment() {
 
@@ -67,23 +79,52 @@ public class InputHarianFragment extends Fragment {
         rootView = inflater.inflate(R.layout.input_harian_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        id = Objects.requireNonNull(getArguments()).getString("id");
+
         salesReportModels = new ArrayList<>();
-        setRecylerView();
+        getPenjualan();
         getCurrentDateChecklist();
 
         return rootView;
     }
 
-    private void setRecylerView(){
-        for (int i = 0; i < 8; i++){
-            salesReportModels.add(new SalesReportModel("Celana Jeans", "https://dynamic.zacdn.com/i1u-lU78jY9deauWcBDjl8aM66k=/fit-in/236x345/filters:quality(90):fill(ffffff)/http://static.id.zalora.net/p/levi-s-0303-5995591-1.jpg", "1 pcs", "50000", "250000", "200000"));
-        }
+    private void getPenjualan(){
+        Loading.show(getContext());
+        PenjualanHelper.getPenjualan(id, limit, offset, new RestCallback<ApiResponse<List<PenjualanResponse>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<PenjualanResponse>> body) {
+                Loading.hide(getContext());
+                if (body.getData() != null){
+                    List<PenjualanResponse> res = body.getData();
+                    for (int i = 0; i < res.size(); i++){
+                        PenjualanResponse penjualanResponse = res.get(i);
+                        salesReportModels.add(new SalesReportModel(penjualanResponse.getTransaksi_detail().get(i).getId_transaksi(),
+                                penjualanResponse.getTanggal(),
+                                penjualanResponse.getTransaksi_detail().get(i).getQty(),
+                                penjualanResponse.getTransaksi_detail().get(i).getDiscount(),
+                                penjualanResponse.getTransaksi_detail().get(i).getHarga(),
+                                penjualanResponse.getTotal_harga()));
+                    }
 
-        SalesReportAdapter salesReportAdapter = new SalesReportAdapter(salesReportModels, getContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayout.VERTICAL,
-                false));
-        recyclerView.setAdapter(salesReportAdapter);
+                    SalesReportAdapter adapter = new SalesReportAdapter(salesReportModels, getContext());
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                            LinearLayout.VERTICAL,
+                            false));
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                Log.d("TAG ERROR", error.getMessage());
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
     }
 
     private void getCurrentDateChecklist() {
@@ -161,9 +202,12 @@ public class InputHarianFragment extends Fragment {
 
     @OnClick(R.id.tabPenjualan)
     public void tabPenjualan() {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         PenjualanKompetitorFragment penjualanFragment = new PenjualanKompetitorFragment();
+        penjualanFragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutInputHarian, penjualanFragment);
         ft.commit();

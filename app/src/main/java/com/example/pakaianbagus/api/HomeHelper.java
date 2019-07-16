@@ -2,6 +2,7 @@ package com.example.pakaianbagus.api;
 
 import android.content.Context;
 
+import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.RoleChecklist;
@@ -13,6 +14,7 @@ import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Callback;
 
 public class HomeHelper {
@@ -29,4 +31,18 @@ public class HomeHelper {
         service.getEndpoint().getListKoordinator("2").enqueue(callback);
     }
 
+    public static void postCheckIn(RequestBody requestBody, RestCallback<ApiResponse> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().postCheckIn(requestBody).enqueue(callback);
+    }
+
+    public static void postCheckOut(RequestBody requestBody, RestCallback<ApiResponse> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().postCheckOut(requestBody).enqueue(callback);
+    }
+
+    public static void getAnnouncement(RestCallback<ApiResponse<List<AnnouncementResponse>>> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().getAnnouncement().enqueue(callback);
+    }
 }

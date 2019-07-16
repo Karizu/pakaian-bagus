@@ -33,6 +33,7 @@ public class PenjualanKompetitorFragment extends Fragment {
 
     View rootView;
     private List<PenjualanModel> penjualanModels;
+    private String id;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -49,6 +50,8 @@ public class PenjualanKompetitorFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.penjualan_kompetitor_fragment, container, false);
         ButterKnife.bind(this, rootView);
+
+        id = Objects.requireNonNull(getArguments()).getString("id");
 
         penjualanModels = new ArrayList<>();
         setRecylerView();
@@ -88,9 +91,12 @@ public class PenjualanKompetitorFragment extends Fragment {
 
     @OnClick(R.id.tabSalesReport)
     public void tabSalesReport() {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         InputHarianFragment inputHarianFragment = new InputHarianFragment();
+        inputHarianFragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutInputHarianPenjualan, inputHarianFragment);
         ft.commit();

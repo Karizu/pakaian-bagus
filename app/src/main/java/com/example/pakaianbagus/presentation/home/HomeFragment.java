@@ -1,17 +1,24 @@
 package com.example.pakaianbagus.presentation.home;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -25,18 +32,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.pakaianbagus.MainActivity;
+import com.example.pakaianbagus.PrinterActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.HomeHelper;
+import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Checklist;
 import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
+import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.presentation.home.adapter.ChecklistAdapter;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganKoordinatorFragment;
@@ -45,12 +56,19 @@ import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
+import com.rezkyatinnov.kyandroid.localdata.LocalData;
+import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
+import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
+import com.rezkyatinnov.kyandroid.session.SessionObject;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,11 +80,18 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment {
 
@@ -78,6 +103,9 @@ public class HomeFragment extends Fragment {
     TextView tvDateChecklist;
     @BindView(R.id.imgCheck)
     ImageView imgCheck;
+    @BindView(R.id.tvCheck)
+    TextView tvCheck;
+
     Dialog dialog;
     List<News> newsPager = new ArrayList<>();
     View rootView;
@@ -91,6 +119,12 @@ public class HomeFragment extends Fragment {
     private final int REQEUST_CAMERA = 1;
     private String TAG = "Home Fragment";
     File imageCheck;
+    User user;
+    Realm realmDb;
+    String groupId = "4", scheduleId = "1", longCheckIn = "asd", latCheckIn = "asd";
+    Bitmap photoImage;
+    ProgressBar progressBar;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -106,8 +140,11 @@ public class HomeFragment extends Fragment {
 
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
 //        hideItemForSPGScreen();
+        realmDb = LocalData.getRealm();
+        user = realmDb.where(User.class).findFirst();
+
         TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("Hallo Rizal");
+        toolbarTitle.setText("Hallo "+user.getFirstname());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayout.VERTICAL,
@@ -115,6 +152,15 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
 
+        try {
+            if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)){
+                tvCheck.setText(SessionManagement.CHECK_OUT);
+            } else {
+                tvCheck.setText(SessionManagement.CHECK_IN);
+            }
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
 
         try {
             if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)
@@ -132,9 +178,7 @@ public class HomeFragment extends Fragment {
         }
 
         getCurrentDateChecklist();
-
-        initSlider();
-
+        getAnnouncement();
         getListChecklist();
 
         return rootView;
@@ -179,9 +223,10 @@ public class HomeFragment extends Fragment {
         Loading.show(getActivity());
         HomeHelper.getListChecklist(getContext(), new Callback<ApiResponse<List<RoleChecklist>>>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<RoleChecklist>>> call, Response<ApiResponse<List<RoleChecklist>>> response) {
+            public void onResponse(@NonNull Call<ApiResponse<List<RoleChecklist>>> call, @NonNull Response<ApiResponse<List<RoleChecklist>>> response) {
                 Loading.hide(getContext());
-                List<RoleChecklist> res = response.body().getData();
+                if (response.body().getData() != null){
+                    List<RoleChecklist> res = response.body().getData();
                     for (int i = 0; i < res.size(); i++) {
                         RoleChecklist roleChecklist = res.get(i);
                         roleChecklistModels.add(new RoleChecklistModel(roleChecklist.getId(),
@@ -196,10 +241,11 @@ public class HomeFragment extends Fragment {
                         checklistAdapter = new ChecklistAdapter(roleChecklistModels, getActivity());
                     }
                     recyclerView.setAdapter(checklistAdapter);
+                }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<List<RoleChecklist>>> call, Throwable t) {
+            public void onFailure(@NonNull Call<ApiResponse<List<RoleChecklist>>> call, @NonNull Throwable t) {
                 Loading.hide(getContext());
                 Log.d("onFailure", t.getMessage());
             }
@@ -244,13 +290,41 @@ public class HomeFragment extends Fragment {
 //        });
 //    }
 
-    private void initSlider() {
-        newsPager.add(new News("Title", "Lorem Ipsum Lorem Ipsum", "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/purple-ramadan-charity-event-invitation-banner-design-template-c8a1a4d8e5747a5a4f75d56b7974d233_screen.jpg?ts=1556628102"));
+    private void getAnnouncement(){
+        @SuppressLint("InflateParams") View customView = getLayoutInflater().inflate(R.layout.item_carousel_banner, null);
+        progressBar = customView.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        HomeHelper.getAnnouncement(new RestCallback<ApiResponse<List<AnnouncementResponse>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<AnnouncementResponse>> body) {
+                progressBar.setVisibility(View.GONE);
+                if (body.getData() != null){
+                    List<AnnouncementResponse> responses = body.getData();
+                    for (int i = 0; i < responses.size(); i++){
+                        AnnouncementResponse announcementResponse = responses.get(i);
+                        newsPager.add(new News(announcementResponse.getTitle(),
+                                announcementResponse.getDescription(),
+                                announcementResponse.getImage()));
+                    }
 
-        //customCarouselView.setPageCount(sampleTitles.length);
-        customCarouselView.setViewListener(viewListener);
-        customCarouselView.setPageCount(newsPager.size());
-        customCarouselView.setSlideInterval(4000);
+                    customCarouselView.setViewListener(viewListener);
+                    customCarouselView.setPageCount(newsPager.size());
+                    customCarouselView.setSlideInterval(4000);
+                }
+
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                progressBar.setVisibility(View.GONE);
+                Log.d("TAG", error.getMessage());
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
     }
 
     // To set custom views
@@ -418,12 +492,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void selectImage() {
-        final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+        final CharSequence[] options = {"Take Photo", "Cancel"};
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         builder.setTitle("Select Option");
         builder.setItems(options, (dialog, item) -> {
             if (options[item].equals("Take Photo")) {
-                EasyImage.openCamera(this, REQEUST_CAMERA);
+                if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_DENIED){
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[] {Manifest.permission.CAMERA}, REQEUST_CAMERA);
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQEUST_CAMERA);
+                }
             } else if (options[item].equals("Cancel")) {
                 dialog.dismiss();
             }
@@ -435,19 +516,125 @@ public class HomeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new DefaultCallback() {
+        if (requestCode == REQEUST_CAMERA && resultCode == RESULT_OK){
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photoImage = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
+            Objects.requireNonNull(photoImage).compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//            imageProfile.setImageBitmap(photoImage);
+            try {
+                File outputDir = Objects.requireNonNull(getContext()).getCacheDir();
+                imageCheck = File.createTempFile("photo", "jpeg", outputDir);
+                FileOutputStream outputStream = getContext().openFileOutput("photo.jpeg", Context.MODE_PRIVATE);
+                outputStream.write(stream.toByteArray());
+                outputStream.close();
+                Log.d("Write File", "Success");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d("Write File", "Failed2");
+            }
+
+            try {
+                if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)){
+                    postCheckOut();
+                } else {
+                    postCheckIn();
+                }
+            } catch (SessionNotFoundException e) {
+                e.printStackTrace();
+                postCheckIn();
+            }
+
+        }
+    }
+
+    private void postCheckIn(){
+        Loading.show(getContext());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        photoImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("group_id", groupId)
+                .addFormDataPart("schedule_id", scheduleId)
+                .addFormDataPart("long_check_in", longCheckIn)
+                .addFormDataPart("lat_check_in", latCheckIn)
+                .addFormDataPart("photo_check_in", "photo.jpeg", RequestBody.create(MediaType.parse("image/jpeg"), stream.toByteArray()))
+                .build();
+        HomeHelper.postCheckIn(requestBody, new RestCallback<ApiResponse>() {
             @Override
-            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
-                //Some error handling
+            public void onSuccess(Headers headers, ApiResponse body) {
+                Loading.hide(getContext());
+                showDialog(R.layout.dialog_check_in_out);
+                ImageView btnClose = dialog.findViewById(R.id.imgClose);
+                btnClose.setOnClickListener(view -> dialog.dismiss());
+                TextView tvTime = dialog.findViewById(R.id.tvTime);
+                Button btnOK = dialog.findViewById(R.id.btnOK);
+                btnOK.setOnClickListener(view -> {
+                    Session.save(new SessionObject("check", SessionManagement.CHECK_IN));
+                    dialog.dismiss();
+                });
+                Date c = Calendar.getInstance().getTime();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("hh:mm");
+                String formattedDate = df.format(c);
+                tvTime.setText(formattedDate);
             }
 
             @Override
-            public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
-                Glide.with(Objects.requireNonNull(getContext()))
-                        .load(imageFile)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(imgCheck);
-                imageCheck = imageFile;
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                Log.d("TAG CheckIN", error.getMessage());
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+    }
+
+    private void postCheckOut(){
+        Loading.show(getContext());
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        photoImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("long_check_in", longCheckIn)
+                .addFormDataPart("lat_check_in", latCheckIn)
+                .addFormDataPart("photo_check_in", "photo.jpeg", RequestBody.create(MediaType.parse("image/jpeg"), stream.toByteArray()))
+                .build();
+        HomeHelper.postCheckOut(requestBody, new RestCallback<ApiResponse>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(Headers headers, ApiResponse body) {
+                Loading.hide(getContext());
+                showDialog(R.layout.dialog_check_in_out);
+                ImageView btnClose = dialog.findViewById(R.id.imgClose);
+                btnClose.setOnClickListener(view -> dialog.dismiss());
+                TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+                TextView tvContent = dialog.findViewById(R.id.tvContent);
+                tvContent.setText("Selamat anda berhasil check out");
+                tvTitle.setText("CHECKOUT");
+                TextView tvTime = dialog.findViewById(R.id.tvTime);
+                Button btnOK = dialog.findViewById(R.id.btnOK);
+                btnOK.setOnClickListener(view -> {
+                    Session.save(new SessionObject("check", SessionManagement.CHECK_OUT));
+                    dialog.dismiss();
+                });
+                Date c = Calendar.getInstance().getTime();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("hh:mm");
+                String formattedDate = df.format(c);
+                tvTime.setText(formattedDate);
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                Log.d("TAG CheckIN", error.getMessage());
+            }
+
+            @Override
+            public void onCanceled() {
+
             }
         });
     }
@@ -560,11 +747,13 @@ public class HomeFragment extends Fragment {
                 pm.getMenu().findItem(R.id.navigation_koordinator).setVisible(true);
                 break;
         }
+
         pm.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.navigation_spg:
                     Flag = 1;
-                    hideItemForSPGScreen();
+                    Intent intent = new Intent(getActivity(), PrinterActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.navigation_koordinator:
                     Flag = 2;

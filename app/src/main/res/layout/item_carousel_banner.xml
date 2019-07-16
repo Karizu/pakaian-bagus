@@ -5,6 +5,13 @@
     android:layout_height="fill_parent"
     android:gravity="center">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
     <ImageView
         android:id="@+id/iv_carousel"
         android:layout_width="fill_parent"
@@ -23,6 +30,7 @@
         android:layout_marginRight="@dimen/margin_padding_size_large"
         android:layout_marginBottom="64dp"
         android:text="Label"
+        android:background="@color/TransparentWhite"
         android:textColor="@color/White"
         android:textSize="@dimen/text_size_large"
         tools:ignore="HardcodedText" />
