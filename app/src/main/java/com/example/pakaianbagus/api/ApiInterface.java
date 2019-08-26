@@ -2,6 +2,7 @@ package com.example.pakaianbagus.api;
 
 import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
+import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
@@ -31,7 +32,8 @@ public interface ApiInterface {
 
 //    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
 
-    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
+//    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
+    String BASE_URL = "http://37.72.172.144/pb-v1/";
 
 //    @GET("userLocation/nearMe")
 //    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
@@ -57,8 +59,12 @@ public interface ApiInterface {
     @GET("public/store/all")
     Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
 
+    @GET("public/brand/all")
+    Call<ApiResponse<List<BrandResponse>>> getListBrand();
+
     @GET("public/stok_toko/getAllArtikel")
     Call<ApiResponse<List<StokToko>>> getListStokToko(@Query("id_store") String id_store,
+                                                      @Query("id_brand") String idBrand,
                                                       @Query("limit") int limit,
                                                       @Query("offset") int offset);
 
@@ -71,6 +77,9 @@ public interface ApiInterface {
                                                     @Query("offset") int offset,
                                                     @Query("order_by") String order_by,
                                                     @Query("order_type") String order_type);
+
+    @GET("public/stok_toko/getAllArtikelWithStokToko")
+    Call<ApiResponse<List<StokToko>>> searchBarangPenjualan(@Query("keyword") String keyword);
 
     @GET("public/users")
     Call<ApiResponse<List<User>>> getListKoordinator(@Query("role_id") String role_id);

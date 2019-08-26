@@ -19,11 +19,13 @@ import android.widget.Toast;
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.barangmasuk.ListTokoBMFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.katalog.KatalogBrandFragment;
 import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
 import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentInputHarian = new InputHarianFragment();
     final Fragment fragmentPenjualanListToko = new PenjualanListTokoFragment();
     final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
-    final Fragment katalogFragment = new KatalogFragment();
+    final Fragment katalogFragment = new KatalogBrandFragment();
     FragmentManager fm = getSupportFragmentManager();
     FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
     Fragment active = fragmentHome;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_mutasi_barang:
                 try {
-                    if (Session.get("RoleId").getValue().equals("3") || Session.get("RoleId").getValue().equals("4")){
+                    if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_MANAGER) || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)){
                         showDialog();
                         Log.d("Masuk", "Role id 3 || 4");
                         Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
@@ -77,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                             active = fragmentMutasiBarang;
                             dialog.dismiss();
                         });
+                    } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SPG)){
+                        setFragments(fragmentListTokoBM, "3");
+                        active = fragmentListTokoBM;
                     } else {
                         setFragments(fragmentListTokoBM, "3");
                         active = fragmentListTokoBM;
@@ -114,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (data != null && data.contentEquals("1")) {
             fm.beginTransaction().add(R.id.main_container, fragmentInputHarian, "4").commit();
+            navigation.setSelectedItemId(R.id.navigation_penjualan);
+        } else if (data != null && data.contentEquals("Penjualan")) {
+            fm.beginTransaction().add(R.id.main_container, fragmentPenjualanListToko, "4").commit();
             navigation.setSelectedItemId(R.id.navigation_penjualan);
         } else {
             fm.beginTransaction().add(R.id.main_container, fragmentHome, "1").commit();

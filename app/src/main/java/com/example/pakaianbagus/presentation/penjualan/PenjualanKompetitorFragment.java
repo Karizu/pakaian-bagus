@@ -6,17 +6,22 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.penjualan.adapter.PenjualanAdapter;
 import com.example.pakaianbagus.models.PenjualanModel;
+import com.example.pakaianbagus.util.SessionManagement;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +44,14 @@ public class PenjualanKompetitorFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.tvDate)
     TextView tvDate;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
+    @BindView(R.id.btnSubmit)
+    Button btnSubmit;
+    @BindView(R.id.btnDownload)
+    Button btnDownload;
 
     public PenjualanKompetitorFragment() {
     }
@@ -51,16 +64,36 @@ public class PenjualanKompetitorFragment extends Fragment {
         rootView = inflater.inflate(R.layout.penjualan_kompetitor_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        try {
+            if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SPG) ||
+                    Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SALES)) {
+                btnSubmit.setVisibility(View.VISIBLE);
+                btnDownload.setVisibility(View.GONE);
+            } else {
+                btnSubmit.setVisibility(View.GONE);
+                btnDownload.setVisibility(View.VISIBLE);
+            }
+
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
+
         id = Objects.requireNonNull(getArguments()).getString("id");
 
         penjualanModels = new ArrayList<>();
         setRecylerView();
         getCurrentDateChecklist();
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            penjualanModels.clear();
+            setRecylerView();
+        });
+
         return rootView;
     }
 
     private void setRecylerView(){
+        swipeRefresh.setRefreshing(true);
         for (int i = 0; i < 20; i++){
             penjualanModels.add(new PenjualanModel("Celana Jeans", "2 pcs", "250000", "2019 JUNE 29"));
         }
@@ -70,6 +103,7 @@ public class PenjualanKompetitorFragment extends Fragment {
                 LinearLayout.VERTICAL,
                 false));
         recyclerView.setAdapter(penjualanAdapter);
+        swipeRefresh.setRefreshing(false);
     }
 
     private void getCurrentDateChecklist() {

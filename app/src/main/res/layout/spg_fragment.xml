@@ -52,10 +52,15 @@
 
         </android.support.v7.widget.Toolbar>
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
+
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/toolbar"
                 app:cardBackgroundColor="@color/LightSteelBlue"
                 android:layout_margin="8dp"
                 app:cardCornerRadius="6dp"
@@ -64,7 +69,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
@@ -108,9 +113,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
+                    <TextView
+                        android:id="@+id/tvNoData"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Tidak ada data"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        android:textSize="14sp"/>
+
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 

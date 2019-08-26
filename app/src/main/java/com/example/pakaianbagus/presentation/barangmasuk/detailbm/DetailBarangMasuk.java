@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.BarangHelper;
@@ -49,7 +51,7 @@ public class DetailBarangMasuk extends Fragment {
 
     View rootView;
     Dialog dialog;
-    String id;
+    String id, idBarangMasuk;
 
     private List<DetailBarangMasukModel> detailBarangMasukModels;
 
@@ -57,6 +59,10 @@ public class DetailBarangMasuk extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.tvDate)
     TextView tvDate;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     public DetailBarangMasuk() {
     }
@@ -73,10 +79,15 @@ public class DetailBarangMasuk extends Fragment {
 
         assert getArguments() != null;
         id = getArguments().getString("id");
+        idBarangMasuk = getArguments().getString("id_barang_masuk");
 
         getCurrentDateChecklist();
         if (id != null){
             getDetailBM(id);
+            swipeRefresh.setOnRefreshListener(() -> {
+                detailBarangMasukModels.clear();
+                getDetailBM(id);
+            });
         }
 
         return rootView;
@@ -90,14 +101,21 @@ public class DetailBarangMasuk extends Fragment {
     }
 
     private void getDetailBM(String id){
-        Loading.show(getContext());
+        swipeRefresh.setRefreshing(true);
         BarangHelper.getDetailBarangMasuk(id, new RestCallback<ApiResponse<PenerimaanBarangResponse>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<PenerimaanBarangResponse> body) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 if (body.getData() != null){
                     PenerimaanBarangResponse barangResponse = body.getData();
                     List<StokPenerimaan> res = barangResponse.getStok_artikel();
+
+                    if (res.size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+
                     for (int i = 0; i < res.size(); i++){
                         StokPenerimaan stokPenerimaan = res.get(i);
                         detailBarangMasukModels.add(new DetailBarangMasukModel(stokPenerimaan.getNama_barang(),
@@ -113,7 +131,7 @@ public class DetailBarangMasuk extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse error) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 Log.d("onFailed Detail BM", error.getMessage());
             }
 
@@ -127,7 +145,7 @@ public class DetailBarangMasuk extends Fragment {
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("id", idBarangMasuk);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
@@ -143,6 +161,11 @@ public class DetailBarangMasuk extends Fragment {
         showDialog();
         Button btnOK = dialog.findViewById(R.id.btnOK);
         btnOK.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    @OnClick(R.id.btnAttachment)
+    void onClickAttachment(){
+        Toast.makeText(getContext(), "On Progress", Toast.LENGTH_SHORT).show();
     }
 
     private void showDialog() {

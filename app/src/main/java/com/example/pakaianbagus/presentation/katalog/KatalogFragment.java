@@ -2,6 +2,7 @@ package com.example.pakaianbagus.presentation.katalog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +18,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
@@ -26,6 +32,7 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogTokoAdapter;
+import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 import com.example.pakaianbagus.util.dialog.Loading;
 
 import java.text.SimpleDateFormat;
@@ -47,8 +54,8 @@ public class KatalogFragment extends Fragment {
 
     Dialog dialog;
     View rootView;
+    String idBrand;
     private List<KatalogTokoModel> katalogTokoModels;
-
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar_back)
@@ -57,9 +64,10 @@ public class KatalogFragment extends Fragment {
     ImageView toolbarSeacrh;
     @BindView(R.id.tvDate)
     TextView tvDate;
-
-    public KatalogFragment() {
-    }
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -68,13 +76,22 @@ public class KatalogFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.katalog_fragment, container, false);
         ButterKnife.bind(this, rootView);
-        imgBack.setVisibility(View.GONE);
         toolbarSeacrh.setVisibility(View.GONE);
         getCurrentDateChecklist();
 
-        katalogTokoModels = new ArrayList<>();
+        try {
+            idBrand = getArguments().getString("id_brand");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
+        katalogTokoModels = new ArrayList<>();
         getListToko();
+
+        swipeRefresh.setOnRefreshListener(() -> {
+            katalogTokoModels.clear();
+            getListToko();
+        });
 
         return rootView;
     }
@@ -87,30 +104,43 @@ public class KatalogFragment extends Fragment {
     }
 
     public void getListToko(){
-        Loading.show(getActivity());
+        swipeRefresh.setRefreshing(true);
         KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<TokoResponse>>> call, Response<ApiResponse<List<TokoResponse>>> response) {
-                Loading.hide(getActivity());
-                if (response.body().getData() != null){
-                    List<TokoResponse> tokoResponse = response.body().getData();
-                    for (int i = 0; i < tokoResponse.size(); i++){
-                        TokoResponse dataToko = tokoResponse.get(i);
-                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
-                                dataToko.getName(),
-                                dataToko.getAlamat()));
+                swipeRefresh.setRefreshing(false);
+
+                try {
+                    if (response.body().getData() != null){
+                        List<TokoResponse> tokoResponse = response.body().getData();
+
+                        if (tokoResponse.size() < 1){
+                            tvNoData.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNoData.setVisibility(View.GONE);
+                        }
+
+                        for (int i = 0; i < tokoResponse.size(); i++){
+                            TokoResponse dataToko = tokoResponse.get(i);
+                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
+                                    dataToko.getName(),
+                                    dataToko.getAlamat()));
+                        }
+
+                        KatalogTokoAdapter katalogTokoAdapter = new KatalogTokoAdapter(katalogTokoModels, getContext(), KatalogFragment.this);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                                LinearLayout.VERTICAL,
+                                false));
+                        recyclerView.setAdapter(katalogTokoAdapter);
                     }
-                    KatalogTokoAdapter katalogTokoAdapter = new KatalogTokoAdapter(katalogTokoModels, getContext(), KatalogFragment.this);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                            LinearLayout.VERTICAL,
-                            false));
-                    recyclerView.setAdapter(katalogTokoAdapter);
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<TokoResponse>>> call, Throwable t) {
-                Loading.hide(getActivity());
+                swipeRefresh.setRefreshing(false);
                 Log.d("List Toko Katalog", t.getMessage());
 
             }
@@ -120,6 +150,7 @@ public class KatalogFragment extends Fragment {
     public void onClickItem(String id){
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
+        bundle.putString("id_brand", idBrand);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
@@ -130,20 +161,30 @@ public class KatalogFragment extends Fragment {
         ft.commit();
     }
 
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        KatalogBrandFragment katalogFragment = new KatalogBrandFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.replace(R.id.layoutKatalog, katalogFragment);
+        ft.commit();
+    }
+
     @SuppressLint("SetTextI18n")
     @OnClick(R.id.toolbar_search)
     public void toolbarSearch(){
-        showDialog();
+        showDialog(R.layout.dialog_search_stockopname);
         TextView toolbar = dialog.findViewById(R.id.tvToolbar);
         toolbar.setText("SEARCH KATALOG");
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> dialog.dismiss());
     }
 
-    private void showDialog() {
+    private void showDialog(int layout) {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(R.layout.dialog_search_stockopname);
+        dialog.setContentView(layout);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));

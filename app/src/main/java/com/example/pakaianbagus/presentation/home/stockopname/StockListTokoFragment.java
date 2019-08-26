@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -50,6 +51,8 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
     TextView tvDate;
     @BindView(R.id.toolbar_title)
     TextView toolbar_title;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     public StockListTokoFragment() {
     }
@@ -68,6 +71,11 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
         getCurrentDateChecklist();
         getListToko();
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            katalogTokoModels.clear();
+            getListToko();
+        });
+
         return rootView;
     }
 
@@ -79,30 +87,35 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
     }
 
     public void getListToko(){
-        Loading.show(getActivity());
+        swipeRefresh.setRefreshing(true);
         KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
-                Loading.hide(getActivity());
-                if (Objects.requireNonNull(response.body()).getData() != null){
-                    List<TokoResponse> tokoResponse = response.body().getData();
-                    for (int i = 0; i < tokoResponse.size(); i++){
-                        TokoResponse dataToko = tokoResponse.get(i);
-                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
-                                dataToko.getName(),
-                                dataToko.getAlamat()));
+                swipeRefresh.setRefreshing(false);
+                try {
+                    if (Objects.requireNonNull(response.body()).getData() != null){
+                        List<TokoResponse> tokoResponse = response.body().getData();
+                        for (int i = 0; i < tokoResponse.size(); i++){
+                            TokoResponse dataToko = tokoResponse.get(i);
+                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
+                                    dataToko.getName(),
+                                    dataToko.getAlamat()));
+                        }
+                        StockTokoAdapter stockTokoAdapter = new StockTokoAdapter(katalogTokoModels, getContext(), StockListTokoFragment.this);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                                LinearLayout.VERTICAL,
+                                false));
+                        recyclerView.setAdapter(stockTokoAdapter);
                     }
-                    StockTokoAdapter stockTokoAdapter = new StockTokoAdapter(katalogTokoModels, getContext(), StockListTokoFragment.this);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                            LinearLayout.VERTICAL,
-                            false));
-                    recyclerView.setAdapter(stockTokoAdapter);
+                } catch (Exception e){
+                    Log.d("Catch", "getListToko");
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Throwable t) {
-                Loading.hide(getActivity());
+                swipeRefresh.setRefreshing(false);
                 Log.d("List Toko Katalog", t.getMessage());
 
             }

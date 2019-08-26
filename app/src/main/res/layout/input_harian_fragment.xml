@@ -19,10 +19,24 @@
             android:layout_height="wrap_content"
             android:text="DOWNLOAD"
             android:textColor="@color/White"
+            android:visibility="gone"
             android:background="@drawable/background_button"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SUBMIT"
+            android:textColor="@color/White"
+            android:background="@drawable/background_button"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <android.support.v7.widget.Toolbar
@@ -65,12 +79,12 @@
                     tools:ignore="HardcodedText" />
 
                 <ImageView
-                    android:id="@+id/toolbar_input"
+                    android:id="@+id/toolbar_scan"
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
                     android:layout_marginEnd="12dp"
-                    app:srcCompat="@drawable/ic_assignment_black_24dp"
+                    app:srcCompat="@drawable/ic_save_black_24dp"
                     android:contentDescription="@string/todo"
                     tools:ignore="RtlHardcoded" />
 
@@ -78,12 +92,12 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <ScrollView
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
-            android:layout_above="@id/btnDownload"
-            tools:ignore="UnknownIdInLayout">
+            android:layout_above="@id/btnDownload">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -183,13 +197,13 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:paddingBottom="8dp"
                     android:orientation="vertical">
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="12dp"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="2dp"
@@ -199,7 +213,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
                             android:paddingTop="12dp"
@@ -210,6 +224,15 @@
                                 android:id="@id/recyclerView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:id="@+id/tvNoData"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"
+                                android:text="Tidak ada data"
+                                android:gravity="center"
+                                android:textSize="14sp"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -402,7 +425,8 @@
 
             </LinearLayout>
 
-        </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 
     </RelativeLayout>
 

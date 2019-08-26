@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -57,6 +58,10 @@ public class BarangMasukFragment extends Fragment {
     ImageView toolbarHistory;
     @BindView(R.id.tvDate)
     TextView tvDate;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     public BarangMasukFragment() {
 
@@ -79,6 +84,11 @@ public class BarangMasukFragment extends Fragment {
         id = Objects.requireNonNull(getArguments()).getString("id");
         if (id != null){
             getListBarangMasuk();
+
+            swipeRefresh.setOnRefreshListener(() -> {
+                barangMasukModels.clear();
+                getListBarangMasuk();
+            });
         }
 
         LinearLayoutManager linearLayout = new LinearLayoutManager(getActivity(),
@@ -98,8 +108,6 @@ public class BarangMasukFragment extends Fragment {
 
         recyclerView.addOnScrollListener(scrollListener);
 
-
-
         return rootView;
     }
 
@@ -111,13 +119,20 @@ public class BarangMasukFragment extends Fragment {
     }
 
     private void getListBarangMasuk(){
-        Loading.show(getContext());
+        swipeRefresh.setRefreshing(true);
         BarangHelper.getListBarangMasuk(id, limit, offset, new RestCallback<ApiResponse<List<PenerimaanBarangResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<PenerimaanBarangResponse>> body) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 if (body.getData() != null){
                     List<PenerimaanBarangResponse> res = body.getData();
+
+                    if (res.size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+
                     for (int i = 0; i < res.size(); i++){
                         PenerimaanBarangResponse barangResponse = res.get(i);
                         barangMasukModels.add(new BarangMasukModel(
@@ -134,7 +149,7 @@ public class BarangMasukFragment extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse error) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 Log.d("onFailed List BM", error.getMessage());
             }
 
@@ -146,7 +161,7 @@ public class BarangMasukFragment extends Fragment {
     }
 
     public void loadNextDataFromApi(int offset) {
-        Loading.show(getContext());
+        swipeRefresh.setRefreshing(true);
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
@@ -156,7 +171,7 @@ public class BarangMasukFragment extends Fragment {
             BarangHelper.getListBarangMasuk(id, limit, limit*offset, new RestCallback<ApiResponse<List<PenerimaanBarangResponse>>>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse<List<PenerimaanBarangResponse>> body) {
-                    Loading.hide(getContext());
+                    swipeRefresh.setRefreshing(false);
                     if (body.getData() != null){
                         List<PenerimaanBarangResponse> res = body.getData();
                         List<BarangMasukModel> barangMasukModelList = new ArrayList<>();
@@ -176,7 +191,7 @@ public class BarangMasukFragment extends Fragment {
 
                 @Override
                 public void onFailed(ErrorResponse error) {
-                    Loading.hide(getContext());
+                    swipeRefresh.setRefreshing(false);
                     Log.d("onFailed List BM", error.getMessage());
                 }
 
@@ -190,9 +205,10 @@ public class BarangMasukFragment extends Fragment {
         }
     }
 
-    public void layoutListBarangMasuk(String id){
+    public void layoutListBarangMasuk(String ids){
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("id", ids);
+        bundle.putString("id_barang_masuk", id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

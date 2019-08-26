@@ -108,19 +108,23 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                     Loading.hide(getApplicationContext());
-                    Log.d("Masuk onSuccess", response.body().getMessage());
-                    if (response.body().getData() != null) {
-                        Log.d("TOKEN : ", response.body().getToken());
-                        Session.save(new SessionObject("Authorization", "Bearer " + response.body().getToken(), true));
-                        Session.save(new SessionObject("UserId", response.body().getData().getId()));
-                        Session.save(new SessionObject("RoleId", response.body().getData().getRoleId()));
-                        LocalData.saveOrUpdate(response.body().getData());
-                    } else {
-                        Toast.makeText(LoginActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    try {
+                        if (response.body().getData() != null) {
+                            Log.d("TOKEN : ", response.body().getToken());
+                            Session.save(new SessionObject("Authorization", "Bearer " + response.body().getToken(), true));
+                            Session.save(new SessionObject("UserId", response.body().getData().getId()));
+                            Session.save(new SessionObject("RoleId", response.body().getData().getRoleId()));
+                            Session.save(new SessionObject("Name", response.body().getData().getName()));
+                            LocalData.saveOrUpdate(response.body().getData());
+                        } else {
+                            Toast.makeText(LoginActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } catch (Exception e){
+                        e.printStackTrace();
                     }
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
                 }
 
                 @Override

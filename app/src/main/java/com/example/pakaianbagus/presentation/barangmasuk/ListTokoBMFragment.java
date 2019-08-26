@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -52,6 +53,10 @@ public class ListTokoBMFragment extends Fragment {
     ImageView toolbar_back;
     @BindView(R.id.tvList)
     TextView tvList;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     public ListTokoBMFragment() {
 
@@ -74,6 +79,11 @@ public class ListTokoBMFragment extends Fragment {
         getCurrentDateChecklist();
         getListToko();
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            katalogTokoModels.clear();
+            getListToko();
+        });
+
         return rootView;
     }
 
@@ -85,13 +95,20 @@ public class ListTokoBMFragment extends Fragment {
     }
 
     public void getListToko(){
-        Loading.show(getActivity());
+        swipeRefresh.setRefreshing(true);
         KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
-                Loading.hide(getActivity());
+                swipeRefresh.setRefreshing(false);
                 if (Objects.requireNonNull(response.body()).getData() != null){
                     List<TokoResponse> tokoResponse = response.body().getData();
+
+                    if (tokoResponse.size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+
                     for (int i = 0; i < tokoResponse.size(); i++){
                         TokoResponse dataToko = tokoResponse.get(i);
                         katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
@@ -108,7 +125,7 @@ public class ListTokoBMFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Throwable t) {
-                Loading.hide(getActivity());
+                swipeRefresh.setRefreshing(false);
                 Log.d("List Toko Katalog", t.getMessage());
 
             }

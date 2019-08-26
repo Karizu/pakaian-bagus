@@ -10,6 +10,8 @@ public class StokToko {
     private String no_artikel;
     private String gambar;
     private String total_barang;
+    private String harga;
+    private String gambar_utama;
 
     public String getId_stok_toko() {
         return id_stok_toko;
@@ -81,5 +83,21 @@ public class StokToko {
 
     public void setTotal_barang(String total_barang) {
         this.total_barang = total_barang;
+    }
+
+    public String getHarga() {
+        return harga;
+    }
+
+    public void setHarga(String harga) {
+        this.harga = harga;
+    }
+
+    public String getGambar_utama() {
+        return gambar_utama;
+    }
+
+    public void setGambar_utama(String gambar_utama) {
+        this.gambar_utama = gambar_utama;
     }
 }

@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.pakaianbagus">
 
-
     <supports-screens android:anyDensity="true" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -43,8 +41,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
-        <activity android:name=".PrinterActivity"></activity>
-        <activity android:name=".presentation.auth.SignInActivity"></activity>
+        <activity android:name=".presentation.home.photocounter.PhotoCounterActivity"></activity>
+        <activity android:name=".util.IntentToFragment" />
+        <activity android:name=".PrinterActivity" />
+        <activity android:name=".presentation.auth.SignInActivity" />
         <activity android:name=".presentation.auth.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

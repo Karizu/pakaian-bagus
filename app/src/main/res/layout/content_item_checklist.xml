@@ -7,6 +7,7 @@
     android:layout_marginStart="4dp"
     android:layout_marginEnd="4dp"
     android:layout_marginBottom="8dp"
+    android:background="@drawable/custom_ripple"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -17,7 +18,6 @@
         android:padding="12dp"
         android:gravity="right"
         android:layout_weight="2"
-        android:background="@drawable/custom_ripple"
         android:orientation="horizontal"
         tools:ignore="RtlHardcoded">
 

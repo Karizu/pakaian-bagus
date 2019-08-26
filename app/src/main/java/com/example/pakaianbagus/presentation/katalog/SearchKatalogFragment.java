@@ -2,6 +2,7 @@ package com.example.pakaianbagus.presentation.katalog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +31,6 @@ import com.example.pakaianbagus.models.KatalogModel;
 import com.example.pakaianbagus.models.StokToko;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 import com.example.pakaianbagus.util.EndlessRecyclerViewScrollListener;
-import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 
@@ -60,6 +61,10 @@ public class SearchKatalogFragment extends Fragment {
     ImageView toolbar_search;
     @BindView(R.id.layoutHeaderKatalog)
     LinearLayout layout;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
 
     public SearchKatalogFragment() {
     }
@@ -97,21 +102,31 @@ public class SearchKatalogFragment extends Fragment {
         keyword = Objects.requireNonNull(getArguments()).getString("keyword");
 
         if (id != null){
-            getListStokToko();
+            swipeRefresh.setOnRefreshListener(() -> {
+                katalogModels.clear();
+                getListStokToko(id, keyword);
+            });
+            getListStokToko(id, keyword);
         }
 
         return rootView;
     }
 
-    private void getListStokToko(){
-        Loading.show(getContext());
+    private void getListStokToko(String id, String keyword){
+        swipeRefresh.setRefreshing(true);
 
         KatalogHelper.searchKatalog(id, keyword, limit, offset, new RestCallback<ApiResponse<List<StokToko>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 if (body.getData() != null){
                     List<StokToko> stokTokos = body.getData();
+
+                    if (stokTokos.size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
 
                         for (int i = 0; i < stokTokos.size(); i++){
                             StokToko stokToko = stokTokos.get(i);
@@ -130,7 +145,7 @@ public class SearchKatalogFragment extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse error) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 Log.d("onFailed Search Katalog", error.getMessage());
             }
 
@@ -142,17 +157,12 @@ public class SearchKatalogFragment extends Fragment {
     }
 
     public void loadNextDataFromApi(int offset) {
-        Loading.show(getContext());
-        // Send an API request to retrieve appropriate paginated data
-        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
-        //  --> Deserialize and construct new model objects from the API response
-        //  --> Append the new data objects to the existing set of items inside the array of items
-        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        swipeRefresh.setRefreshing(true);
         try {
             KatalogHelper.searchKatalog(id, keyword, limit, limit*offset, new RestCallback<ApiResponse<List<StokToko>>>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
-                    Loading.hide(getContext());
+                    swipeRefresh.setRefreshing(false);
                     try {
                         if (body != null) {
                             List<StokToko> res = body.getData();
@@ -177,7 +187,7 @@ public class SearchKatalogFragment extends Fragment {
                 @Override
                 public void onFailed(ErrorResponse error) {
                     Log.i("response", "Response Failed");
-                    Loading.hide(getContext());
+                    swipeRefresh.setRefreshing(false);
                 }
 
                 @Override

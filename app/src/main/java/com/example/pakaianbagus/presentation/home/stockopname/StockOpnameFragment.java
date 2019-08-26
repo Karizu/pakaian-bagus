@@ -2,6 +2,7 @@ package com.example.pakaianbagus.presentation.home.stockopname;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,11 +20,13 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
 import com.example.pakaianbagus.models.StockOpnameModel;
+import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +47,10 @@ public class StockOpnameFragment extends Fragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
 
     public StockOpnameFragment() {
 
@@ -59,12 +67,18 @@ public class StockOpnameFragment extends Fragment {
         stockOpnameModels = new ArrayList<>();
         setRecylerView();
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            stockOpnameModels.clear();
+            setRecylerView();
+        });
+
         return rootView;
     }
 
     private void setRecylerView(){
+        swipeRefresh.setRefreshing(true);
         for (int i = 0; i < 20; i++){
-            stockOpnameModels.add(new StockOpnameModel("Celana Jeans", "2 pcs"));
+            stockOpnameModels.add(new StockOpnameModel("Celana Jeans", i+ " pcs"));
         }
 
         StockOpnameAdapter stockOpnameAdapter = new StockOpnameAdapter(stockOpnameModels, getContext());
@@ -72,15 +86,23 @@ public class StockOpnameFragment extends Fragment {
                 LinearLayout.VERTICAL,
                 false));
         recyclerView.setAdapter(stockOpnameAdapter);
+        swipeRefresh.setRefreshing(false);
+    }
+
+    @OnClick(R.id.toolbar_scan)
+    void onClickScan(){
+        Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
+        intent.putExtra("mode", "STOCK");
+        startActivity(intent);
     }
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack(){
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
+        StockListTokoFragment stockListTokoFragment = new StockListTokoFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutStock, homeFragment);
+        ft.replace(R.id.baseLayoutStock, stockListTokoFragment);
         ft.commit();
     }
 

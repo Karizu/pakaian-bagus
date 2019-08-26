@@ -3,6 +3,7 @@ package com.example.pakaianbagus.presentation.penjualan;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +33,12 @@ import com.example.pakaianbagus.api.PenjualanHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.SalesReportModel;
-import com.example.pakaianbagus.presentation.penjualan.adapter.PenjualanAdapter;
 import com.example.pakaianbagus.presentation.penjualan.adapter.SalesReportAdapter;
-import com.example.pakaianbagus.util.dialog.Loading;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +62,16 @@ public class InputHarianFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.tvDate)
     TextView tvDate;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
+    @BindView(R.id.toolbar_scan)
+    ImageView toolbar_scan;
+    @BindView(R.id.btnSubmit)
+    Button btnSubmit;
+    @BindView(R.id.btnDownload)
+    Button btnDownload;
 
     int limit = 10;
     int offset = 0;
@@ -79,23 +93,61 @@ public class InputHarianFragment extends Fragment {
         rootView = inflater.inflate(R.layout.input_harian_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        try {
+            if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SPG) ||
+                    Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SALES)) {
+                btnSubmit.setVisibility(View.VISIBLE);
+                btnDownload.setVisibility(View.GONE);
+            } else {
+                btnSubmit.setVisibility(View.GONE);
+                btnDownload.setVisibility(View.VISIBLE);
+            }
+
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
+
         id = Objects.requireNonNull(getArguments()).getString("id");
 
         salesReportModels = new ArrayList<>();
-        getPenjualan();
         getCurrentDateChecklist();
+        getPenjualan();
+
+        swipeRefresh.setOnRefreshListener(() -> {
+            salesReportModels.clear();
+            getPenjualan();
+        });
 
         return rootView;
     }
 
+//    private void setRecylerView(){
+//        for (int i = 0; i < 20; i++){
+//            stockOpnameModels.add(new StockOpnameModel("Celana Jeans", "2 pcs"));
+//        }
+//
+//        StockOpnameAdapter stockOpnameAdapter = new StockOpnameAdapter(stockOpnameModels, getContext());
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+//                LinearLayout.VERTICAL,
+//                false));
+//        recyclerView.setAdapter(stockOpnameAdapter);
+//    }
+
     private void getPenjualan(){
-        Loading.show(getContext());
+        swipeRefresh.setRefreshing(true);
         PenjualanHelper.getPenjualan(id, limit, offset, new RestCallback<ApiResponse<List<PenjualanResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<PenjualanResponse>> body) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 if (body.getData() != null){
                     List<PenjualanResponse> res = body.getData();
+
+                    if (res.size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+
                     for (int i = 0; i < res.size(); i++){
                         PenjualanResponse penjualanResponse = res.get(i);
                         salesReportModels.add(new SalesReportModel(penjualanResponse.getTransaksi_detail().get(i).getId_transaksi(),
@@ -116,7 +168,7 @@ public class InputHarianFragment extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse error) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 Log.d("TAG ERROR", error.getMessage());
             }
 
@@ -145,45 +197,24 @@ public class InputHarianFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    @OnClick(R.id.toolbar_input)
+    @OnClick(R.id.toolbar_scan)
     public void onClickToolbarInput(){
-        showDialog();
+//        showDialog();
         myCalendar = Calendar.getInstance();
-        startDate = dialog.findViewById(R.id.etDialogStartDate);
         DatePickerDialog.OnDateSetListener date = (view, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, month);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
+//            updateLabel();
+            Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
+            intent.putExtra("mode", "PENJUALAN");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         };
-        startDate.setOnClickListener(v ->
-            new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show()
-        );
-        endDate = dialog.findViewById(R.id.etDialogEndDate);
-        DatePickerDialog.OnDateSetListener date2 = (view, year, month, dayOfMonth) -> {
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, month);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel2();
-        };
-        endDate.setOnClickListener(v ->
-            new DatePickerDialog(Objects.requireNonNull(getActivity()), date2, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show()
-        );
-        Button btnOK = dialog.findViewById(R.id.btnDialogTambah);
-        btnOK.setText("OK");
-        btnOK.setOnClickListener(v -> {
-            if (startDate.getText().toString().length() >= 1 && endDate.getText().toString().length() >= 1) {
-                dialog.dismiss();
 
-            } else {
-                Snackbar.make(rootView, "Field Tidak Boleh Kosong", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void updateLabel() {

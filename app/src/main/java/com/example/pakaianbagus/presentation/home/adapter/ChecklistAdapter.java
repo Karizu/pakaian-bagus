@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.google.gson.JsonObject;
@@ -29,24 +31,25 @@ import java.util.Objects;
 
 public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.ViewHolder> {
     private List<RoleChecklistModel> roleChecklistModels;
-    private String data;
+    private List<RoleChecklist> roleChecklists;
     private Context context;
+    private String checklist = "";
     private Dialog dialog;
-    private SparseBooleanArray itemStateArray= new SparseBooleanArray();
+    private SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
-    public ChecklistAdapter(List<RoleChecklistModel> roleChecklistModels, Context context){
+    public ChecklistAdapter(List<RoleChecklistModel> roleChecklistModels, Context context) {
         this.roleChecklistModels = roleChecklistModels;
         this.context = context;
     }
 
-    public ChecklistAdapter(String data, Context context, int i){
-        this.data = data;
+    public ChecklistAdapter(List<RoleChecklist> roleChecklists, Context context, int i) {
+        this.roleChecklists = roleChecklists;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public ChecklistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+    public ChecklistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.content_item_checklist, parent, false);
 
@@ -55,49 +58,92 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull ChecklistAdapter.ViewHolder holder, int position){
-        if (data != null){
-            Log.d("ArrayListAdapter", data);
+    public void onBindViewHolder(@NonNull ChecklistAdapter.ViewHolder holder, int position) {
+//        if (data != null){
+//            SessionManagement session = new SessionManagement(Objects.requireNonNull(context));
+//            String name = null, checklistId = null;
+//            try {
+//                String str = "{\"data\":"+data+"}";
+//                JSONArray checklistData = new JSONObject(str).getJSONArray("data");
+//                Log.d("Length", String.valueOf(checklistData.length()));
+//                for (int i = 0; i < checklistData.length(); i++){
+//                    JSONObject text = checklistData.getJSONObject(position);
+//                    name = text.getJSONObject("checklist").getString("name");
+//                    checklistId = text.getString("checklist_id");
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            holder.textViewName.setText(name);
+//
+//            if (session.getChecklist(checklistId) == 0) {
+//                holder.checkBox.setChecked(false);
+//            } else if (session.getChecklist(checklistId) == 1) {
+//                holder.checkBox.setChecked(true);
+//            } else {
+//                holder.checkBox.setChecked(true);
+//            }
+//
+//            String finalChecklistId = checklistId;
+//            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//                if (isChecked) {
+//                    session.setChecklist(finalChecklistId, 1);
+//                } else {
+//                    session.setChecklist(finalChecklistId, 0);
+//                }
+//            });
+//        }
+
+        if (roleChecklists != null) {
+            final RoleChecklist roleChecklistModel = roleChecklists.get(position);
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));
-            String name = null, checklistId = null;
-            try {
-                String str = "{\"data\":"+data+"}";
-                JSONArray checklistData = new JSONObject(str).getJSONArray("data");
-                Log.d("Length", String.valueOf(checklistData.length()));
-                for (int i = 0; i < checklistData.length(); i++){
-                    JSONObject text = checklistData.getJSONObject(position);
-                    name = text.getJSONObject("checklist").getString("name");
-                    checklistId = text.getString("checklist_id");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            final String id = roleChecklistModel.getId();
+//            final String checklistId = roleChecklistModel.getChecklist_id();
+            String name = "Lorem Ipsum Lorem Ipsum";
+            if (roleChecklistModel.getChecklist().getName() != null) {
+                name = roleChecklistModel.getChecklist().getName();
+            } else {
+                name = "Lorem Ipsum Lorem Ipsum";
             }
+
             holder.textViewName.setText(name);
 
-            if (session.getChecklist(checklistId) == 0) {
+            if (session.getChecklist(id) == 0) {
                 holder.checkBox.setChecked(false);
-            } else if (session.getChecklist(checklistId) == 1) {
+            } else if (session.getChecklist(id) == 1) {
                 holder.checkBox.setChecked(true);
             } else {
                 holder.checkBox.setChecked(true);
             }
 
-            String finalChecklistId = checklistId;
             holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
-                    session.setChecklist(finalChecklistId, 1);
+                    session.setChecklist(id, 1);
+                    checklist += roleChecklistModel.getChecklist().getName() + ", ";
                 } else {
-                    session.setChecklist(finalChecklistId, 0);
+                    session.setChecklist(id, 0);
+                    checklist = checklist.replaceAll(roleChecklistModel.getChecklist().getName() + ", ", "");
                 }
             });
+
+            holder.cvChecklist.setOnClickListener(v -> {
+//                if (!checklist.equals("")) {
+//                    int i = checklist.length() - 3;
+//                    int n = checklist.length();
+//                    checklist = checklist.substring(i, n);
+//                    Log.d("TAG i", i+ " " + checklist);
+//                }
+                Toast.makeText(context, checklist, Toast.LENGTH_SHORT).show();
+            });
         }
-        if (data == null){
+
+        if (roleChecklistModels != null) {
             final RoleChecklistModel roleChecklistModel = roleChecklistModels.get(position);
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));
             final String id = roleChecklistModel.getId();
             final String checklistId = roleChecklistModel.getChecklist_id();
             String name = "Lorem Ipsum Lorem Ipsum";
-            if (roleChecklistModel.getName() != null){
+            if (roleChecklistModel.getName() != null) {
                 name = roleChecklistModel.getName();
             } else if (roleChecklistModel.getChecklist() != null && roleChecklistModel.getName() == null) {
                 name = roleChecklistModel.getChecklist().getName();
@@ -114,39 +160,32 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
             } else {
                 holder.checkBox.setChecked(true);
             }
-
-            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    session.setChecklist(checklistId, 1);
-                } else {
-                    session.setChecklist(checklistId, 0);
-                }
-            });
         }
     }
 
     @Override
-    public int getItemCount(){
-        if (roleChecklistModels!=null){
+    public int getItemCount() {
+        if (roleChecklistModels != null) {
             return roleChecklistModels.size();
         } else {
-            String str = "{\"data\":"+data+"}";
-            JSONArray checklistData = null;
-            try {
-                checklistData = new JSONObject(str).getJSONArray("data");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return Objects.requireNonNull(checklistData).length();
+//            String str = "{\"data\":"+data+"}";
+//            JSONArray checklistData = null;
+//            try {
+//                checklistData = new JSONObject(str).getJSONArray("data");
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return Objects.requireNonNull(checklistData).length();
+            return roleChecklists.size();
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
         CheckBox checkBox;
         CardView cvChecklist;
 
-        ViewHolder(View v){
+        ViewHolder(View v) {
             super(v);
             this.setIsRecyclable(false);
             textViewName = v.findViewById(R.id.tvNameChecklist);

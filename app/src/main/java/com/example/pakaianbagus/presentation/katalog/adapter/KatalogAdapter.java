@@ -14,10 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.KatalogModel;
+import com.example.pakaianbagus.util.RoundedCornersTransformation;
 
 import java.util.List;
+
+import static com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter.sCorner;
+import static com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter.sMargin;
 
 public class KatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<KatalogModel> katalogModels;
@@ -134,7 +139,12 @@ public class KatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String kode = katalogModels.get(position).getKode();
             viewHolder.textViewKode.setText(kode);
             String img = katalogModels.get(position).getImage();
-            Glide.with(context).load(img).into(viewHolder.imageViewKatalog);
+            Glide.with(context)
+                    .applyDefaultRequestOptions(new RequestOptions()
+                            .placeholder(R.drawable.jeans)
+                            .error(R.drawable.jeans)).load(img).apply(RequestOptions.bitmapTransform(
+                    new RoundedCornersTransformation(context, sCorner, sMargin))).into(viewHolder.imageViewKatalog);
+
             viewHolder.cardView.setOnClickListener(v -> {
 
             });

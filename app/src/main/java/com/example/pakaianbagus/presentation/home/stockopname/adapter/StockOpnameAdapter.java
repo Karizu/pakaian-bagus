@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.StockOpnameModel;
@@ -58,6 +61,16 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
                     case R.id.navigation_ubah:
                         showDialog(R.layout.dialog_ubah_qty, context);
                         ImageView imgClose = dialog.findViewById(R.id.imgClose);
+                        EditText etQty = dialog.findViewById(R.id.etQty);
+                        Button btnUbah = dialog.findViewById(R.id.btnUbah);
+                        btnUbah.setOnClickListener(v2 -> {
+                            if (!etQty.getText().toString().equals("")){
+                                dialog.dismiss();
+                                holder.textViewQty.setText(etQty.getText().toString());
+                            } else {
+                                Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         imgClose.setOnClickListener(v2 -> dialog.dismiss());
                         break;
                 }

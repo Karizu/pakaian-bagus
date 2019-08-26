@@ -4,6 +4,8 @@ public class KunjunganModel {
     private String id;
     private String name;
     private String datetime;
+    private String image;
+    private String nominal;
 
     public KunjunganModel(String name, String datetime) {
         this.name = name;
@@ -32,5 +34,21 @@ public class KunjunganModel {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getNominal() {
+        return nominal;
+    }
+
+    public void setNominal(String nominal) {
+        this.nominal = nominal;
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.example.pakaianbagus.MainActivity;
+import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
 import com.example.pakaianbagus.presentation.auth.SignInActivity;
 import com.google.gson.Gson;
@@ -27,7 +28,8 @@ public class SessionManagement {
     public static final String KEY_USER_ID = "id";
     public static final String KEY_ROLE_ID = "roleId";
     public static final String KEY_BEARER_TOKEN = "token";
-    public static final String ROLE_ADMIN = "4";
+    public static final String ROLE_ADMIN = "5";
+    public static final String ROLE_MANAGER = "4";
     public static final String ROLE_KOORDINATOR = "3";
     public static final String ROLE_SPG = "2";
     public static final String ROLE_SALES = "1";
@@ -67,9 +69,9 @@ public class SessionManagement {
         return checklist;
     }
 
-    public void setArraylistChecklist(List<RoleChecklistModel> data){
+    public void setArraylistChecklist(List<RoleChecklist> data){
         Gson gson = new Gson();
-        List<RoleChecklistModel> textList = new ArrayList<>();
+        List<RoleChecklist> textList = new ArrayList<>();
         textList.addAll(data);
         String jsonText = gson.toJson(textList);
         editor.putString("key", jsonText);

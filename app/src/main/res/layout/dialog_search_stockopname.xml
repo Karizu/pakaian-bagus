@@ -70,6 +70,21 @@
             tools:ignore="HardcodedText"
             android:focusable="true" />
 
+        <Button
+            android:id="@+id/btnScanBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="13sp"
+            android:clickable="true"
+            android:background="@drawable/background_button"
+            android:textColor="@color/White"
+            android:text="SCAN BARCODE"
+            tools:ignore="HardcodedText"
+            android:visibility="gone"
+            android:focusable="true" />
+
     </LinearLayout>
 
 </LinearLayout>

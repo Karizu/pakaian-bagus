@@ -45,6 +45,16 @@
                     android:textColor="@color/White" />
 
                 <ImageView
+                    android:id="@+id/toolbarPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="16dp"
+                    app:srcCompat="@drawable/ic_border_outer_black_24dp"
+                    android:contentDescription="@string/todo"
+                    tools:ignore="RtlHardcoded" />
+
+                <ImageView
                     android:id="@+id/toolbar_notif"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -69,395 +79,411 @@
 
         </android.support.v7.widget.Toolbar>
 
-
-        <ScrollView
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            tools:ignore="UnknownIdInLayout">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar">
 
-            <android.support.v7.widget.CardView
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="6dp"
-                app:cardElevation="4dp"
-                tools:ignore="ScrollViewSize,UnknownIdInLayout">
+                tools:ignore="UnknownIdInLayout">
 
-                <LinearLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:layout_marginBottom="16dp"
-                    tools:ignore="UnknownIdInLayout">
-
-                    <com.synnapps.carouselview.CarouselView
-                        android:id="@+id/carousel"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        app:indicatorGravity="bottom|center"
-                        app:indicatorMarginHorizontal="@dimen/margin_padding_size_large" />
-
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="4dp"
+                    tools:ignore="ScrollViewSize,UnknownIdInLayout">
 
                     <LinearLayout
-                        android:id="@+id/layoutHeaderButton2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginBottom="16dp"
+                        tools:ignore="UnknownIdInLayout">
+
+                        <com.synnapps.carouselview.CarouselView
+                            android:id="@+id/carousel"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            app:indicatorGravity="bottom|center"
+                            app:indicatorMarginHorizontal="@dimen/margin_padding_size_large" />
+
 
                         <LinearLayout
-                            android:id="@+id/layoutHeaderIcon01"
+                            android:id="@+id/layoutHeaderButton2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/layoutHeaderIcon01"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:weightSum="2"
+                                android:padding="4dp"
+                                android:orientation="horizontal">
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/btnKunjungan"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    app:cardElevation="4dp"
+                                    app:cardCornerRadius="3dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/custom_ripple"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:padding="16dp">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:srcCompat="@drawable/kunjungan"
+                                            android:contentDescription="@string/todo"
+                                            tools:ignore="TooDeepLayout" />
+
+                                    </LinearLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/btnSPG"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    app:cardElevation="4dp"
+                                    app:cardCornerRadius="3dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/custom_ripple"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:padding="16dp">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:srcCompat="@drawable/spg"
+                                            tools:ignore="ContentDescription" />
+
+                                    </LinearLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/btnPiutang"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    app:cardElevation="4dp"
+                                    app:cardCornerRadius="3dp"
+                                    android:visibility="visible">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/custom_ripple"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:padding="16dp">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="24dp"
+                                            app:srcCompat="@drawable/piutang"
+                                            tools:ignore="ContentDescription" />
+
+                                    </LinearLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/layoutHeaderTitle01"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:weightSum="2"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:gravity="center"
+                                    android:textSize="12sp"
+                                    android:textColor="@color/Black"
+                                    android:text="@string/kunjungan"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:textSize="12sp"
+                                    android:gravity="center"
+                                    android:textColor="@color/Black"
+                                    android:text="@string/spg"/>
+
+                                <TextView
+                                    android:id="@+id/tvPiutang"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:textSize="12sp"
+                                    android:gravity="center"
+                                    android:textColor="@color/Black"
+                                    android:visibility="gone"
+                                    android:text="PIUTANG"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHeaderButton1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/layoutHeaderIcon02"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:weightSum="3"
+                                android:padding="4dp"
+                                android:orientation="horizontal">
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/btnPenjualan"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    app:cardElevation="4dp"
+                                    app:cardCornerRadius="3dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/custom_ripple"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:padding="16dp">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:srcCompat="@drawable/penjualan"
+                                            android:contentDescription="@string/todo"
+                                            tools:ignore="TooDeepLayout" />
+
+                                    </LinearLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/btnCheck"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    app:cardElevation="4dp"
+                                    app:cardCornerRadius="3dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/custom_ripple"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:padding="16dp">
+
+                                        <ImageView
+                                            android:id="@+id/imgCheck"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:srcCompat="@drawable/checkin"
+                                            tools:ignore="ContentDescription" />
+
+                                    </LinearLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/btnStock"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    app:cardElevation="4dp"
+                                    app:cardCornerRadius="3dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/custom_ripple"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:padding="16dp">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:srcCompat="@drawable/stockopname"
+                                            tools:ignore="ContentDescription" />
+
+                                    </LinearLayout>
+
+                                </android.support.v7.widget.CardView>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/layoutHeaderTitle02"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:weightSum="3"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvPenjualan"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:gravity="center"
+                                    android:textSize="12sp"
+                                    android:textColor="@color/Black"
+                                    android:text="INPUT PENJUALAN"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/tvCheck"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:textSize="12sp"
+                                    android:gravity="center"
+                                    android:textColor="@color/Black"
+                                    android:text="CHECK IN/OUT"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_margin="4dp"
+                                    android:textSize="12sp"
+                                    android:gravity="center"
+                                    android:textColor="@color/Black"
+                                    android:text="STOCK OPNAME"
+                                    tools:ignore="HardcodedText" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal"
                             android:weightSum="2"
-                            android:padding="4dp"
-                            android:orientation="horizontal">
+                            tools:ignore="DisableBaselineAlignment">
 
-                            <android.support.v7.widget.CardView
-                                android:id="@+id/btnKunjungan"
+                            <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:background="?android:attr/selectableItemBackground"
-                                app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp">
+                                android:orientation="vertical"
+                                android:layout_weight="2">
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
+                                <TextView
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/custom_ripple"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="16dp">
+                                    android:text="@string/checklist"
+                                    android:textColor="@color/DarkSlateBlue"
+                                    android:textStyle="bold"/>
 
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/kunjungan"
-                                        android:contentDescription="@string/todo"
-                                        tools:ignore="TooDeepLayout" />
-
-                                </LinearLayout>
-
-                            </android.support.v7.widget.CardView>
-
-                            <android.support.v7.widget.CardView
-                                android:id="@+id/btnSPG"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:background="?android:attr/selectableItemBackground"
-                                app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
+                                <TextView
+                                    android:id="@+id/tvDateChecklist"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/custom_ripple"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="16dp">
+                                    android:text="@string/date"
+                                    android:textColor="@color/DarkSlateBlue"
+                                    android:textSize="12sp"/>
 
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/spg"
-                                        tools:ignore="ContentDescription" />
+                            </LinearLayout>
 
-                                </LinearLayout>
-
-                            </android.support.v7.widget.CardView>
-
-                            <android.support.v7.widget.CardView
-                                android:id="@+id/btnPiutang"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:background="?android:attr/selectableItemBackground"
-                                app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp"
-                                android:visibility="gone">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/custom_ripple"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="16dp">
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/piutang"
-                                        tools:ignore="ContentDescription" />
-
-                                </LinearLayout>
-
-                            </android.support.v7.widget.CardView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutHeaderTitle01"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:weightSum="2"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:gravity="center"
-                                android:textSize="12sp"
-                                android:textColor="@color/Black"
-                                android:text="@string/kunjungan"/>
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:textSize="12sp"
-                                android:gravity="center"
-                                android:textColor="@color/Black"
-                                android:text="@string/spg"/>
-
-                            <TextView
-                                android:id="@+id/tvPiutang"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:textSize="12sp"
-                                android:gravity="center"
-                                android:textColor="@color/Black"
-                                android:visibility="gone"
-                                android:text="Piutang"/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/layoutHeaderButton1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/layoutHeaderIcon02"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:weightSum="3"
-                            android:padding="4dp"
-                            android:orientation="horizontal">
-
-                            <android.support.v7.widget.CardView
-                                android:id="@+id/btnPenjualan"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:background="?android:attr/selectableItemBackground"
-                                app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/custom_ripple"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="16dp">
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/penjualan"
-                                        android:contentDescription="@string/todo"
-                                        tools:ignore="TooDeepLayout" />
-
-                                </LinearLayout>
-
-                            </android.support.v7.widget.CardView>
-
-                            <android.support.v7.widget.CardView
-                                android:id="@+id/btnCheck"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:background="?android:attr/selectableItemBackground"
-                                app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/custom_ripple"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="16dp">
-
-                                    <ImageView
-                                        android:id="@+id/imgCheck"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/checkin"
-                                        tools:ignore="ContentDescription" />
-
-                                </LinearLayout>
-
-                            </android.support.v7.widget.CardView>
-
-                            <android.support.v7.widget.CardView
-                                android:id="@+id/btnStock"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:background="?android:attr/selectableItemBackground"
-                                app:cardElevation="4dp"
-                                app:cardCornerRadius="3dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/custom_ripple"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="16dp">
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/stockopname"
-                                        tools:ignore="ContentDescription" />
-
-                                </LinearLayout>
-
-                            </android.support.v7.widget.CardView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutHeaderTitle02"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:weightSum="3"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tvPenjualan"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:gravity="center"
-                                android:textSize="12sp"
-                                android:textColor="@color/Black"
-                                android:text="INPUT PENJUALAN"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView
-                                android:id="@+id/tvCheck"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:textSize="12sp"
-                                android:gravity="center"
-                                android:textColor="@color/Black"
-                                android:text="CHECK IN/OUT"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_margin="4dp"
-                                android:textSize="12sp"
-                                android:gravity="center"
-                                android:textColor="@color/Black"
-                                android:text="STOCK OPNAME"
-                                tools:ignore="HardcodedText" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
-                        tools:ignore="DisableBaselineAlignment">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_weight="2">
-
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/checklist"
-                                android:textColor="@color/DarkSlateBlue"
-                                android:textStyle="bold"/>
+                                android:layout_height="match_parent"
+                                android:gravity="center">
 
-                            <TextView
-                                android:id="@+id/tvDateChecklist"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/date"
-                                android:textColor="@color/DarkSlateBlue"
-                                android:textSize="12sp"/>
+                                <Button
+                                    android:id="@+id/btnTambah"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="@string/tambah"
+                                    android:textColor="@color/White"
+                                    android:textSize="11sp"
+                                    android:clickable="true"
+                                    android:background="@drawable/btn_rounded_blackyellow"
+                                    tools:ignore="SmallSp"
+                                    android:focusable="true" />
+
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"/>
+
+                        <TextView
+                            android:id="@+id/tvNoData"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center">
-
-                            <Button
-                                android:id="@+id/btnTambah"
-                                android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:text="@string/tambah"
-                                android:textColor="@color/White"
-                                android:textSize="11sp"
-                                android:clickable="true"
-                                android:background="@drawable/btn_rounded_blackyellow"
-                                tools:ignore="SmallSp"
-                                android:focusable="true" />
-
-                        </LinearLayout>
-
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:visibility="gone"
+                            android:text="Tidak ada data"/>
 
                     </LinearLayout>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"/>
+                </android.support.v7.widget.CardView>
 
-                </LinearLayout>
+            </ScrollView>
 
-            </android.support.v7.widget.CardView>
-
-        </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 

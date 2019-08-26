@@ -79,9 +79,21 @@
             android:padding="16dp"
             android:textSize="13sp"
             android:gravity="center"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
             android:background="@drawable/background_input"
             android:hint="NOMINAL"
             tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:id="@+id/imgPhoto"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/background_input_kunjungan"
+            app:srcCompat="@drawable/ic_add_black_32dp"
+            android:scaleType="center"
+            android:adjustViewBounds="true"/>
 
         <Button
             android:id="@+id/btnDialogPhoto"

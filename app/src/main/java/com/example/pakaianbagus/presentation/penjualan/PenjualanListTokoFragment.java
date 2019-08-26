@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -52,6 +53,10 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
     TextView toolbar_title;
     @BindView(R.id.toolbar_back)
     ImageView imgBack;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
 
     public PenjualanListTokoFragment() {
     }
@@ -71,6 +76,11 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
         getCurrentDateChecklist();
         getListToko();
 
+        swipeRefresh.setOnRefreshListener(() -> {
+            katalogTokoModels.clear();
+            getListToko();
+        });
+
         return rootView;
     }
 
@@ -82,13 +92,20 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
     }
 
     public void getListToko(){
-        Loading.show(getActivity());
+        swipeRefresh.setRefreshing(true);
         KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
-                Loading.hide(getActivity());
+                swipeRefresh.setRefreshing(false);
                 if (Objects.requireNonNull(response.body()).getData() != null){
                     List<TokoResponse> tokoResponse = response.body().getData();
+
+                    if (tokoResponse.size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+
                     for (int i = 0; i < tokoResponse.size(); i++){
                         TokoResponse dataToko = tokoResponse.get(i);
                         katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
@@ -105,7 +122,7 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Throwable t) {
-                Loading.hide(getActivity());
+                swipeRefresh.setRefreshing(false);
                 Log.d("List Toko Katalog", t.getMessage());
 
             }
