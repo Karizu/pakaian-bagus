@@ -2,7 +2,6 @@ package com.example.pakaianbagus.presentation.katalog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -28,7 +27,7 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.KatalogHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogModel;
-import com.example.pakaianbagus.models.StokToko;
+import com.example.pakaianbagus.models.stock.StokToko;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 import com.example.pakaianbagus.util.EndlessRecyclerViewScrollListener;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
@@ -130,11 +129,11 @@ public class SearchKatalogFragment extends Fragment {
 
                         for (int i = 0; i < stokTokos.size(); i++){
                             StokToko stokToko = stokTokos.get(i);
-                            katalogModels.add(new KatalogModel(stokToko.getId_artikel(),
-                                    stokToko.getNama_barang(),
-                                    stokToko.getGambar(),
-                                    stokToko.getTotal_barang(),
-                                    stokToko.getNo_artikel()));
+                            katalogModels.add(new KatalogModel(stokToko.getArticleCode(),
+                                    stokToko.getItem().getName(),
+                                    stokToko.getItem().getImage(),
+                                    stokToko.getQty(),
+                                    stokToko.getPrice()));
                         }
 
                     katalogAdapter = new KatalogAdapter(katalogModels, getContext());
@@ -169,11 +168,11 @@ public class SearchKatalogFragment extends Fragment {
                             List<KatalogModel> katalogModelList = new ArrayList<>();
                             for (int i = 0; i < res.size(); i++) {
                                 StokToko stokToko = res.get(i);
-                                katalogModelList.add(new KatalogModel(stokToko.getId_artikel(),
-                                        stokToko.getNama_barang(),
-                                        stokToko.getGambar(),
-                                        stokToko.getTotal_barang(),
-                                        stokToko.getNo_artikel()));
+                                katalogModelList.add(new KatalogModel(stokToko.getArticleCode(),
+                                        stokToko.getItem().getName(),
+                                        stokToko.getItem().getImage(),
+                                        stokToko.getQty(),
+                                        stokToko.getPrice()));
                             }
                             Log.d("Masuk", "Masuk onLoad");
                             katalogModels.addAll(katalogModelList);

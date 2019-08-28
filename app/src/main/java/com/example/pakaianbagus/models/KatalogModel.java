@@ -5,10 +5,10 @@ public class KatalogModel {
     private String id;
     private String name;
     private String image;
-    private String qty;
-    private String kode;
+    private int qty;
+    private int kode;
 
-    public KatalogModel(String id, String name, String image, String qty, String kode) {
+    public KatalogModel(String id, String name, String image, int qty, int kode) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -40,19 +40,19 @@ public class KatalogModel {
         this.image = image;
     }
 
-    public String getQty() {
+    public int getQty() {
         return qty;
     }
 
-    public void setQty(String qty) {
+    public void setQty(int qty) {
         this.qty = qty;
     }
 
-    public String getKode() {
+    public int getKode() {
         return kode;
     }
 
-    public void setKode(String kode) {
+    public void setKode(int kode) {
         this.kode = kode;
     }
 }

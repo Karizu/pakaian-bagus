@@ -4,9 +4,16 @@ public class Brand {
 
     private String id_brand;
     private String nama_brand;
+    private String code;
     private String deskripsi;
     private String gambar;
     private String jenis_brand;
+
+    public Brand(String id_brand, String nama_brand, String code) {
+        this.id_brand = id_brand;
+        this.nama_brand = nama_brand;
+        this.code = code;
+    }
 
     public Brand(String id_brand, String nama_brand, String deskripsi, String gambar, String jenis_brand) {
         this.id_brand = id_brand;
@@ -30,6 +37,14 @@ public class Brand {
 
     public void setNama_brand(String nama_brand) {
         this.nama_brand = nama_brand;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getDeskripsi() {

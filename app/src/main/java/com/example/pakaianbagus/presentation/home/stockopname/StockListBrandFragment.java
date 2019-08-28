@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.SpgHelper;
+import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Brand;
 import com.example.pakaianbagus.models.BrandResponse;
@@ -99,7 +100,7 @@ public class StockListBrandFragment extends Fragment implements IOnBackPressed {
 
     public void getListToko() {
         swipeRefresh.setRefreshing(true);
-        SpgHelper.getListBrand(new RestCallback<ApiResponse<List<BrandResponse>>>() {
+        StockHelper.getListBrand(new RestCallback<ApiResponse<List<BrandResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<BrandResponse>> listApiResponse) {
                 swipeRefresh.setRefreshing(false);
@@ -114,11 +115,9 @@ public class StockListBrandFragment extends Fragment implements IOnBackPressed {
 
                     for (int i = 0; i < res.size(); i++) {
                         BrandResponse response = res.get(i);
-                        brandList.add(new Brand(response.getId_brand(),
-                                response.getNama_brand(),
-                                response.getDeskripsi(),
-                                response.getGambar(),
-                                response.getJenis_brand()));
+                        brandList.add(new Brand(response.getId(),
+                                response.getName(),
+                                response.getCode()));
                     }
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
                     StockBrandAdapter adapter = new StockBrandAdapter(brandList, getContext(), StockListBrandFragment.this);

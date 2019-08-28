@@ -92,14 +92,13 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
                     List<TokoResponse> tokoResponse = response.body().getData();
                     for (int i = 0; i < tokoResponse.size(); i++) {
                         TokoResponse dataToko = tokoResponse.get(i);
-                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
-                                dataToko.getName(),
-                                dataToko.getAlamat()));
+                        if (dataToko.getType().equalsIgnoreCase("S")) {
+                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
+                        }
                     }
                     SpgTokoAdapter spgTokoAdapter = new SpgTokoAdapter(katalogTokoModels, getContext(), SpgListTokoFragment.this);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                            LinearLayout.VERTICAL,
-                            false));
+                            LinearLayout.VERTICAL, false));
                     recyclerView.setAdapter(spgTokoAdapter);
                 }
             }

@@ -134,9 +134,9 @@ public class KatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (katalogModels.get(position) != null){
             String name = katalogModels.get(position).getName();
             viewHolder.textViewName.setText(name);
-            String qty = katalogModels.get(position).getQty();
+            String qty = String.valueOf(katalogModels.get(position).getQty());
             viewHolder.textViewQty.setText(qty+ " pcs");
-            String kode = katalogModels.get(position).getKode();
+            String kode = String.valueOf(katalogModels.get(position).getKode());
             viewHolder.textViewKode.setText(kode);
             String img = katalogModels.get(position).getImage();
             Glide.with(context)

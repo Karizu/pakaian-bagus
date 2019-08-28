@@ -123,12 +123,9 @@ public class KatalogBrandFragment extends Fragment {
 
                     for (int i = 0; i < res.size(); i++) {
                         BrandResponse response = res.get(i);
-                        brandList.add(new Brand(response.getId_brand(),
-                                response.getNama_brand(),
-                                response.getDeskripsi(),
-                                response.getGambar(),
-                                response.getJenis_brand()));
+                        brandList.add(new Brand(response.getId(), response.getName(), response.getCode()));
                     }
+
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
 //                    GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
                     KatalogBrandAdapter adapter = new KatalogBrandAdapter(brandList, getContext(), KatalogBrandFragment.this);
@@ -142,7 +139,7 @@ public class KatalogBrandFragment extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse errorResponse) {
-                Loading.hide(getContext());
+                swipeRefresh.setRefreshing(false);
                 Log.d("TAG onFialed", errorResponse.getMessage());
             }
 

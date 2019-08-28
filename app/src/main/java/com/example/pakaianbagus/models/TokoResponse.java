@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class TokoResponse {
 
-    @SerializedName("id_store")
+    @SerializedName("id")
     @Expose
     private String id;
-    @SerializedName("nama_store")
+    @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("alamat")
+    @SerializedName("type")
     @Expose
-    private String alamat;
+    private String type;
 
     public String getId() {
         return id;
@@ -31,11 +31,11 @@ public class TokoResponse {
         this.name = name;
     }
 
-    public String getAlamat() {
-        return alamat;
+    public String getType() {
+        return type;
     }
 
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
+    public void setType(String type) {
+        this.type = type;
     }
 }

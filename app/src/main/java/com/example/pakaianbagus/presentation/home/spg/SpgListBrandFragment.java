@@ -116,11 +116,9 @@ public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
 
                     for (int i = 0; i < res.size(); i++) {
                         BrandResponse response = res.get(i);
-                        brandList.add(new Brand(response.getId_brand(),
-                                response.getNama_brand(),
-                                response.getDeskripsi(),
-                                response.getGambar(),
-                                response.getJenis_brand()));
+                        brandList.add(new Brand(response.getId(),
+                                response.getName(),
+                                response.getCode()));
                     }
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
                     SpgBrandAdapter adapter = new SpgBrandAdapter(brandList, getContext(), SpgListBrandFragment.this);

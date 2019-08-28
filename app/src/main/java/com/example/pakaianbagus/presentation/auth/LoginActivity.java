@@ -100,7 +100,17 @@ public class LoginActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
 
-            LoginRequest loginRequest = new LoginRequest();
+            Session.save(new SessionObject("Authorization", "Bearer 123123123123121231233", true));
+            Session.save(new SessionObject("UserId", "3"));
+            Session.save(new SessionObject("RoleId", "4"));
+            Session.save(new SessionObject("Name", "admin"));
+            Loading.hide(getApplicationContext());
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
+
+            /*LoginRequest loginRequest = new LoginRequest();
             loginRequest.setLogin(etUsername.getText().toString());
             loginRequest.setPassword(etPassword.getText().toString());
 
@@ -133,7 +143,8 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("onFailed Login", t.getMessage());
                     t.printStackTrace();
                 }
-            });
+            });*/
+
         }
     }
 

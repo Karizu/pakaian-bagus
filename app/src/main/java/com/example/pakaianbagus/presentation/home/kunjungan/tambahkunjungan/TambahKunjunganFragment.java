@@ -189,8 +189,8 @@ public class TambahKunjunganFragment extends Fragment {
                     brandIdList.add("null");
                     for (int i = 0; i < res.size(); i++) {
                         BrandResponse response = res.get(i);
-                        brandList.add(response.getNama_brand());
-                        brandIdList.add(response.getId_brand());
+                        brandList.add(response.getName());
+                        brandIdList.add(response.getId());
                     }
 
                     // Creating adapter for spinner

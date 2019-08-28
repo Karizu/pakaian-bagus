@@ -2,7 +2,41 @@ package com.example.pakaianbagus.models;
 
 public class BrandResponse {
 
-    private String id_brand;
+    private String id;
+    private String name;
+    private String code;
+
+    public BrandResponse(String id, String name, String code) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    /*private String id_brand;
     private String nama_brand;
     private String deskripsi;
     private String gambar;
@@ -46,5 +80,5 @@ public class BrandResponse {
 
     public void setJenis_brand(String jenis_brand) {
         this.jenis_brand = jenis_brand;
-    }
+    }*/
 }

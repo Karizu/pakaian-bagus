@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -34,11 +31,10 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.KatalogHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogModel;
-import com.example.pakaianbagus.models.StokToko;
+import com.example.pakaianbagus.models.stock.StokToko;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 import com.example.pakaianbagus.util.EndlessRecyclerViewScrollListener;
-import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 
@@ -253,11 +249,11 @@ public class KatalogListBarang extends Fragment {
 
                     for (int i = 0; i < stokTokos.size(); i++) {
                         StokToko stokToko = stokTokos.get(i);
-                        katalogModels.add(new KatalogModel(stokToko.getId_artikel(),
-                                stokToko.getNama_barang(),
-                                stokToko.getGambar(),
-                                stokToko.getTotal_barang(),
-                                stokToko.getNo_artikel()));
+                        katalogModels.add(new KatalogModel(stokToko.getArticleCode(),
+                                stokToko.getItem().getName(),
+                                stokToko.getItem().getImage(),
+                                stokToko.getQty(),
+                                stokToko.getPrice()));
                     }
 
                     katalogAdapter = new KatalogAdapter(katalogModels, getContext());
@@ -349,11 +345,11 @@ public class KatalogListBarang extends Fragment {
                             List<KatalogModel> katalogModelList = new ArrayList<>();
                             for (int i = 0; i < res.size(); i++) {
                                 StokToko stokToko = res.get(i);
-                                katalogModelList.add(new KatalogModel(stokToko.getId_artikel(),
-                                        stokToko.getNama_barang(),
-                                        stokToko.getGambar(),
-                                        stokToko.getTotal_barang(),
-                                        stokToko.getNo_artikel()));
+                                katalogModelList.add(new KatalogModel(stokToko.getArticleCode(),
+                                        stokToko.getItem().getName(),
+                                        stokToko.getItem().getImage(),
+                                        stokToko.getQty(),
+                                        stokToko.getPrice()));
                             }
                             Log.d("Masuk", "Masuk onLoad");
                             katalogModels.addAll(katalogModelList);

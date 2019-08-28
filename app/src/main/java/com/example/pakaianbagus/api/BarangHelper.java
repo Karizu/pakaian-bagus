@@ -2,7 +2,6 @@ package com.example.pakaianbagus.api;
 
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
-import com.example.pakaianbagus.models.StokToko;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
 

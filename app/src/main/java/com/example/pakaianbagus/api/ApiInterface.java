@@ -7,10 +7,9 @@ import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.RoleChecklist;
-import com.example.pakaianbagus.models.StokToko;
-import com.example.pakaianbagus.models.Toko;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
+import com.example.pakaianbagus.models.stock.StokToko;
 
 import java.util.List;
 
@@ -18,12 +17,10 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -33,9 +30,9 @@ public interface ApiInterface {
 //    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
 
     //    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
-    //String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
+    String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/public/";
-    String BASE_URL = "http://37.72.172.144/pb-v1/";
+    //String BASE_URL = "http://37.72.172.144/pb-v1/";
 
     //    @GET("userLocation/nearMe")
 //    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
@@ -58,13 +55,14 @@ public interface ApiInterface {
     Call<ApiResponse<List<RoleChecklist>>> getRoleChecklist(@Query("role_id") String role_id,
                                                             @Header("Authorization") String token);
 
-    @GET("store/all")
-    Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
+    @GET("places")
+    Call<ApiResponse<List<TokoResponse>>> getListToko();
+    //Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
 
-    @GET("brand/all")
+    @GET("brands")
     Call<ApiResponse<List<BrandResponse>>> getListBrand();
 
-    @GET("stok_toko/getAllArtikel")
+    @GET("stocks")
     Call<ApiResponse<List<StokToko>>> getListStokToko(@Query("id_store") String id_store,
                                                       @Query("id_brand") String idBrand,
                                                       @Query("limit") int limit,
