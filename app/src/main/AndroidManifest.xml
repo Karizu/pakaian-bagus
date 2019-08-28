@@ -41,7 +41,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
-        <activity android:name=".presentation.home.photocounter.PhotoCounterActivity"></activity>
+        <activity android:name=".presentation.home.spg.SpgListMutasiFragment"></activity>
+        <activity android:name=".presentation.home.photocounter.PhotoCounterActivity" />
         <activity android:name=".util.IntentToFragment" />
         <activity android:name=".PrinterActivity" />
         <activity android:name=".presentation.auth.SignInActivity" />

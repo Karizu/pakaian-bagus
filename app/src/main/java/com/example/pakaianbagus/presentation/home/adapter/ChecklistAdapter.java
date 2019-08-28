@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
+import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.google.gson.JsonObject;
 
@@ -34,6 +36,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
     private List<RoleChecklist> roleChecklists;
     private Context context;
     private String checklist = "";
+    private Fragment fragment;
     private Dialog dialog;
     private SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
@@ -45,6 +48,12 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
     public ChecklistAdapter(List<RoleChecklist> roleChecklists, Context context, int i) {
         this.roleChecklists = roleChecklists;
         this.context = context;
+    }
+
+    public ChecklistAdapter(List<RoleChecklist> roleChecklists, Context context, int i, Fragment fragment) {
+        this.roleChecklists = roleChecklists;
+        this.context = context;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -99,7 +108,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));
             final String id = roleChecklistModel.getId();
 //            final String checklistId = roleChecklistModel.getChecklist_id();
-            String name = "Lorem Ipsum Lorem Ipsum";
+            String name;
             if (roleChecklistModel.getChecklist().getName() != null) {
                 name = roleChecklistModel.getChecklist().getName();
             } else {
@@ -124,16 +133,17 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
                     session.setChecklist(id, 0);
                     checklist = checklist.replaceAll(roleChecklistModel.getChecklist().getName() + ", ", "");
                 }
+                ((HomeFragment) fragment).setChecklistItem(checklist);
             });
 
             holder.cvChecklist.setOnClickListener(v -> {
-//                if (!checklist.equals("")) {
-//                    int i = checklist.length() - 3;
-//                    int n = checklist.length();
-//                    checklist = checklist.substring(i, n);
-//                    Log.d("TAG i", i+ " " + checklist);
-//                }
-                Toast.makeText(context, checklist, Toast.LENGTH_SHORT).show();
+                /*if (!checklist.equals("")) {
+                    int i = checklist.length() - 3;
+                    int n = checklist.length();
+                    checklist = checklist.substring(i, n);
+                    Log.d("TAG i", i+ " " + checklist);
+                }
+                Toast.makeText(context, checklist, Toast.LENGTH_SHORT).show();*/
             });
         }
 

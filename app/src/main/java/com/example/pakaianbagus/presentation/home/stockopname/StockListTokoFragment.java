@@ -21,10 +21,8 @@ import com.example.pakaianbagus.api.KatalogHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
-import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockTokoAdapter;
 import com.example.pakaianbagus.util.IOnBackPressed;
-import com.example.pakaianbagus.util.dialog.Loading;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StockListTokoFragment extends Fragment implements IOnBackPressed {
-
 
     private List<KatalogTokoModel> katalogTokoModels;
 
@@ -86,16 +83,16 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
         tvDate.setText(formattedDate);
     }
 
-    public void getListToko(){
+    public void getListToko() {
         swipeRefresh.setRefreshing(true);
         KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 swipeRefresh.setRefreshing(false);
                 try {
-                    if (Objects.requireNonNull(response.body()).getData() != null){
+                    if (Objects.requireNonNull(response.body()).getData() != null) {
                         List<TokoResponse> tokoResponse = response.body().getData();
-                        for (int i = 0; i < tokoResponse.size(); i++){
+                        for (int i = 0; i < tokoResponse.size(); i++) {
                             TokoResponse dataToko = tokoResponse.get(i);
                             katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
                                     dataToko.getName(),
@@ -107,7 +104,7 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
                                 false));
                         recyclerView.setAdapter(stockTokoAdapter);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.d("Catch", "getListToko");
                     e.printStackTrace();
                 }
@@ -122,7 +119,7 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
         });
     }
 
-    public void onClickItem(String id){
+    public void onClickItem(String id) {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
 
@@ -136,10 +133,10 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
     }
 
     @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
+    public void toolbarBack() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
+        StockListBrandFragment homeFragment = new StockListBrandFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutSpg, homeFragment);
         ft.commit();
@@ -149,7 +146,7 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
     public boolean onBackPressed() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
+        StockListBrandFragment homeFragment = new StockListBrandFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, homeFragment);
         ft.commit();

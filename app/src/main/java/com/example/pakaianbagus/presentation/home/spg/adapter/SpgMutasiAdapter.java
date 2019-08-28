@@ -11,32 +11,38 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.spg.SpgListFragment;
 import com.example.pakaianbagus.models.SpgModel;
+import com.example.pakaianbagus.presentation.home.spg.SpgListMutasiFragment;
 
 import java.util.List;
 
-public class SpgAdapter extends RecyclerView.Adapter<SpgAdapter.ViewHolder> {
+/**
+ * Created by alfianhpratama on 26/08/2019.
+ */
+
+public class SpgMutasiAdapter extends RecyclerView.Adapter<SpgMutasiAdapter.ViewHolder> {
     private List<SpgModel> spgModels;
     private Context context;
     private Dialog dialog;
-    private SpgListFragment spgListFragment;
+    private SpgListMutasiFragment spgListMutasiFragment;
 
-    public SpgAdapter(List<SpgModel> spgModels, Context context, SpgListFragment spgListFragment) {
+    public SpgMutasiAdapter(List<SpgModel> spgModels, Context context, SpgListMutasiFragment spgListMutasiFragment) {
         this.spgModels = spgModels;
         this.context = context;
-        this.spgListFragment = spgListFragment;
+        this.spgListMutasiFragment = spgListMutasiFragment;
     }
 
     @NonNull
     @Override
-    public SpgAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item_spg, parent, false);
-        return new SpgAdapter.ViewHolder(v);
+    public SpgMutasiAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.content_item_spg, parent, false);
+
+        return new SpgMutasiAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SpgAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SpgMutasiAdapter.ViewHolder holder, int position) {
         final SpgModel spgModel = spgModels.get(position);
 //        final String id = katalogModel.getId();
         final String name = spgModel.getName();
@@ -44,9 +50,7 @@ public class SpgAdapter extends RecyclerView.Adapter<SpgAdapter.ViewHolder> {
 
         holder.textViewName.setText(name);
         holder.textViewQty.setText(toko);
-        holder.layoutSpg.setOnClickListener(view ->
-                spgListFragment.onClickLayoutListSPG()
-        );
+        holder.layoutSpg.setOnClickListener(view -> spgListMutasiFragment.onClickLayoutListSPG());
     }
 
     @Override

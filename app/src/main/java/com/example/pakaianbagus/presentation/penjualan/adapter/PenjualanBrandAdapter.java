@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.presentation.katalog.adapter;
+package com.example.pakaianbagus.presentation.penjualan.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,21 +10,22 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.pakaianbagus.MainActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.Brand;
-import com.example.pakaianbagus.models.KatalogTokoModel;
-import com.example.pakaianbagus.presentation.katalog.KatalogBrandFragment;
-import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
+import com.example.pakaianbagus.presentation.penjualan.PenjualanBrandFragment;
 
 import java.util.List;
 
-public class KatalogBrandAdapter extends RecyclerView.Adapter<KatalogBrandAdapter.ViewHolder> {
+/**
+ * Created by alfianhpratama on 28/08/2019.
+ * Organization: UTeam
+ */
+public class PenjualanBrandAdapter extends RecyclerView.Adapter<PenjualanBrandAdapter.ViewHolder> {
     private List<Brand> brandList;
     private Context context;
     private Fragment fragment;
 
-    public KatalogBrandAdapter(List<Brand> brandList, Context context, Fragment fragment){
+    public PenjualanBrandAdapter(List<Brand> brandList, Context context, Fragment fragment) {
         this.brandList = brandList;
         this.context = context;
         this.fragment = fragment;
@@ -32,15 +33,15 @@ public class KatalogBrandAdapter extends RecyclerView.Adapter<KatalogBrandAdapte
 
     @NonNull
     @Override
-    public KatalogBrandAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+    public PenjualanBrandAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.content_item_katalog_list_toko, parent, false);
 
-        return new KatalogBrandAdapter.ViewHolder(v);
+        return new PenjualanBrandAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull KatalogBrandAdapter.ViewHolder holder, int position){
+    public void onBindViewHolder(@NonNull PenjualanBrandAdapter.ViewHolder holder, int position) {
         final Brand brand = brandList.get(position);
         final String id = brand.getId_brand();
         final String name = brand.getNama_brand();
@@ -50,18 +51,20 @@ public class KatalogBrandAdapter extends RecyclerView.Adapter<KatalogBrandAdapte
         holder.textViewAddress.setText(address);
 //        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
 
-        holder.layout.setOnClickListener(view -> ((KatalogBrandFragment) fragment).onClickItem(id));
+        holder.layout.setOnClickListener(view -> ((PenjualanBrandFragment) fragment).onClickItem(id));
     }
 
     @Override
-    public int getItemCount(){ return brandList.size();}
+    public int getItemCount() {
+        return brandList.size();
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
         TextView textViewAddress;
         LinearLayout layout;
 
-        ViewHolder(View v){
+        ViewHolder(View v) {
             super(v);
 
             textViewName = v.findViewById(R.id.tvNamaToko);

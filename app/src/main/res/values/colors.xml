@@ -157,6 +157,7 @@
     <color name="OrangeText">#FC7F3C</color>
     <color name="NormalGreyText">#8E8E93</color>
     <color name="TransparentWhite">#13FFFFFF</color>
+    <color name="TransparentAll">#00FFFFFF</color>
     <color name="edit">#FCA000</color>
     <color name="red_text">#EE343B</color>
     <color name="ArticleGreyText">#707070</color>

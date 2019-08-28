@@ -60,7 +60,9 @@ import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganKoordinatorFragment;
 import com.example.pakaianbagus.presentation.home.notification.NotificationFragment;
 import com.example.pakaianbagus.presentation.home.photocounter.PhotoCounterActivity;
+import com.example.pakaianbagus.presentation.home.spg.SpgListBrandFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
+import com.example.pakaianbagus.presentation.home.stockopname.StockListBrandFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
 import com.example.pakaianbagus.util.SessionChecklist;
 import com.example.pakaianbagus.util.SessionManagement;
@@ -145,6 +147,8 @@ public class HomeFragment extends Fragment {
     Realm realmDb;
     String groupId = "4", scheduleId = "1", longCheckIn = "asd", latCheckIn = "asd";
     ProgressBar progressBar;
+    String checklist;
+    String userId;
 
 
     public HomeFragment() {
@@ -163,6 +167,11 @@ public class HomeFragment extends Fragment {
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
         sessionChecklist = new SessionChecklist(getActivity());
 
+        try {
+            userId = Session.get("UserId").getValue();
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
 
 //        hideItemForSPGScreen();
 
@@ -274,7 +283,8 @@ public class HomeFragment extends Fragment {
         swipeRefresh.setRefreshing(true);
         HomeHelper.getListChecklist(getContext(), new Callback<ApiResponse<List<RoleChecklist>>>() {
             @Override
-            public void onResponse(@NonNull Call<ApiResponse<List<RoleChecklist>>> call, @NonNull Response<ApiResponse<List<RoleChecklist>>> response) {
+            public void onResponse(@NonNull Call<ApiResponse<List<RoleChecklist>>> call,
+                                   @NonNull Response<ApiResponse<List<RoleChecklist>>> response) {
                 try {
                     if (Objects.requireNonNull(response.body()).getData() != null) {
                         List<RoleChecklist> res = response.body().getData();
@@ -317,9 +327,8 @@ public class HomeFragment extends Fragment {
                             checklists.clear();
                             roleChecklistModels.clear();
 
-                            JSONArray jsonArray = null;
                             try {
-                                jsonArray = new JSONArray(sessionChecklist.getArrayListChecklist());
+                                JSONArray jsonArray = new JSONArray(sessionChecklist.getArrayListChecklist());
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     JSONObject jsonObjeckChecklist = jsonObject.getJSONObject("checklist");
@@ -344,18 +353,18 @@ public class HomeFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0);
+                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0, HomeFragment.this);
 
                         } else {
 //                            sessionChecklist.setArraylistChecklist(checklists);
-                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0);
+                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0, HomeFragment.this);
                         }
                         recyclerView.setAdapter(checklistAdapter);
                         swipeRefresh.setRefreshing(false);
                     }
                 } catch (Exception e) {
                     swipeRefresh.setRefreshing(false);
-                    Log.d("TAG EXCEPTION", e.getMessage());
+                    Log.d("TAG EXCEPTION", e.toString());
                 }
             }
 
@@ -539,7 +548,7 @@ public class HomeFragment extends Fragment {
     public void onClickBtnStock() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        StockListTokoFragment stockFragment = new StockListTokoFragment();
+        StockListBrandFragment stockFragment = new StockListBrandFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, stockFragment);
         ft.commit();
@@ -605,7 +614,7 @@ public class HomeFragment extends Fragment {
 //        startActivity(intent);
     }
 
-    private void restartApp(){
+    private void restartApp() {
         Intent mStartActivity = new Intent(getActivity(), MainActivity.class);
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(getActivity(), mPendingIntentId, mStartActivity,
@@ -841,9 +850,9 @@ public class HomeFragment extends Fragment {
     public void onClickBtnSPG() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment spgFragment = new SpgListTokoFragment();
+        SpgListBrandFragment spgListBrandFragment = new SpgListBrandFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, spgFragment);
+        ft.replace(R.id.baseLayout, spgListBrandFragment);
         ft.commit();
     }
 
@@ -1000,7 +1009,7 @@ public class HomeFragment extends Fragment {
                         LocalData.clear();
 
                         Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         Objects.requireNonNull(getActivity()).finish();
                     });
@@ -1021,6 +1030,40 @@ public class HomeFragment extends Fragment {
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, notifFragment);
         ft.commit();
+    }
+
+    @OnClick(R.id.btnSubmit)
+    public void onClickSubmit() {
+        if (checklist == null) {
+            Toast.makeText(getContext(), "this", Toast.LENGTH_SHORT).show();
+        } else {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String date = dateFormat.format(new Date());
+            Loading.show(getActivity());
+            HomeHelper.postChecklistByUserId(userId, date, checklist, new RestCallback<ApiResponse>() {
+                @Override
+                public void onSuccess(Headers headers, ApiResponse body) {
+                    Loading.hide(getContext());
+                    showDialog(R.layout.dialog_check_in_out);
+                    Log.d("onSuccess: ", body.getMessage());
+                }
+
+                @Override
+                public void onFailed(ErrorResponse error) {
+                    Loading.hide(getContext());
+                    Log.d("TAG CheckIN", error.getMessage());
+                }
+
+                @Override
+                public void onCanceled() {
+
+                }
+            });
+        }
+    }
+
+    public void setChecklistItem(String checklist) {
+        this.checklist = checklist;
     }
 
 }

@@ -15,8 +15,21 @@ public class PakaianBagusApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Kyandroid.init(this, ApiInterface.BASE_URL, ApiInterface.class, "pakaianbagusapp", Context.MODE_PRIVATE
-                , "pakaianbagus_db", 1, false, new KyandroidRealmModule(), new PakaianBagusRealmModule());
+        String sharedPrefName = "pakaianbagusapp";
+        String schemaName = "pakaianbagus_db";
+        int schemaVersion = 1;
+        boolean enableRx = false;
+
+        Kyandroid.init(this,
+                ApiInterface.BASE_URL,
+                ApiInterface.class,
+                sharedPrefName,
+                Context.MODE_PRIVATE,
+                schemaName,
+                schemaVersion,
+                enableRx,
+                new KyandroidRealmModule(),
+                new PakaianBagusRealmModule());
     }
 
 }

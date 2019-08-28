@@ -18,11 +18,10 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.presentation.home.spg.SpgFragment;
+import com.example.pakaianbagus.presentation.home.spg.SpgListFragment;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.adapter.DetailSpgAdapter;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.model.DetailSpgModel;
 
@@ -78,9 +77,9 @@ public class DetailSpgFragment extends Fragment {
     public void toolbarBack() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgFragment spgFragment = new SpgFragment();
+        SpgListFragment spgListFragment = new SpgListFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutDetailSpg, spgFragment);
+        ft.replace(R.id.baseLayoutDetailSpg, spgListFragment);
         ft.commit();
     }
 

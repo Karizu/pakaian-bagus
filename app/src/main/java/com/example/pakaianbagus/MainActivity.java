@@ -24,6 +24,7 @@ import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
 import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
 import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.presentation.penjualan.PenjualanBrandFragment;
 import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.session.Session;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentBarangMasuk = new BarangMasukFragment();
     final Fragment fragmentListTokoBM = new ListTokoBMFragment();
     final Fragment fragmentInputHarian = new InputHarianFragment();
-    final Fragment fragmentPenjualanListToko = new PenjualanListTokoFragment();
+    final Fragment fragmentPenjualanListToko = new PenjualanBrandFragment();
     final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
     final Fragment katalogFragment = new KatalogBrandFragment();
     FragmentManager fm = getSupportFragmentManager();

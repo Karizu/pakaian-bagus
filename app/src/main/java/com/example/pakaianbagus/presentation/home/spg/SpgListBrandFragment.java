@@ -1,36 +1,30 @@
-package com.example.pakaianbagus.presentation.katalog;
+package com.example.pakaianbagus.presentation.home.spg;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.api.KatalogHelper;
+import com.example.pakaianbagus.api.SpgHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Brand;
 import com.example.pakaianbagus.models.BrandResponse;
-import com.example.pakaianbagus.models.KatalogTokoModel;
-import com.example.pakaianbagus.models.TokoResponse;
-import com.example.pakaianbagus.presentation.katalog.adapter.KatalogBrandAdapter;
-import com.example.pakaianbagus.presentation.katalog.adapter.KatalogTokoAdapter;
+import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.home.spg.adapter.SpgBrandAdapter;
+import com.example.pakaianbagus.util.IOnBackPressed;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
@@ -46,13 +40,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Headers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class KatalogBrandFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
 
-    Dialog dialog;
     View rootView;
     private List<Brand> brandList;
 
@@ -71,17 +64,17 @@ public class KatalogBrandFragment extends Fragment {
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefresh;
 
-    public KatalogBrandFragment() {
+    public SpgListBrandFragment() {
+        // Required empty public constructor
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        rootView = inflater.inflate(R.layout.katalog_fragment, container, false);
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.spg_list_brand_fragment, container, false);
         ButterKnife.bind(this, rootView);
-        imgBack.setVisibility(View.GONE);
         toolbarSeacrh.setVisibility(View.GONE);
         tvTitleHeader.setText("LIST BRAND");
         getCurrentDateChecklist();
@@ -108,7 +101,7 @@ public class KatalogBrandFragment extends Fragment {
 
     public void getListToko() {
         swipeRefresh.setRefreshing(true);
-        KatalogHelper.getListBrand(new RestCallback<ApiResponse<List<BrandResponse>>>() {
+        SpgHelper.getListBrand(new RestCallback<ApiResponse<List<BrandResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<BrandResponse>> listApiResponse) {
                 swipeRefresh.setRefreshing(false);
@@ -130,8 +123,7 @@ public class KatalogBrandFragment extends Fragment {
                                 response.getJenis_brand()));
                     }
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
-//                    GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-                    KatalogBrandAdapter adapter = new KatalogBrandAdapter(brandList, getContext(), KatalogBrandFragment.this);
+                    SpgBrandAdapter adapter = new SpgBrandAdapter(brandList, getContext(), SpgListBrandFragment.this);
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(adapter);
 
@@ -159,35 +151,32 @@ public class KatalogBrandFragment extends Fragment {
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        KatalogFragment katalogFragment = new KatalogFragment();
-        katalogFragment.setArguments(bundle);
+        SpgListTokoFragment spgFragment = new SpgListTokoFragment();
+        spgFragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.layoutKatalog, katalogFragment);
+        ft.replace(R.id.baseLayout, spgFragment);
         ft.commit();
     }
 
-    @SuppressLint("SetTextI18n")
-    @OnClick(R.id.toolbar_search)
-    public void toolbarSearch() {
-        showDialog();
-        TextView toolbar = dialog.findViewById(R.id.tvToolbar);
-        toolbar.setText("SEARCH KATALOG");
-        ImageView imgClose = dialog.findViewById(R.id.imgClose);
-        imgClose.setOnClickListener(v -> dialog.dismiss());
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        HomeFragment homeFragment = new HomeFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayout, homeFragment);
+        ft.commit();
     }
 
-    private void showDialog() {
-        dialog = new Dialog(Objects.requireNonNull(getActivity()));
-        //set content
-        dialog.setContentView(R.layout.dialog_search_stockopname);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+    @Override
+    public boolean onBackPressed() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        HomeFragment homeFragment = new HomeFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayout, homeFragment);
+        ft.commit();
+
+        return false;
     }
 }

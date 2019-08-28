@@ -32,10 +32,12 @@ public interface ApiInterface {
 
 //    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
 
-//    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
+    //    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
+    //String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
+    //String BASE_URL = "http://37.72.172.144/pb-v1/public/";
     String BASE_URL = "http://37.72.172.144/pb-v1/";
 
-//    @GET("userLocation/nearMe")
+    //    @GET("userLocation/nearMe")
 //    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
 //
 //    @GET("groupLocation/nearMe")
@@ -52,23 +54,23 @@ public interface ApiInterface {
     Call<ResponseBody> loginRequest(@Field("login") String username,
                                     @Field("password") String password);
 
-    @GET("public/roleChecklists")
+    @GET("roleChecklists")
     Call<ApiResponse<List<RoleChecklist>>> getRoleChecklist(@Query("role_id") String role_id,
                                                             @Header("Authorization") String token);
 
-    @GET("public/store/all")
+    @GET("store/all")
     Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
 
-    @GET("public/brand/all")
+    @GET("brand/all")
     Call<ApiResponse<List<BrandResponse>>> getListBrand();
 
-    @GET("public/stok_toko/getAllArtikel")
+    @GET("stok_toko/getAllArtikel")
     Call<ApiResponse<List<StokToko>>> getListStokToko(@Query("id_store") String id_store,
                                                       @Query("id_brand") String idBrand,
                                                       @Query("limit") int limit,
                                                       @Query("offset") int offset);
 
-    @GET("public/stok_toko/getAllArtikel")
+    @GET("stok_toko/getAllArtikel")
     Call<ApiResponse<List<StokToko>>> searchKatalog(@Query("id_store") String id_store,
                                                     @Query("is_exist") String is_exist,
                                                     @Query("is_vip") String is_vip,
@@ -78,36 +80,42 @@ public interface ApiInterface {
                                                     @Query("order_by") String order_by,
                                                     @Query("order_type") String order_type);
 
-    @GET("public/stok_toko/getAllArtikelWithStokToko")
+    @GET("stok_toko/getAllArtikelWithStokToko")
     Call<ApiResponse<List<StokToko>>> searchBarangPenjualan(@Query("keyword") String keyword);
 
-    @GET("public/users")
+    @GET("users")
     Call<ApiResponse<List<User>>> getListKoordinator(@Query("role_id") String role_id);
 
-    @GET("public/penerimaan/all")
+    @GET("penerimaan/all")
     Call<ApiResponse<List<PenerimaanBarangResponse>>> getListBarangMasuk(@Query("id_store") String id_store,
                                                                          @Query("limit") int limit,
                                                                          @Query("offset") int offset);
 
-    @GET("public/penerimaan/byid/{id}")
+    @GET("penerimaan/byid/{id}")
     Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Path("id") String id);
 
-    @POST("public/presensi/checkIn")
+    @POST("presensi/checkIn")
     Call<ApiResponse> postCheckIn(@Body RequestBody checkInData);
 
-    @POST("public/presensi/checkOut")
+    @POST("presensi/checkOut")
     Call<ApiResponse> postCheckOut(@Body RequestBody checkInData);
 
-    @GET("public/announcements")
+    @GET("announcements")
     Call<ApiResponse<List<AnnouncementResponse>>> getAnnouncement();
 
-    @GET("public/pos/history")
+    @GET("pos/history")
     Call<ApiResponse<List<PenjualanResponse>>> getPenjualan(@Query("id_store") String id_store,
-                                                               @Query("is_vip") Boolean is_vip,
-                                                               @Query("limit") int limit,
-                                                               @Query("offset") int offset,
-                                                               @Query("order_by") String order_by,
-                                                               @Query("order_type") String order_type);
+                                                            @Query("is_vip") Boolean is_vip,
+                                                            @Query("limit") int limit,
+                                                            @Query("offset") int offset,
+                                                            @Query("order_by") String order_by,
+                                                            @Query("order_type") String order_type);
+
+    @FormUrlEncoded
+    @POST("userList")
+    Call<ApiResponse> postChecklistByUserId(@Field("user_id") String userId,
+                                            @Field("date") String date,
+                                            @Field("checklists") String checklists);
 
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

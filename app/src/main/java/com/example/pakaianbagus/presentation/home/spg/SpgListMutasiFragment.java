@@ -15,8 +15,7 @@ import android.widget.LinearLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.SpgModel;
-import com.example.pakaianbagus.presentation.home.HomeFragment;
-import com.example.pakaianbagus.presentation.home.spg.adapter.SpgAdapter;
+import com.example.pakaianbagus.presentation.home.spg.adapter.SpgMutasiAdapter;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.DetailSpgFragment;
 import com.example.pakaianbagus.util.IOnBackPressed;
 
@@ -26,25 +25,19 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class SpgFragment extends Fragment implements IOnBackPressed {
-
-
+public class SpgListMutasiFragment extends Fragment implements IOnBackPressed {
     private List<SpgModel> spgModels;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-
-    public SpgFragment() {
-    }
 
     @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.spg_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.spg_list_mutasi_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
 //        String id = Objects.requireNonNull(getArguments()).getString("id");
@@ -56,46 +49,36 @@ public class SpgFragment extends Fragment implements IOnBackPressed {
         return rootView;
     }
 
-    private void setRecylerView(){
-        for (int i = 0; i < 20; i++){
+    @Override
+    public boolean onBackPressed() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        SpgListFragment spgListFragment = new SpgListFragment();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayout, spgListFragment);
+        ft.commit();
+
+        return false;
+    }
+
+    private void setRecylerView() {
+        for (int i = 0; i < 20; i++) {
             spgModels.add(new SpgModel("Darnadi Santoso", "Toko Adiguna"));
         }
 
-        SpgAdapter spgAdapter = new SpgAdapter(spgModels, getContext(), SpgFragment.this);
+        SpgMutasiAdapter spgMutasiAdapter = new SpgMutasiAdapter(spgModels, getContext(), SpgListMutasiFragment.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayout.VERTICAL,
                 false));
-        recyclerView.setAdapter(spgAdapter);
+        recyclerView.setAdapter(spgMutasiAdapter);
     }
 
-    public void onClickLayoutListSPG(){
+    public void onClickLayoutListSPG() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         DetailSpgFragment detailSpgFragment = new DetailSpgFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutSpg, detailSpgFragment);
         ft.commit();
-    }
-
-    @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment homeFragment = new SpgListTokoFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, homeFragment);
-        ft.commit();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();
-
-        return false;
     }
 }

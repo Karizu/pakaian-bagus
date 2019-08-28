@@ -45,4 +45,9 @@ public class HomeHelper {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
         service.getEndpoint().getAnnouncement().enqueue(callback);
     }
+
+    public static void postChecklistByUserId(String userId, String date, String checklist, RestCallback<ApiResponse> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().postChecklistByUserId(userId, date, checklist).enqueue(callback);
+    }
 }

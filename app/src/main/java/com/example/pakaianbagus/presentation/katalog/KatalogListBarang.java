@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -99,7 +100,7 @@ public class KatalogListBarang extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 loadNextDataFromApi(page);
-                Log.d("Masuk", "Masuk onLoad || "+page);
+                Log.d("Masuk", "Masuk onLoad || " + page);
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
@@ -107,7 +108,7 @@ public class KatalogListBarang extends Fragment {
         id = Objects.requireNonNull(getArguments()).getString("id");
         idBrand = Objects.requireNonNull(getArguments()).getString("id_brand");
 
-        if (id != null){
+        if (id != null) {
             swipeRefresh.setOnRefreshListener(() -> {
                 katalogModels.clear();
                 getListStokToko();
@@ -120,14 +121,19 @@ public class KatalogListBarang extends Fragment {
     }
 
     @OnClick(R.id.toolbar_filter)
-    void onClickFilter(){
+    void onClickFilter() {
         showDialog(R.layout.dialog_filter_katalog);
-        kategori = new ArrayList<String>();
-        terbaru = new ArrayList<String>();
+        kategori = new ArrayList<>();
+        terbaru = new ArrayList<>();
         spinnerKategori = dialog.findViewById(R.id.spinnerKategori);
         spinnerTerbaru = dialog.findViewById(R.id.spinnerTerbaru);
+        ImageView btnClose = dialog.findViewById(R.id.imgClose);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
         Button btnApply = dialog.findViewById(R.id.btnApply);
-        btnApply.setOnClickListener(v -> dialog.dismiss());
+        btnApply.setOnClickListener(v -> {
+            dialog.dismiss();
+            //setsomething this
+        });
         setSpinnerKategori();
         setSpinnerTerbaru();
 
@@ -139,7 +145,7 @@ public class KatalogListBarang extends Fragment {
 //        kategoriId.add("KI");
         for (int i = 0; i < 5; i++) {
 //            CategoryModel category = res.get(i);
-            terbaru.add("Terbaru "+i);
+            terbaru.add("Terbaru " + i);
 //            kategoriId.add(category.getId());
         }
 
@@ -186,17 +192,19 @@ public class KatalogListBarang extends Fragment {
 //        kategoriId.add("KI");
         for (int i = 0; i < 5; i++) {
 //            CategoryModel category = res.get(i);
-            kategori.add("Kategori "+i);
+            kategori.add("Kategori " + i);
 //            kategoriId.add(category.getId());
         }
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.layout_spinner_text, kategori) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-        };
+        ArrayAdapter<String> dataAdapter =
+                new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),
+                        R.layout.layout_spinner_text, kategori) {
+                    @Override
+                    public boolean isEnabled(int position) {
+                        return position != 0;
+                    }
+                };
 
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(R.layout.layout_spinner_dropdown);
@@ -227,30 +235,30 @@ public class KatalogListBarang extends Fragment {
         });
     }
 
-    private void getListStokToko(){
+    private void getListStokToko() {
         swipeRefresh.setRefreshing(true);
 
         KatalogHelper.getListStokToko(id, idBrand, limit, offset, new RestCallback<ApiResponse<List<StokToko>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
                 swipeRefresh.setRefreshing(false);
-                if (body.getData() != null){
+                if (body.getData() != null) {
                     List<StokToko> stokTokos = body.getData();
 
-                    if (stokTokos.size() < 1){
+                    if (stokTokos.size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
 
-                        for (int i = 0; i < stokTokos.size(); i++){
-                            StokToko stokToko = stokTokos.get(i);
-                            katalogModels.add(new KatalogModel(stokToko.getId_artikel(),
-                                    stokToko.getNama_barang(),
-                                    stokToko.getGambar(),
-                                    stokToko.getTotal_barang(),
-                                    stokToko.getNo_artikel()));
-                        }
+                    for (int i = 0; i < stokTokos.size(); i++) {
+                        StokToko stokToko = stokTokos.get(i);
+                        katalogModels.add(new KatalogModel(stokToko.getId_artikel(),
+                                stokToko.getNama_barang(),
+                                stokToko.getGambar(),
+                                stokToko.getTotal_barang(),
+                                stokToko.getNo_artikel()));
+                    }
 
                     katalogAdapter = new KatalogAdapter(katalogModels, getContext());
                     recyclerView.setAdapter(katalogAdapter);
@@ -272,7 +280,7 @@ public class KatalogListBarang extends Fragment {
     }
 
     @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
+    public void toolbarBack() {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
         bundle.putString("id_brand", idBrand);
@@ -307,7 +315,7 @@ public class KatalogListBarang extends Fragment {
             bundle.putString("id", id);
             bundle.putString("keyword", etKodeNamaBarang.getText().toString());
 
-            if (etKodeNamaBarang.getText().toString().equals("")){
+            if (etKodeNamaBarang.getText().toString().equals("")) {
                 etKodeNamaBarang.setError("Field harus diisi");
             } else {
                 FragmentManager fm = getFragmentManager();
@@ -331,7 +339,7 @@ public class KatalogListBarang extends Fragment {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         try {
-            KatalogHelper.getListStokToko(id, idBrand, limit, limit*offset, new RestCallback<ApiResponse<List<StokToko>>>() {
+            KatalogHelper.getListStokToko(id, idBrand, limit, limit * offset, new RestCallback<ApiResponse<List<StokToko>>>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
                     swipeRefresh.setRefreshing(false);
@@ -371,7 +379,6 @@ public class KatalogListBarang extends Fragment {
 
         }
     }
-
 
     private void showDialog(int layout) {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));

@@ -1,6 +1,9 @@
 package com.example.pakaianbagus.presentation.home.spg;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,6 +49,7 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
 
 
     private List<KatalogTokoModel> katalogTokoModels;
+    Dialog dialog;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -75,15 +82,15 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
         tvDate.setText(formattedDate);
     }
 
-    public void getListToko(){
+    public void getListToko() {
         Loading.show(getActivity());
         KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 Loading.hide(getActivity());
-                if (Objects.requireNonNull(response.body()).getData() != null){
+                if (Objects.requireNonNull(response.body()).getData() != null) {
                     List<TokoResponse> tokoResponse = response.body().getData();
-                    for (int i = 0; i < tokoResponse.size(); i++){
+                    for (int i = 0; i < tokoResponse.size(); i++) {
                         TokoResponse dataToko = tokoResponse.get(i);
                         katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(),
                                 dataToko.getName(),
@@ -106,26 +113,45 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
         });
     }
 
-    public void onClickItem(String id){
+    public void onClickItem(String id) {
+        showDialog(id);
+    }
+
+    public void toListSPG(String id) {
+        dialog.dismiss();
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgFragment spgFragment = new SpgFragment();
-        spgFragment.setArguments(bundle);
+        SpgListFragment spgListFragment = new SpgListFragment();
+        spgListFragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, spgFragment);
+        ft.replace(R.id.baseLayoutSpg, spgListFragment);
+        ft.commit();
+    }
+
+    public void toMutasiSPG(String id) {
+        dialog.dismiss();
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        SpgListMutasiFragment spgListMutasiFragment = new SpgListMutasiFragment();
+        spgListMutasiFragment.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.replace(R.id.baseLayoutSpg, spgListMutasiFragment);
         ft.commit();
     }
 
     @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
+    public void toolbarBack() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
+        SpgListBrandFragment spgListBrandFragment = new SpgListBrandFragment();
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, homeFragment);
+        ft.replace(R.id.baseLayoutSpg, spgListBrandFragment);
         ft.commit();
     }
 
@@ -139,5 +165,26 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
         ft.commit();
 
         return false;
+    }
+
+    private void showDialog(String id) {
+        dialog = new Dialog(Objects.requireNonNull(getActivity()));
+        //set content
+        dialog.setContentView(R.layout.dialog_spg);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+
+        Button btnListSPG = dialog.findViewById(R.id.btnListSPG);
+        Button btnMutasiSPG = dialog.findViewById(R.id.btnMutasiSPG);
+        btnListSPG.setOnClickListener(v -> toListSPG(id));
+        btnMutasiSPG.setOnClickListener(v -> toMutasiSPG(id));
+
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 }

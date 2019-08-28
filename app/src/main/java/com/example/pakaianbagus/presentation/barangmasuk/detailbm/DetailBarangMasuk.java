@@ -82,7 +82,7 @@ public class DetailBarangMasuk extends Fragment {
         idBarangMasuk = getArguments().getString("id_barang_masuk");
 
         getCurrentDateChecklist();
-        if (id != null){
+        if (id != null) {
             getDetailBM(id);
             swipeRefresh.setOnRefreshListener(() -> {
                 detailBarangMasukModels.clear();
@@ -100,23 +100,23 @@ public class DetailBarangMasuk extends Fragment {
         tvDate.setText(formattedDate);
     }
 
-    private void getDetailBM(String id){
+    private void getDetailBM(String id) {
         swipeRefresh.setRefreshing(true);
         BarangHelper.getDetailBarangMasuk(id, new RestCallback<ApiResponse<PenerimaanBarangResponse>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<PenerimaanBarangResponse> body) {
                 swipeRefresh.setRefreshing(false);
-                if (body.getData() != null){
+                if (body.getData() != null) {
                     PenerimaanBarangResponse barangResponse = body.getData();
                     List<StokPenerimaan> res = barangResponse.getStok_artikel();
 
-                    if (res.size() < 1){
+                    if (res.size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
 
-                    for (int i = 0; i < res.size(); i++){
+                    for (int i = 0; i < res.size(); i++) {
                         StokPenerimaan stokPenerimaan = res.get(i);
                         detailBarangMasukModels.add(new DetailBarangMasukModel(stokPenerimaan.getNama_barang(),
                                 stokPenerimaan.getQty()));
@@ -157,24 +157,28 @@ public class DetailBarangMasuk extends Fragment {
     }
 
     @OnClick(R.id.btnVerifikasi)
-    public void btnVerifikasi(){
-        showDialog();
+    public void btnVerifikasi() {
+        showDialog(R.layout.dialog_submit_verifikasi);
         Button btnOK = dialog.findViewById(R.id.btnOK);
         btnOK.setOnClickListener(v -> dialog.dismiss());
     }
 
     @OnClick(R.id.btnAttachment)
-    void onClickAttachment(){
-        Toast.makeText(getContext(), "On Progress", Toast.LENGTH_SHORT).show();
+    void onClickAttachment() {
+        showDialog(R.layout.dialog_attach_barang);
     }
 
-    private void showDialog() {
+    private void showDialog(int layout) {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));
         //set content
-        dialog.setContentView(R.layout.dialog_submit_verifikasi);
+        dialog.setContentView(layout);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        if (layout == R.layout.dialog_attach_barang) {
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        } else {
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        }
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/DialogTheme"
@@ -11,8 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
         android:orientation="horizontal"
+        android:padding="16dp"
         android:weightSum="2"
         tools:ignore="UseCompoundDrawables">
 
@@ -29,8 +28,8 @@
             android:id="@+id/imgClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_close_black_24dp"
-            android:contentDescription="@string/todo" />
+            android:contentDescription="@string/todo"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
 
     </LinearLayout>
 
@@ -38,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="2dp"
-        android:background="@color/NormalGreyText"/>
+        android:background="@color/NormalGreyText" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,49 +48,49 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/background_list_inventaris">
+            android:background="@drawable/background_list_inventaris"
+            android:orientation="vertical">
 
             <Spinner
                 android:id="@+id/spinnerKategori"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:textAlignment="center"/>
+                android:textAlignment="center" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="12dp"/>
+            android:layout_height="12dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/background_list_inventaris">
+            android:background="@drawable/background_list_inventaris"
+            android:orientation="vertical">
 
             <Spinner
                 android:id="@+id/spinnerTerbaru"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:textAlignment="center"/>
+                android:textAlignment="center" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="12dp"/>
+            android:layout_height="12dp" />
 
         <Button
             android:id="@+id/btnApply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/apply"
-            android:textColor="@color/White"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/background_button"/>
+            android:background="@drawable/background_button"
+            android:text="@string/apply"
+            android:textColor="@color/White" />
 
     </LinearLayout>
 
