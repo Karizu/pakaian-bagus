@@ -3,6 +3,7 @@ package com.example.pakaianbagus.api;
 import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
+import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
@@ -12,7 +13,9 @@ import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.models.stock.StokToko;
 
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -21,7 +24,10 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -51,12 +57,12 @@ public interface ApiInterface {
     Call<ResponseBody> loginRequest(@Field("login") String username,
                                     @Field("password") String password);
 
-    @GET("roleChecklists")
-    Call<ApiResponse<List<RoleChecklist>>> getRoleChecklist(@Query("role_id") String role_id,
-                                                            @Header("Authorization") String token);
+    @GET("checklists")
+    Call<ApiResponse<List<ChecklistResponse>>> getRoleChecklist(@Query("role_id") String role_id,
+                                                                @Header("Authorization") String token);
 
     @GET("places")
-    Call<ApiResponse<List<TokoResponse>>> getListToko();
+    Call<ApiResponse<List<TokoResponse>>> getListToko(@Query("type") String type);
     //Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
 
     @GET("brands")
@@ -92,10 +98,14 @@ public interface ApiInterface {
     @GET("penerimaan/byid/{id}")
     Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Path("id") String id);
 
-    @POST("presensi/checkIn")
+    @POST("attendances/checkIn")
     Call<ApiResponse> postCheckIn(@Body RequestBody checkInData);
 
-    @POST("presensi/checkOut")
+    /*@Multipart
+    @POST("attendances/checkOut")
+    Call<ApiResponse> postCheckOut(@PartMap Map<String,RequestBody> checkInData, @Part MultipartBody.Part image);*/
+
+    @POST("attendances/checkOut")
     Call<ApiResponse> postCheckOut(@Body RequestBody checkInData);
 
     @GET("announcements")

@@ -33,6 +33,7 @@ import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogTokoAdapter;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.dialog.Loading;
 
 import java.text.SimpleDateFormat;
@@ -81,7 +82,7 @@ public class KatalogFragment extends Fragment {
 
         try {
             idBrand = getArguments().getString("id_brand");
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -103,28 +104,26 @@ public class KatalogFragment extends Fragment {
         tvDate.setText(formattedDate);
     }
 
-    public void getListToko(){
+    public void getListToko() {
         swipeRefresh.setRefreshing(true);
-        KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
+        KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<TokoResponse>>> call, Response<ApiResponse<List<TokoResponse>>> response) {
                 swipeRefresh.setRefreshing(false);
 
                 try {
-                    if (response.body().getData() != null){
+                    if (response.body().getData() != null) {
                         List<TokoResponse> tokoResponse = response.body().getData();
 
-                        if (tokoResponse.size() < 1){
+                        if (tokoResponse.size() < 1) {
                             tvNoData.setVisibility(View.VISIBLE);
                         } else {
                             tvNoData.setVisibility(View.GONE);
                         }
 
-                        for (int i = 0; i < tokoResponse.size(); i++){
+                        for (int i = 0; i < tokoResponse.size(); i++) {
                             TokoResponse dataToko = tokoResponse.get(i);
-                            if (dataToko.getType().equalsIgnoreCase("S")) {
-                                katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
-                            }
+                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
                         }
 
                         KatalogTokoAdapter katalogTokoAdapter = new KatalogTokoAdapter(katalogTokoModels, getContext(), KatalogFragment.this);
@@ -133,7 +132,7 @@ public class KatalogFragment extends Fragment {
                                 false));
                         recyclerView.setAdapter(katalogTokoAdapter);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -147,7 +146,7 @@ public class KatalogFragment extends Fragment {
         });
     }
 
-    public void onClickItem(String id){
+    public void onClickItem(String id) {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
         bundle.putString("id_brand", idBrand);
@@ -162,7 +161,7 @@ public class KatalogFragment extends Fragment {
     }
 
     @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
+    public void toolbarBack() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         KatalogBrandFragment katalogFragment = new KatalogBrandFragment();
@@ -173,7 +172,7 @@ public class KatalogFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     @OnClick(R.id.toolbar_search)
-    public void toolbarSearch(){
+    public void toolbarSearch() {
         showDialog(R.layout.dialog_search_stockopname);
         TextView toolbar = dialog.findViewById(R.id.tvToolbar);
         toolbar.setText("SEARCH KATALOG");

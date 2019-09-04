@@ -1,7 +1,5 @@
 package com.example.pakaianbagus.api;
 
-import android.content.Context;
-
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.TokoResponse;
@@ -15,9 +13,9 @@ import retrofit2.Callback;
 
 public class KatalogHelper {
 
-    public static void getListToko(Context context, Callback<ApiResponse<List<TokoResponse>>> callback){
+    public static void getListToko(String type, Callback<ApiResponse<List<TokoResponse>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListToko().enqueue(callback);
+        service.getEndpoint().getListToko(type).enqueue(callback);
         //SessionManagement session = new SessionManagement(context);
         //HashMap<String, String> user = session.getUserDetails();
         //service.getEndpoint().getListToko(user.get(SessionManagement.KEY_BEARER_TOKEN)).enqueue(callback);

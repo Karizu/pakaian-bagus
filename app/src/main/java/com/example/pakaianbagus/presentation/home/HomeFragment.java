@@ -10,9 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -32,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +52,8 @@ import com.example.pakaianbagus.api.HomeHelper;
 import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Checklist;
+import com.example.pakaianbagus.models.ChecklistResponse;
+import com.example.pakaianbagus.models.Locations;
 import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
@@ -64,9 +70,12 @@ import com.example.pakaianbagus.presentation.home.spg.SpgListBrandFragment;
 import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListBrandFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
+import com.example.pakaianbagus.util.Common;
+import com.example.pakaianbagus.util.GetLocation;
 import com.example.pakaianbagus.util.SessionChecklist;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
+import com.google.android.gms.common.util.IOUtils;
 import com.google.gson.JsonObject;
 import com.rezkyatinnov.kyandroid.localdata.LocalData;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
@@ -83,12 +92,16 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -134,22 +147,25 @@ public class HomeFragment extends Fragment {
     List<RoleChecklist> checklists;
     ChecklistAdapter checklistAdapter;
     SessionManagement sessionManagement;
-    SessionChecklist sessionChecklist;
+    //SessionChecklist sessionChecklist;
     int Flag = 0;
     Calendar myCalendar;
     EditText startDate;
     EditText endDate;
     private final int REQEUST_CAMERA = 1;
     private String TAG = "Home Fragment";
-    File imageCheck;
-    Bitmap photoImage;
-    User user;
     Realm realmDb;
-    String groupId = "4", scheduleId = "1", longCheckIn = "asd", latCheckIn = "asd";
+    String groupId;
+    String scheduleId;
+    String roleId;
+    String longitude = "asd";
+    String latitude = "asd";
     ProgressBar progressBar;
     String checklist;
     String userId;
-
+    String userName = "Hallo Null";
+    private DatePickerDialog datePickerDialog;
+    private SimpleDateFormat dateFormatter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -165,38 +181,30 @@ public class HomeFragment extends Fragment {
 
         checklists = new ArrayList<>();
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
-        sessionChecklist = new SessionChecklist(getActivity());
+        //sessionChecklist = new SessionChecklist(getActivity());
 
-        try {
+        groupId = "4";
+        scheduleId = "1";
+        userId = "1";
+        roleId = "1";
+
+        //Session.save(new SessionObject(SessionManagement.KEY_ROLE_ID, "1"));
+
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+        /*try {
             userId = Session.get("UserId").getValue();
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
 
 //        hideItemForSPGScreen();
-
-        TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        try {
-            toolbarTitle.setText("Hallo " + Session.get("Name").getValue());
-        } catch (SessionNotFoundException e) {
-            e.printStackTrace();
-        }
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayout.VERTICAL,
                 false);
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
-
-        try {
-            if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)) {
-                tvCheck.setText(SessionManagement.CHECK_OUT);
-            } else {
-                tvCheck.setText(SessionManagement.CHECK_IN);
-            }
-        } catch (SessionNotFoundException e) {
-            e.printStackTrace();
-        }
 
         try {
             if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)
@@ -226,70 +234,103 @@ public class HomeFragment extends Fragment {
             getListChecklist();
         });
 
-        getCurrentDateChecklist();
-        getAnnouncement();
-        getListChecklist();
+        TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
+        try {
+            userName = Session.get("Name").getValue();
+            toolbarTitle.setText("Hallo " + userName);
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        new GetLocation(getContext(), HomeFragment.this).getLocation();
+
+        getData();
 
         return rootView;
     }
 
+    public void setLocation(Double longitude, Double latitude) {
+        this.longitude = String.valueOf(longitude);
+        this.latitude = String.valueOf(latitude);
+    }
+
+    private void setTextCheckInOut() {
+        try {
+            if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)) {
+                tvCheck.setText(SessionManagement.CHECK_OUT);
+            } else {
+                tvCheck.setText(SessionManagement.CHECK_IN);
+            }
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+            tvCheck.setText(SessionManagement.CHECK_IN);
+        }
+    }
+
+    private void getData() {
+        setTextCheckInOut();
+        getCurrentDateChecklist();
+        getAnnouncement();
+        getListChecklist();
+    }
+
     private void getCurrentDateChecklist() {
         Date c = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy");
         String formattedDate = df.format(c);
         tvDateChecklist.setText(formattedDate);
     }
 
-    @OnClick(R.id.btnTambah)
-    public void tambahChecklist() {
-        sessionChecklist.setArraylistChecklist(checklists);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        TambahChecklistFragment homeFragment = new TambahChecklistFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();
-
-//        showDialog(R.layout.dialog_tambah_checklist);
-//        EditText etChecklist = dialog.findViewById(R.id.etDialogChecklist);
-//        ImageView btnClose = dialog.findViewById(R.id.imgClose);
-//        btnClose.setOnClickListener(v -> dialog.dismiss());
-//        Button btnTambah = dialog.findViewById(R.id.btnDialogTambah);
-//        btnTambah.setOnClickListener(v -> {
-//            if (etChecklist.getText().length() < 1) {
-//                etChecklist.setError("Field ini harus diisi");
-//            } else {
-//                String uniqueID = UUID.randomUUID().toString();
-//                @SuppressLint("SimpleDateFormat") SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd");
-//                String date = s1.format(new Date());
-//                RoleChecklist myObject = new RoleChecklist();
-//                myObject.setId(uniqueID);
-//                myObject.setChecklist_id(null);
-//                myObject.setCreated_at(date);
-//                Checklist checklist = new Checklist();
-//                checklist.setId(uniqueID);
-//                checklist.setName(etChecklist.getText().toString());
-//                myObject.setChecklist(checklist);
-//                checklists.add(myObject);
-//                checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0);
-//                sessionChecklist.setArraylistChecklist(checklists);
-//                Toast.makeText(getContext(), "Berhasil tambah checklist", Toast.LENGTH_SHORT).show();
-//                dialog.dismiss();
-//            }
-//        });
-    }
+//    @OnClick(R.id.btnTambah)
+//    public void tambahChecklist() {
+//        sessionChecklist.setArraylistChecklist(checklists);
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        TambahChecklistFragment homeFragment = new TambahChecklistFragment();
+//        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+//        ft.replace(R.id.baseLayout, homeFragment);
+//        ft.commit();
+//
+////        showDialog(R.layout.dialog_tambah_checklist);
+////        EditText etChecklist = dialog.findViewById(R.id.etDialogChecklist);
+////        ImageView btnClose = dialog.findViewById(R.id.imgClose);
+////        btnClose.setOnClickListener(v -> dialog.dismiss());
+////        Button btnTambah = dialog.findViewById(R.id.btnDialogTambah);
+////        btnTambah.setOnClickListener(v -> {
+////            if (etChecklist.getText().length() < 1) {
+////                etChecklist.setError("Field ini harus diisi");
+////            } else {
+////                String uniqueID = UUID.randomUUID().toString();
+////                @SuppressLint("SimpleDateFormat") SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd");
+////                String date = s1.format(new Date());
+////                RoleChecklist myObject = new RoleChecklist();
+////                myObject.setId(uniqueID);
+////                myObject.setChecklist_id(null);
+////                myObject.setCreated_at(date);
+////                Checklist checklist = new Checklist();
+////                checklist.setId(uniqueID);
+////                checklist.setName(etChecklist.getText().toString());
+////                myObject.setChecklist(checklist);
+////                checklists.add(myObject);
+////                checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0);
+////                sessionChecklist.setArraylistChecklist(checklists);
+////                Toast.makeText(getContext(), "Berhasil tambah checklist", Toast.LENGTH_SHORT).show();
+////                dialog.dismiss();
+////            }
+////        });
+//    }
 
     private void getListChecklist() {
         swipeRefresh.setRefreshing(true);
-        HomeHelper.getListChecklist(getContext(), new Callback<ApiResponse<List<RoleChecklist>>>() {
+        HomeHelper.getListChecklist(getContext(), new Callback<ApiResponse<List<ChecklistResponse>>>() {
             @Override
-            public void onResponse(@NonNull Call<ApiResponse<List<RoleChecklist>>> call,
-                                   @NonNull Response<ApiResponse<List<RoleChecklist>>> response) {
+            public void onResponse(@NonNull Call<ApiResponse<List<ChecklistResponse>>> call,
+                                   @NonNull Response<ApiResponse<List<ChecklistResponse>>> response) {
                 try {
                     if (Objects.requireNonNull(response.body()).getData() != null) {
-                        List<RoleChecklist> res = response.body().getData();
-                        @SuppressLint("SimpleDateFormat") SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd");
-                        String date = s1.format(new Date());
+                        List<ChecklistResponse> res = response.body().getData();
+                        /*@SuppressLint("SimpleDateFormat") SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd");
+                        String date = s1.format(new Date());*/
 
                         if (res.size() < 1) {
                             tvNoData.setVisibility(View.VISIBLE);
@@ -297,7 +338,17 @@ public class HomeFragment extends Fragment {
                             tvNoData.setVisibility(View.GONE);
                         }
 
+                        List<Checklist> checklists = new ArrayList<>();
+
                         for (int i = 0; i < res.size(); i++) {
+                            ChecklistResponse checklistResponse = res.get(i);
+                            Checklist checklist = new Checklist();
+                            checklist.setName(checklistResponse.getName());
+                            checklist.setId(String.valueOf(checklistResponse.getId()));
+                            checklists.add(checklist);
+                        }
+
+                        /*for (int i = 0; i < res.size(); i++) {
                             RoleChecklist roleChecklist = res.get(i);
                             RoleChecklist myObject = new RoleChecklist();
                             Checklist myObject2 = new Checklist();
@@ -320,45 +371,45 @@ public class HomeFragment extends Fragment {
                             roleChecklistModels.add(new RoleChecklistModel(roleChecklist.getId(),
                                     roleChecklist.getChecklist_id(),
                                     roleChecklist.getChecklist()));
-                        }
+                        }*/
 
-                        if (sessionChecklist.getArrayListChecklist() != null) {
-                            Log.d("ArrayList IF", sessionChecklist.getArrayListChecklist());
-                            checklists.clear();
-                            roleChecklistModels.clear();
-
-                            try {
-                                JSONArray jsonArray = new JSONArray(sessionChecklist.getArrayListChecklist());
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    JSONObject jsonObjeckChecklist = jsonObject.getJSONObject("checklist");
-
-//                                    if (!String.valueOf(jsonObject.get("created_at")).equals(date)) {
-//                                        sessionChecklist.logoutUser();
-//                                        getActivity().finish();
-//                                        startActivity(getActivity().getIntent());
-//                                    }
-
-                                    RoleChecklist myObject = new RoleChecklist();
-                                    myObject.setId(String.valueOf(jsonObject.get("id")));
-
-                                    Checklist checklist = new Checklist();
-                                    checklist.setId(String.valueOf(jsonObjeckChecklist.get("id")));
-                                    checklist.setName(String.valueOf(jsonObjeckChecklist.get("name")));
-                                    myObject.setChecklist(checklist);
-
-                                    checklists.add(myObject);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0, HomeFragment.this);
-
-                        } else {
+//                        if (sessionChecklist.getArrayListChecklist() != null) {
+//                            Log.d("ArrayList IF", sessionChecklist.getArrayListChecklist());
+//                            checklists.clear();
+//                            roleChecklistModels.clear();
+//
+//                            try {
+//                                JSONArray jsonArray = new JSONArray(sessionChecklist.getArrayListChecklist());
+//                                for (int i = 0; i < jsonArray.length(); i++) {
+//                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                    JSONObject jsonObjeckChecklist = jsonObject.getJSONObject("checklist");
+//
+////                                    if (!String.valueOf(jsonObject.get("created_at")).equals(date)) {
+////                                        sessionChecklist.logoutUser();
+////                                        getActivity().finish();
+////                                        startActivity(getActivity().getIntent());
+////                                    }
+//
+//                                    RoleChecklist myObject = new RoleChecklist();
+//                                    myObject.setId(String.valueOf(jsonObject.get("id")));
+//
+//                                    Checklist checklist = new Checklist();
+//                                    checklist.setId(String.valueOf(jsonObjeckChecklist.get("id")));
+//                                    checklist.setName(String.valueOf(jsonObjeckChecklist.get("name")));
+//                                    myObject.setChecklist(checklist);
+//
+//                                    checklists.add(myObject);
+//                                }
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0, HomeFragment.this);
+//
+//                        } else {
 //                            sessionChecklist.setArraylistChecklist(checklists);
-                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0, HomeFragment.this);
-                        }
+                        checklistAdapter = new ChecklistAdapter(checklists, getContext(), HomeFragment.this);
+                        //}
                         recyclerView.setAdapter(checklistAdapter);
                         swipeRefresh.setRefreshing(false);
                     }
@@ -369,7 +420,7 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ApiResponse<List<RoleChecklist>>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ApiResponse<List<ChecklistResponse>>> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
                 Log.d("onFailure", t.getMessage());
             }
@@ -554,19 +605,46 @@ public class HomeFragment extends Fragment {
         ft.commit();
     }
 
-    @SuppressLint("SetTextI18n")
     @OnClick(R.id.btnPenjualan)
     public void onClickBtnPenjualan() {
-        myCalendar = Calendar.getInstance();
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getContext()),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    Calendar newDate = Calendar.getInstance();
+                    newDate.set(year, monthOfYear, dayOfMonth);
+
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("date", dateFormatter.format(newDate.getTime()));
+                    InputPenjualan inputPenjualan = new InputPenjualan();
+                    inputPenjualan.setArguments(bundle);
+                    ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+                    ft.replace(R.id.baseLayout, inputPenjualan);
+                    ft.commit();
+
+                    //Toast.makeText(getContext(), "Tanggal dipilih : " + dateFormatter.format(newDate.getTime()), Toast.LENGTH_SHORT).show();
+                },
+                newCalendar.get(Calendar.YEAR),
+                newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show();
+
+        /*myCalendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener date = (view, year, month, dayOfMonth) -> {
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, month);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateLabel();
         };
-        new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        new DatePickerDialog(
+                Objects.requireNonNull(getActivity()),
+                date,
+                myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)
+        ).show();*/
 
 //        showDialog(R.layout.dialog_filter_penjualan);
 //        myCalendar = Calendar.getInstance();
@@ -718,47 +796,45 @@ public class HomeFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQEUST_CAMERA && resultCode == RESULT_OK) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoImage = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
-            Objects.requireNonNull(photoImage).compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//            imageProfile.setImageBitmap(photoImage);
-            try {
-                File outputDir = Objects.requireNonNull(getContext()).getCacheDir();
-                imageCheck = File.createTempFile("photo", "jpeg", outputDir);
-                FileOutputStream outputStream = getContext().openFileOutput("photo.jpeg", Context.MODE_PRIVATE);
-                outputStream.write(stream.toByteArray());
-                outputStream.close();
-                Log.d("Write File", "Success");
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.d("Write File", "Failed2");
-            }
+
+            Bitmap photoResult = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
+
+            Log.d(TAG, String.valueOf(photoResult));
 
             try {
+                File result = File.createTempFile("photo", ".jpeg",
+                        getContext().getExternalCacheDir());
+
+                OutputStream outStream = new FileOutputStream(result);
+                photoResult.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                outStream.flush();
+                outStream.close();
+
                 if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)) {
-                    postCheckOut();
+                    postCheckOut(result);
                 } else {
-                    postCheckIn();
+                    postCheckIn(result);
                 }
-            } catch (SessionNotFoundException e) {
+            } catch (SessionNotFoundException | IOException e) {
                 e.printStackTrace();
-                postCheckIn();
+                Toast.makeText(getContext(), "Terjadi kesalahan ketika mengunggah file", Toast.LENGTH_SHORT).show();
             }
 
         }
     }
 
-    private void postCheckIn() {
+    private void postCheckIn(File file) {
         Loading.show(getContext());
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        photoImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        Toast.makeText(getContext(), file.getName(), Toast.LENGTH_SHORT).show();
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("group_id", groupId)
-                .addFormDataPart("schedule_id", scheduleId)
-                .addFormDataPart("long_check_in", longCheckIn)
-                .addFormDataPart("lat_check_in", latCheckIn)
-                .addFormDataPart("photo_check_in", "photo.jpeg", RequestBody.create(MediaType.parse("image/jpeg"), stream.toByteArray()))
+                .addFormDataPart("user_id", userId)
+                .addFormDataPart("m_group_id", groupId)
+                .addFormDataPart("m_schedule_id", scheduleId)
+                .addFormDataPart("long_check_in", longitude)
+                .addFormDataPart("lat_check_in", latitude)
+                .addFormDataPart("photo_check_in", file.getName(), fileReqBody)
                 .build();
         HomeHelper.postCheckIn(requestBody, new RestCallback<ApiResponse>() {
             @Override
@@ -771,6 +847,7 @@ public class HomeFragment extends Fragment {
                 Button btnOK = dialog.findViewById(R.id.btnOK);
                 btnOK.setOnClickListener(view -> {
                     Session.save(new SessionObject("check", SessionManagement.CHECK_IN));
+                    setTextCheckInOut();
                     dialog.dismiss();
                 });
                 Date c = Calendar.getInstance().getTime();
@@ -783,6 +860,10 @@ public class HomeFragment extends Fragment {
             public void onFailed(ErrorResponse error) {
                 Loading.hide(getContext());
                 Log.d("TAG CheckIN", error.getMessage());
+                if (error.getMessage().equalsIgnoreCase("Data already exist")) {
+                    Session.save(new SessionObject("check", SessionManagement.CHECK_IN));
+                    setTextCheckInOut();
+                }
             }
 
             @Override
@@ -792,16 +873,16 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void postCheckOut() {
+    private void postCheckOut(File file) {
         Loading.show(getContext());
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        photoImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("photo_check_out", file.getName(), fileReqBody);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("long_check_in", longCheckIn)
-                .addFormDataPart("lat_check_in", latCheckIn)
-                .addFormDataPart("photo_check_in", "photo.jpeg", RequestBody.create(MediaType.parse("image/jpeg"), stream.toByteArray()))
+                .addFormDataPart("user_id", userId)
+                .addFormDataPart("long_check_out", longitude)
+                .addFormDataPart("lat_check_out", latitude)
+                .addPart(body)
                 .build();
         HomeHelper.postCheckOut(requestBody, new RestCallback<ApiResponse>() {
             @SuppressLint("SetTextI18n")
@@ -820,6 +901,7 @@ public class HomeFragment extends Fragment {
                 btnOK.setOnClickListener(view -> {
                     Session.save(new SessionObject("check", SessionManagement.CHECK_OUT));
                     dialog.dismiss();
+                    setTextCheckInOut();
                 });
                 Date c = Calendar.getInstance().getTime();
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("hh:mm");
@@ -838,6 +920,11 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+
+    @NonNull
+    private RequestBody createPartFromString(String descriptionString) {
+        return RequestBody.create(okhttp3.MultipartBody.FORM, descriptionString);
     }
 
     @OnClick(R.id.toolbarPhoto)

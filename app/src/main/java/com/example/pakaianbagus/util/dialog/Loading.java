@@ -17,7 +17,7 @@ public class Loading {
         if(!isShowing(context)) {
             dialog = new Dialog(context);
             //SET TITLE
-            dialog.setTitle("Loading");
+            //dialog.setTitle("Loading");
 
             //set content
             dialog.setContentView(R.layout.dialog_progress);

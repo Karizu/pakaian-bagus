@@ -44,6 +44,7 @@ import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.Kunjungan;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
@@ -242,7 +243,7 @@ public class TambahKunjunganFragment extends Fragment {
 
     public void getListToko() {
         Loading.show(getActivity());
-        KatalogHelper.getListToko(getContext(), new RestCallback<ApiResponse<List<TokoResponse>>>() {
+        KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new RestCallback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<TokoResponse>> listApiResponse) {
                 Loading.hide(getActivity());

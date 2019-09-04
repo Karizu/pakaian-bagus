@@ -29,7 +29,11 @@ import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment
 import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
+import com.rezkyatinnov.kyandroid.session.SessionObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import butterknife.ButterKnife;
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_mutasi_barang:
                 try {
-                    if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_MANAGER) || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)){
+                    if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_MANAGER) || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)) {
                         showDialog();
                         Log.d("Masuk", "Role id 3 || 4");
                         Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                             active = fragmentMutasiBarang;
                             dialog.dismiss();
                         });
-                    } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SPG)){
+                    } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SPG)) {
                         setFragments(fragmentListTokoBM, "3");
                         active = fragmentListTokoBM;
                     } else {
@@ -130,7 +134,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setFragments(Fragment fragment, String string){
+    @SuppressLint("SimpleDateFormat")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String date = df.format(new Date());
+        try {
+            if (!Session.get("the_day").getValue().equals(date)) {
+                doReset(date);
+            }
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+            doReset(date);
+        }
+    }
+
+    private void doReset(String date) {
+        Session.save(new SessionObject("check", SessionManagement.CHECK_OUT));
+        Session.save(new SessionObject("the_day", date));
+    }
+
+    private void setFragments(Fragment fragment, String string) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         ft.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);

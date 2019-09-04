@@ -23,6 +23,7 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.barangmasuk.adapter.ListTokoBMAdapter;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.dialog.Loading;
 
 import java.text.SimpleDateFormat;
@@ -94,26 +95,24 @@ public class ListTokoBMFragment extends Fragment {
         tvDate.setText(formattedDate);
     }
 
-    public void getListToko(){
+    public void getListToko() {
         swipeRefresh.setRefreshing(true);
-        KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
+        KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 swipeRefresh.setRefreshing(false);
-                if (Objects.requireNonNull(response.body()).getData() != null){
+                if (Objects.requireNonNull(response.body()).getData() != null) {
                     List<TokoResponse> tokoResponse = response.body().getData();
 
-                    if (tokoResponse.size() < 1){
+                    if (tokoResponse.size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
 
-                    for (int i = 0; i < tokoResponse.size(); i++){
+                    for (int i = 0; i < tokoResponse.size(); i++) {
                         TokoResponse dataToko = tokoResponse.get(i);
-                        if (dataToko.getType().equalsIgnoreCase("S")) {
-                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
-                        }
+                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
                     }
                     ListTokoBMAdapter listTokoBMAdapter = new ListTokoBMAdapter(katalogTokoModels, ListTokoBMFragment.this);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
@@ -132,7 +131,7 @@ public class ListTokoBMFragment extends Fragment {
         });
     }
 
-    public void layoutListBarangMasuk(String id){
+    public void layoutListBarangMasuk(String id) {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
 

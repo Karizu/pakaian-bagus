@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.models.Checklist;
+import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
@@ -34,6 +36,8 @@ import java.util.Objects;
 public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.ViewHolder> {
     private List<RoleChecklistModel> roleChecklistModels;
     private List<RoleChecklist> roleChecklists;
+    private List<ChecklistResponse> checklistResponses;
+    private List<Checklist> checklistList;
     private Context context;
     private String checklist = "";
     private Fragment fragment;
@@ -52,6 +56,12 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
 
     public ChecklistAdapter(List<RoleChecklist> roleChecklists, Context context, int i, Fragment fragment) {
         this.roleChecklists = roleChecklists;
+        this.context = context;
+        this.fragment = fragment;
+    }
+
+    public ChecklistAdapter(List<Checklist> checklistList, Context context, Fragment fragment) {
+        this.checklistList = checklistList;
         this.context = context;
         this.fragment = fragment;
     }
@@ -103,7 +113,21 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
 //            });
 //        }
 
-        if (roleChecklists != null) {
+        if (checklistList != null) {
+            if (checklistList.get(position).getName() != null) {
+                holder.textViewName.setText(checklistList.get(position).getName());
+            }
+            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    checklistList.get(position).setChecked(true);
+                    checklist += checklistList.get(position).getName() + ", ";
+                } else {
+                    checklistList.get(position).setChecked(false);
+                    checklist = checklist.replaceAll(checklistList.get(position).getName() + ", ", "");
+                }
+                ((HomeFragment) fragment).setChecklistItem(checklist);
+            });
+        } else if (roleChecklists != null) {
             final RoleChecklist roleChecklistModel = roleChecklists.get(position);
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));
             final String id = roleChecklistModel.getId();
@@ -145,9 +169,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
                 }
                 Toast.makeText(context, checklist, Toast.LENGTH_SHORT).show();*/
             });
-        }
-
-        if (roleChecklistModels != null) {
+        } else if (roleChecklistModels != null) {
             final RoleChecklistModel roleChecklistModel = roleChecklistModels.get(position);
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));
             final String id = roleChecklistModel.getId();
@@ -175,7 +197,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
 
     @Override
     public int getItemCount() {
-        if (roleChecklistModels != null) {
+        if (checklistList != null) {
+            return checklistList.size();
+        } else if (roleChecklistModels != null) {
             return roleChecklistModels.size();
         } else {
 //            String str = "{\"data\":"+data+"}";

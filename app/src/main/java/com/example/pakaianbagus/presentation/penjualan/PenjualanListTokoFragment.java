@@ -24,6 +24,7 @@ import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.penjualan.adapter.PenjualanTokoAdapter;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.IOnBackPressed;
 import com.example.pakaianbagus.util.dialog.Loading;
 
@@ -91,26 +92,24 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
         tvDate.setText(formattedDate);
     }
 
-    public void getListToko(){
+    public void getListToko() {
         swipeRefresh.setRefreshing(true);
-        KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
+        KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 swipeRefresh.setRefreshing(false);
-                if (Objects.requireNonNull(response.body()).getData() != null){
+                if (Objects.requireNonNull(response.body()).getData() != null) {
                     List<TokoResponse> tokoResponse = response.body().getData();
 
-                    if (tokoResponse.size() < 1){
+                    if (tokoResponse.size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
 
-                    for (int i = 0; i < tokoResponse.size(); i++){
+                    for (int i = 0; i < tokoResponse.size(); i++) {
                         TokoResponse dataToko = tokoResponse.get(i);
-                        if (dataToko.getType().equalsIgnoreCase("S")) {
-                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
-                        }
+                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
                     }
                     PenjualanTokoAdapter penjualanTokoAdapter = new PenjualanTokoAdapter(katalogTokoModels, getContext(), PenjualanListTokoFragment.this);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
@@ -129,7 +128,7 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
         });
     }
 
-    public void onClickItem(String id){
+    public void onClickItem(String id) {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
 

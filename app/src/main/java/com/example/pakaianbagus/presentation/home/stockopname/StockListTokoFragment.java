@@ -22,6 +22,7 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockTokoAdapter;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.IOnBackPressed;
 
 import java.text.SimpleDateFormat;
@@ -85,7 +86,7 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
 
     public void getListToko() {
         swipeRefresh.setRefreshing(true);
-        KatalogHelper.getListToko(getContext(), new Callback<ApiResponse<List<TokoResponse>>>() {
+        KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new Callback<ApiResponse<List<TokoResponse>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 swipeRefresh.setRefreshing(false);
@@ -94,9 +95,7 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
                         List<TokoResponse> tokoResponse = response.body().getData();
                         for (int i = 0; i < tokoResponse.size(); i++) {
                             TokoResponse dataToko = tokoResponse.get(i);
-                            if (dataToko.getType().equalsIgnoreCase("S")) {
-                                katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
-                            }
+                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
                         }
                         StockTokoAdapter stockTokoAdapter = new StockTokoAdapter(katalogTokoModels, getContext(), StockListTokoFragment.this);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
