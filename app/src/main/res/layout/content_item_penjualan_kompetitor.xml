@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPenjualan"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="8dp"
     android:background="@drawable/background_list_inventaris"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/custom_ripple"
         android:layout_weight="2"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:background="@drawable/custom_ripple"
+        android:orientation="vertical"
         android:paddingStart="14dp"
+        android:paddingTop="10dp"
         android:paddingEnd="14dp"
-        >
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +35,7 @@
                 android:text="@string/jeans_blue"
                 android:textColor="@color/Black"
                 android:textSize="13sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDate"
@@ -82,7 +80,6 @@
                 tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
 
         </LinearLayout>
-
 
 
         <LinearLayout

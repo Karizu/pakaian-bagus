@@ -1,19 +1,27 @@
-package com.example.pakaianbagus.models.stock;
+package com.example.pakaianbagus.models.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Size {
+/**
+ * Created by alfianhpratama on 04/09/2019.
+ * Organization: UTeam
+ */
+
+public class Checklist {
 
     @SerializedName("id")
     @Expose
-    private int id;
-    @SerializedName("name")
+    private Integer id;
+    @SerializedName("user_id")
     @Expose
-    private String name;
-    @SerializedName("code")
+    private Integer userId;
+    @SerializedName("date")
     @Expose
-    private String code;
+    private String date;
+    @SerializedName("checklists")
+    @Expose
+    private String checklists;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -29,29 +37,40 @@ public class Size {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
+    @SerializedName("user")
+    @Expose
+    private User user;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getCode() {
-        return code;
+    public String getDate() {
+        return date;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getChecklists() {
+        return checklists;
+    }
+
+    public void setChecklists(String checklists) {
+        this.checklists = checklists;
     }
 
     public Object getCreatedBy() {
@@ -94,4 +113,13 @@ public class Size {
         this.deletedAt = deletedAt;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }
+

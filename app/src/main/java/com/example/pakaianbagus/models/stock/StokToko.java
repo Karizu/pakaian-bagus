@@ -7,13 +7,13 @@ public class StokToko {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("m_place_id")
     @Expose
-    private Integer mPlaceId;
+    private int mPlaceId;
     @SerializedName("m_item_id")
     @Expose
-    private Integer mItemId;
+    private int mItemId;
     @SerializedName("place_type")
     @Expose
     private String placeType;
@@ -31,10 +31,10 @@ public class StokToko {
     private String description;
     @SerializedName("qty")
     @Expose
-    private Integer qty;
+    private int qty;
     @SerializedName("price")
     @Expose
-    private Integer price;
+    private int price;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -60,27 +60,29 @@ public class StokToko {
     @Expose
     private Size size;
 
-    public Integer getId() {
+    private int total;
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getMPlaceId() {
+    public int getMPlaceId() {
         return mPlaceId;
     }
 
-    public void setMPlaceId(Integer mPlaceId) {
+    public void setMPlaceId(int mPlaceId) {
         this.mPlaceId = mPlaceId;
     }
 
-    public Integer getMItemId() {
+    public int getMItemId() {
         return mItemId;
     }
 
-    public void setMItemId(Integer mItemId) {
+    public void setMItemId(int mItemId) {
         this.mItemId = mItemId;
     }
 
@@ -124,19 +126,19 @@ public class StokToko {
         this.description = description;
     }
 
-    public Integer getQty() {
+    public int getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(int qty) {
         this.qty = qty;
     }
 
-    public Integer getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -204,4 +206,11 @@ public class StokToko {
         this.size = size;
     }
 
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
 }

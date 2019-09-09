@@ -7,19 +7,19 @@ public class Item {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("m_specification_id")
     @Expose
-    private Integer mSpecificationId;
+    private int mSpecificationId;
     @SerializedName("m_brand_id")
     @Expose
-    private Integer mBrandId;
+    private int mBrandId;
     @SerializedName("m_pattern_id")
     @Expose
-    private Integer mPatternId;
+    private int mPatternId;
     @SerializedName("m_category_id")
     @Expose
-    private Integer mCategoryId;
+    private int mCategoryId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -54,43 +54,43 @@ public class Item {
     @Expose
     private Category category;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getMSpecificationId() {
+    public int getMSpecificationId() {
         return mSpecificationId;
     }
 
-    public void setMSpecificationId(Integer mSpecificationId) {
+    public void setMSpecificationId(int mSpecificationId) {
         this.mSpecificationId = mSpecificationId;
     }
 
-    public Integer getMBrandId() {
+    public int getMBrandId() {
         return mBrandId;
     }
 
-    public void setMBrandId(Integer mBrandId) {
+    public void setMBrandId(int mBrandId) {
         this.mBrandId = mBrandId;
     }
 
-    public Integer getMPatternId() {
+    public int getMPatternId() {
         return mPatternId;
     }
 
-    public void setMPatternId(Integer mPatternId) {
+    public void setMPatternId(int mPatternId) {
         this.mPatternId = mPatternId;
     }
 
-    public Integer getMCategoryId() {
+    public int getMCategoryId() {
         return mCategoryId;
     }
 
-    public void setMCategoryId(Integer mCategoryId) {
+    public void setMCategoryId(int mCategoryId) {
         this.mCategoryId = mCategoryId;
     }
 

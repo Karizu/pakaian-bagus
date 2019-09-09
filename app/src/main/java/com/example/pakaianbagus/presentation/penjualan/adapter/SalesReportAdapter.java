@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +64,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         holder.textViewName.setText(name);
         holder.textViewQty.setText(qty);
         holder.textViewHarga.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mHarga));
-        holder.textViewDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mDiskon));
+        //holder.textViewDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mDiskon));
         holder.textViewTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mTotal));
 //        Glide.with(context).load(image).into(holder.imageViewSalesReport);
 //        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
@@ -99,7 +100,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         TextView textViewName;
         TextView textViewQty;
         TextView textViewHarga;
-        TextView textViewDiskon;
+        Spinner textViewDiskon;
         TextView textViewTotal;
         ImageView imageViewSalesReport;
         LinearLayout layoutSalesReport;

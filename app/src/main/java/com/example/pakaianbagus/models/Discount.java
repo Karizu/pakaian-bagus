@@ -1,19 +1,33 @@
-package com.example.pakaianbagus.models.stock;
+package com.example.pakaianbagus.models;
+
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Size {
-
+/**
+ * Created by alfianhpratama on 05/09/2019.
+ * Organization: UTeam
+ */
+public class Discount {
     @SerializedName("id")
     @Expose
     private int id;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("code")
+    @SerializedName("type")
     @Expose
-    private String code;
+    private String type;
+    @SerializedName("value")
+    @Expose
+    private String value;
+    @SerializedName("description")
+    @Expose
+    private String description;
+    @SerializedName("image")
+    @Expose
+    private String image;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -46,12 +60,36 @@ public class Size {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
+    public String getType() {
+        return type;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Object getCreatedBy() {
@@ -94,4 +132,9 @@ public class Size {
         this.deletedAt = deletedAt;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

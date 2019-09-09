@@ -8,6 +8,7 @@ import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.User;
+import com.example.pakaianbagus.models.user.Checklist;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
@@ -54,5 +55,10 @@ public class HomeHelper {
     public static void postChecklistByUserId(String userId, String date, String checklist, RestCallback<ApiResponse> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
         service.getEndpoint().postChecklistByUserId(userId, date, checklist).enqueue(callback);
+    }
+
+    public static void getListChecklistUser(String user_id, String date, Callback<ApiResponse<List<Checklist>>> apiResponseCallback) {
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().getListChecklistUser(user_id, date).enqueue(apiResponseCallback);
     }
 }

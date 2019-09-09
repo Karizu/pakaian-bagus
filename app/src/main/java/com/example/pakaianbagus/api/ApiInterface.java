@@ -4,6 +4,7 @@ import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.ChecklistResponse;
+import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
@@ -11,7 +12,9 @@ import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.models.stock.StokToko;
+import com.example.pakaianbagus.models.user.Checklist;
 
+import java.lang.ref.Reference;
 import java.util.List;
 import java.util.Map;
 
@@ -120,10 +123,23 @@ public interface ApiInterface {
                                                             @Query("order_type") String order_type);
 
     @FormUrlEncoded
-    @POST("userList")
+    @POST("userChecklists")
     Call<ApiResponse> postChecklistByUserId(@Field("user_id") String userId,
                                             @Field("date") String date,
                                             @Field("checklists") String checklists);
+
+    @GET("userChecklists")
+    Call<ApiResponse<List<Checklist>>> getListChecklistUser(@Query("user_id") String user_id,
+                                                            @Query("date") String date);
+
+    @GET("stocks")
+    Call<ApiResponse<List<StokToko>>> getDetailStockBarcode(@Query("article_code") String barcode);
+
+    @GET("discounts")
+    Call<ApiResponse<List<Discount>>> getDiscount();
+
+    @POST("transactions")
+    Call<ApiResponse> postSalesReport(@Body RequestBody requestBody);
 
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

@@ -1,19 +1,17 @@
-package com.example.pakaianbagus.models.stock;
+
+package com.example.pakaianbagus.models.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Size {
+public class Role {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private Integer id;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("code")
-    @Expose
-    private String code;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -30,11 +28,11 @@ public class Size {
     @Expose
     private Object deletedAt;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -44,14 +42,6 @@ public class Size {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public Object getCreatedBy() {

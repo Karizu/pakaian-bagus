@@ -127,6 +127,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
                 }
                 ((HomeFragment) fragment).setChecklistItem(checklist);
             });
+            if (checklistList.get(position).isChecked()) {
+                holder.checkBox.setChecked(true);
+            }
         } else if (roleChecklists != null) {
             final RoleChecklist roleChecklistModel = roleChecklists.get(position);
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));

@@ -336,16 +336,18 @@ public class HomeFragment extends Fragment {
                             tvNoData.setVisibility(View.VISIBLE);
                         } else {
                             tvNoData.setVisibility(View.GONE);
-                        }
 
-                        List<Checklist> checklists = new ArrayList<>();
+                            List<Checklist> checklists = new ArrayList<>();
 
-                        for (int i = 0; i < res.size(); i++) {
-                            ChecklistResponse checklistResponse = res.get(i);
-                            Checklist checklist = new Checklist();
-                            checklist.setName(checklistResponse.getName());
-                            checklist.setId(String.valueOf(checklistResponse.getId()));
-                            checklists.add(checklist);
+                            for (int i = 0; i < res.size(); i++) {
+                                ChecklistResponse checklistResponse = res.get(i);
+                                Checklist checklist = new Checklist();
+                                checklist.setName(checklistResponse.getName());
+                                checklist.setId(String.valueOf(checklistResponse.getId()));
+                                checklists.add(checklist);
+                            }
+
+                            getUserChecklist(checklists);
                         }
 
                         /*for (int i = 0; i < res.size(); i++) {
@@ -408,10 +410,9 @@ public class HomeFragment extends Fragment {
 //
 //                        } else {
 //                            sessionChecklist.setArraylistChecklist(checklists);
-                        checklistAdapter = new ChecklistAdapter(checklists, getContext(), HomeFragment.this);
-                        //}
-                        recyclerView.setAdapter(checklistAdapter);
-                        swipeRefresh.setRefreshing(false);
+
+                    } else {
+                        tvNoData.setVisibility(View.VISIBLE);
                     }
                 } catch (Exception e) {
                     swipeRefresh.setRefreshing(false);
@@ -423,6 +424,48 @@ public class HomeFragment extends Fragment {
             public void onFailure(@NonNull Call<ApiResponse<List<ChecklistResponse>>> call, @NonNull Throwable t) {
                 swipeRefresh.setRefreshing(false);
                 Log.d("onFailure", t.getMessage());
+            }
+        });
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private void getUserChecklist(List<Checklist> checklists) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String today = dateFormat.format(new Date());
+        HomeHelper.getListChecklistUser(userId, today, new Callback<ApiResponse<List<com.example.pakaianbagus.models.user.Checklist>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<List<com.example.pakaianbagus.models.user.Checklist>>> call,
+                                   @NonNull Response<ApiResponse<List<com.example.pakaianbagus.models.user.Checklist>>> response) {
+
+                if (Objects.requireNonNull(response.body()).getData() != null) {
+                    List<com.example.pakaianbagus.models.user.Checklist> checklistsUser = response.body().getData();
+
+                    for (int x = 0; x < checklists.size(); x++) {
+                        String item = checklists.get(x).getName();
+                        for (int y = 0; y < checklistsUser.size(); y++) {
+                            String[] userItem = checklistsUser.get(y).getChecklists().split("\\s*,\\s*");
+                            for (String s : userItem) {
+                                if (s.equalsIgnoreCase(item)) {
+                                    checklists.get(x).setChecked(true);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                checklistAdapter = new ChecklistAdapter(checklists, getContext(), HomeFragment.this);
+                recyclerView.setAdapter(checklistAdapter);
+                swipeRefresh.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<List<com.example.pakaianbagus.models.user.Checklist>>> call,
+                                  @NonNull Throwable t) {
+                swipeRefresh.setRefreshing(false);
+                Log.d("onFailure", t.toString());
+                checklistAdapter = new ChecklistAdapter(checklists, getContext(), HomeFragment.this);
+                recyclerView.setAdapter(checklistAdapter);
+                swipeRefresh.setRefreshing(false);
             }
         });
     }
@@ -825,7 +868,6 @@ public class HomeFragment extends Fragment {
 
     private void postCheckIn(File file) {
         Loading.show(getContext());
-        Toast.makeText(getContext(), file.getName(), Toast.LENGTH_SHORT).show();
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -1131,13 +1173,14 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse body) {
                     Loading.hide(getContext());
-                    showDialog(R.layout.dialog_check_in_out);
+                    Toast.makeText(getContext(), "Berhasil menyimpan data checklist hari ini", Toast.LENGTH_SHORT).show();
                     Log.d("onSuccess: ", body.getMessage());
                 }
 
                 @Override
                 public void onFailed(ErrorResponse error) {
                     Loading.hide(getContext());
+                    Toast.makeText(getContext(), "Gagal menyimpan data " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.d("TAG CheckIN", error.getMessage());
                 }
 
