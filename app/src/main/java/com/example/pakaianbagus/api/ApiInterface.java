@@ -5,12 +5,16 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.Discount;
+import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.RoleChecklist;
+import com.example.pakaianbagus.models.SalesReport;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
+import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
+import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
 import com.example.pakaianbagus.models.stock.StokToko;
 import com.example.pakaianbagus.models.user.Checklist;
 
@@ -139,7 +143,18 @@ public interface ApiInterface {
     Call<ApiResponse<List<Discount>>> getDiscount();
 
     @POST("transactions")
-    Call<ApiResponse> postSalesReport(@Body RequestBody requestBody);
+    Call<ApiResponse> postSalesReport(@Body SalesReport salesReport);
+
+    @GET("transactions")
+    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Query("sales_id") String userId,
+                                                                @Query("date") String date);
+
+    @GET("competitorTransactions")
+    Call<ApiResponse<List<KompetitorResponse>>> getPenjualanKompetitor(@Query("m_place_id") String placeId,
+                                                                       @Query("from_date")String date);
+
+    @POST("competitorTransactions")
+    Call<ApiResponse> postPenjualanKompetitor(@Body Kompetitor data);
 
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

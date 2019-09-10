@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
 import com.example.pakaianbagus.models.stock.StokToko;
 
 import java.text.NumberFormat;
@@ -26,12 +27,12 @@ import java.util.Locale;
  * Organization: UTeam
  */
 public class PenjualanKompetitorAdapter extends RecyclerView.Adapter<PenjualanKompetitorAdapter.ViewHolder> {
-    private List<StokToko> kompetitorList;
+    private List<KompetitorResponse> kompetitorList;
     private Context context;
     private Fragment fragment;
     private String date;
 
-    public PenjualanKompetitorAdapter(List<StokToko> kompetitorList, Context context, Fragment fragment, String date) {
+    public PenjualanKompetitorAdapter(List<KompetitorResponse> kompetitorList, Context context, Fragment fragment, String date) {
         this.kompetitorList = kompetitorList;
         this.context = context;
         this.fragment = fragment;
@@ -59,8 +60,8 @@ public class PenjualanKompetitorAdapter extends RecyclerView.Adapter<PenjualanKo
             holder.textViewDate.setText(date);
         }
 
-        holder.textViewName.setText(kompetitorList.get(position).getItem().getName());
-        holder.textViewHarga.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(kompetitorList.get(position).getTotal()));
+        holder.textViewName.setText(kompetitorList.get(position).getBrand());
+        holder.textViewHarga.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(kompetitorList.get(position).getPrice()));
         holder.textViewQty.setText(String.valueOf(kompetitorList.get(position).getQty()));
     }
 

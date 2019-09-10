@@ -32,8 +32,11 @@ import android.widget.Toast;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.models.ApiResponse;
+import com.example.pakaianbagus.models.Detail;
 import com.example.pakaianbagus.models.Discount;
-import com.example.pakaianbagus.models.stock.Item;
+import com.example.pakaianbagus.models.Kompetitor;
+import com.example.pakaianbagus.models.SalesReport;
+import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
 import com.example.pakaianbagus.models.stock.StokToko;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.PenjualanKompetitorAdapter;
@@ -55,8 +58,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Headers;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 public class InputPenjualan extends Fragment {
 
@@ -74,15 +75,20 @@ public class InputPenjualan extends Fragment {
     RecyclerView rvSales;
     @BindView(R.id.rvPenjualan)
     RecyclerView rvPenjualan;
+    @BindView(R.id.btnSubmit)
+    Button btnSubmit;
 
     View rootView;
+    String userId;
     String date;
+    String placeId;
     int pager;
     final int REQUEST_CODE = 564;
     final int REQUEST_SCANNER = 999;
     private List<StokToko> salesReportList = new ArrayList<>();
-    private List<StokToko> salesFinal = new ArrayList<>();
-    private List<StokToko> kompetitorList = new ArrayList<>();
+    private List<StokToko> salesReportTemp = new ArrayList<>();
+    private List<KompetitorResponse> kompetitorList = new ArrayList<>();
+    //private List<Kompetitor> kompetitorListTemp = new ArrayList<>();
     private List<Discount> discounts = new ArrayList<>();
     private SalesReportAdapter salesReportAdapter;
     private PenjualanKompetitorAdapter kompetitorAdapter;
@@ -97,6 +103,9 @@ public class InputPenjualan extends Fragment {
 
         date = Objects.requireNonNull(getArguments()).getString("date");
 
+        userId = "1";
+        placeId = "1";
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         SimpleDateFormat dateFormatView = new SimpleDateFormat("yyyy MMMM dd", Locale.US);
         try {
@@ -107,7 +116,7 @@ public class InputPenjualan extends Fragment {
             tvDate.setText(date);
         }
 
-        defaultScreen();
+        viewScreen(1);
 
         LinearLayoutManager salesLayoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
         rvSales.setLayoutManager(salesLayoutManager);
@@ -126,10 +135,67 @@ public class InputPenjualan extends Fragment {
 
     private void getData() {
         Loading.show(getContext());
-        getDiscount();
+        if (getDiscount() && getSalesReport() && getKompetitorData()) {
+            Loading.hide(getContext());
+        }
     }
 
-    private void getDiscount() {
+    private boolean getKompetitorData() {
+        InputHelper.getPenjualanKompetitor(placeId, date, new RestCallback<ApiResponse<List<KompetitorResponse>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<KompetitorResponse>> body) {
+                kompetitorList.clear();
+                kompetitorList.addAll(body.getData());
+                kompetitorAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+
+        return true;
+    }
+
+    private boolean getSalesReport() {
+        salesReportList.clear();
+        salesReportTemp.clear();
+        /*InputHelper.getSalesReport(userId, date, new RestCallback<ApiResponse<List<SalesReportResponse>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<SalesReportResponse>> body) {
+                if (body.getData().size() > 0) {
+                    List<SalesReportResponse> responses = body.getData();
+                    for (int x = 0; x < responses.size(); x++) {
+                        Item item = new Item();
+                        item.setName(responses.get(x).);
+
+                        StokToko stokToko = new StokToko();
+                        stokToko.setNew(false);
+                        salesReportList.add(stokToko);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Log.d("onFailed: ", error.toString());
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });*/
+        return true;
+    }
+
+    private boolean getDiscount() {
         discounts.clear();
         InputHelper.getDiscount(new RestCallback<ApiResponse<List<Discount>>>() {
             @Override
@@ -149,6 +215,7 @@ public class InputPenjualan extends Fragment {
 
             }
         });
+        return true;
     }
 
     @Override
@@ -208,81 +275,72 @@ public class InputPenjualan extends Fragment {
 
     @OnClick(R.id.tabSalesReport)
     public void onSalesReportSelected() {
-        pager = 0;
-        rvSales.setVisibility(View.VISIBLE);
-        rvPenjualan.setVisibility(View.GONE);
-        tabSalesReport.setTextColor(getResources().getColor(R.color.DarkSlateBlue));
-        tabPenjualan.setTextColor(getResources().getColor(R.color.Background));
-        btnBarcode.setVisibility(View.VISIBLE);
-        btnAdd.setVisibility(View.GONE);
+        viewScreen(1);
     }
 
     @OnClick(R.id.tabPenjualan)
     public void onPenjualanKompetitorSelected() {
-        pager = 1;
-        rvSales.setVisibility(View.GONE);
-        rvPenjualan.setVisibility(View.VISIBLE);
-        tabSalesReport.setTextColor(getResources().getColor(R.color.Background));
-        tabPenjualan.setTextColor(getResources().getColor(R.color.DarkSlateBlue));
-        btnBarcode.setVisibility(View.GONE);
-        btnAdd.setVisibility(View.VISIBLE);
+        viewScreen(2);
     }
 
     @OnClick(R.id.btnSubmit)
     public void btnSubmitClicked() {
-        if (pager == 0) {
+        doSalesReport();
+        /*if (pager == 0) {
             doSalesReport();
         } else if (pager == 1) {
             doKompetitor();
-        }
+        }*/
     }
 
     private void doSalesReport() {
-        if (salesFinal.size() > 0) {
+        if (salesReportTemp.size() > 0) {
             Loading.show(getContext());
 
-            //StringBuilder from = new StringBuilder();
             StringBuilder description = new StringBuilder();
-            StringBuilder stock_id = new StringBuilder();
-            StringBuilder qty = new StringBuilder();
             int totalQty = 0;
             int totalPrice = 0;
 
-            int from = salesFinal.get(0).getMPlaceId();
+            int from = salesReportTemp.get(0).getMPlaceId();
 
-            for (int x = 0; x < salesFinal.size(); x++) {
-                //from.append(salesFinal.get(x).getMPlaceId()).append(",");
-                totalQty = salesFinal.get(x).getQty() + totalQty;
-                totalPrice = salesFinal.get(x).getTotal() + totalPrice;
-                description.append(salesFinal.get(x).getDescription()).append(",");
-                stock_id.append(salesFinal.get(x).getId()).append(",");
-                qty.append(salesFinal.get(x).getQty()).append(",");
+            List<Detail> details = new ArrayList<>();
+
+            for (int x = 0; x < salesReportTemp.size(); x++) {
+                totalQty = salesReportTemp.get(x).getQty() + totalQty;
+                totalPrice = salesReportTemp.get(x).getTotal() + totalPrice;
+                description.append(salesReportTemp.get(x).getDescription()).append(",");
+
+                Detail detail = new Detail();
+                detail.setStockId(salesReportTemp.get(x).getId());
+                detail.setQty(salesReportTemp.get(x).getQty());
+                detail.setPrice(salesReportTemp.get(x).getTotal());
+                details.add(detail);
             }
 
-            Log.d("doSalesReport: ", String.valueOf(totalQty));
-            Log.d("doSalesReport: ", String.valueOf(totalPrice));
-            Log.d("doSalesReport: ", String.valueOf(totalPrice));
+            SalesReport salesReport = new SalesReport();
 
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("sales_id", "1")
-                    .addFormDataPart("no", "2")
-                    .addFormDataPart("date", date)
-                    .addFormDataPart("from", String.valueOf(from))
-                    .addFormDataPart("total_qty", String.valueOf(totalQty))
-                    .addFormDataPart("total_price", String.valueOf(totalPrice))
-                    .addFormDataPart("description", description.toString())
-                    .addFormDataPart("type", "1")
-                    .addFormDataPart("payment_method", "1")
-                    .addFormDataPart("details[0][stock_id]", stock_id.toString())
-                    .addFormDataPart("details[0][qty]", qty.toString())
-                    .build();
+            salesReport.setSalesId(userId);
+            salesReport.setNo("2");
+            salesReport.setDate(date);
+            salesReport.setFrom(String.valueOf(from));
+            salesReport.setTotalQty(String.valueOf(totalQty));
+            salesReport.setTotalPrice(String.valueOf(totalPrice));
+            salesReport.setDescription(description.toString());
+            salesReport.setType("1");
+            salesReport.setPaymentMethod("1");
+            salesReport.setDetails(details);
 
-            InputHelper.postSalesReport(requestBody, new RestCallback<ApiResponse>() {
+            InputHelper.postSalesReport(salesReport, new RestCallback<ApiResponse>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse body) {
                     Loading.hide(getContext());
                     Toast.makeText(getContext(), "Berhasil mengirimkan data report", Toast.LENGTH_SHORT).show();
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+                    HomeFragment homeFragment = new HomeFragment();
+                    ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+                    ft.replace(R.id.baseLayout, homeFragment);
+                    ft.commit();
                 }
 
                 @Override
@@ -303,11 +361,36 @@ public class InputPenjualan extends Fragment {
     }
 
     private void doKompetitor() {
-        if (kompetitorList.size() > 0) {
-            Toast.makeText(getContext(), "Data tinggal dikirim dengan jumlah data = " + String.valueOf(kompetitorList.size()), Toast.LENGTH_SHORT).show();
+        /*if (kompetitorListTemp.size() > 0) {
+            Loading.show(getContext());
+
+            *//*InputHelper.postPenjualanKompetitor(kompetitorListTemp, new RestCallback<ApiResponse>() {
+                @Override
+                public void onSuccess(Headers headers, ApiResponse body) {
+                    Loading.hide(getContext());
+                    Toast.makeText(getContext(), "Berhasil mengirimkan data penjualan kompetitor", Toast.LENGTH_SHORT).show();
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+                    HomeFragment homeFragment = new HomeFragment();
+                    ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+                    ft.replace(R.id.baseLayout, homeFragment);
+                    ft.commit();
+                }
+
+                @Override
+                public void onFailed(ErrorResponse error) {
+                    Loading.hide(getContext());
+                    Toast.makeText(getContext(), "Gagal mengirimkan data penjualan kompetitor : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCanceled() {
+
+                }
+            });*//*
         } else {
             Toast.makeText(getContext(), "Tidak ada penjualan kompetitor yang harus di laporkan", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     @OnClick(R.id.btnAdd)
@@ -343,16 +426,36 @@ public class InputPenjualan extends Fragment {
     }
 
     private void addPenjualanKompetitor(String nama, String jumlah, String quantity) {
-        StokToko stokToko = new StokToko();
-        Item item = new Item();
-        item.setName(nama);
-        stokToko.setItem(item);
-        stokToko.setQty(Integer.parseInt(quantity));
-        stokToko.setTotal(Integer.parseInt(jumlah));
+        Loading.show(getContext());
 
-        kompetitorList.add(stokToko);
-        kompetitorAdapter.notifyDataSetChanged();
+        Kompetitor kompetitor = new Kompetitor();
+        kompetitor.setmPlaceId(placeId);
+        kompetitor.setBrand(nama);
+        kompetitor.setFromDate(date);
+        kompetitor.setToDate(date);
+        kompetitor.setQty(Integer.parseInt(quantity));
+        kompetitor.setPrice(Integer.parseInt(jumlah));
 
+        InputHelper.postPenjualanKompetitor(kompetitor, new RestCallback<ApiResponse>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse body) {
+                Toast.makeText(getContext(), "Berhasil mengirimkan data penjualan kompetitor", Toast.LENGTH_SHORT).show();
+                if (getKompetitorData()) {
+                    Loading.hide(getContext());
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                Toast.makeText(getContext(), "Gagal mengirimkan data penjualan kompetitor : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
     }
 
     @OnClick(R.id.btnBarcode)
@@ -376,18 +479,29 @@ public class InputPenjualan extends Fragment {
         ft.commit();
     }
 
-    private void defaultScreen() {
-        pager = 0;
-        rvSales.setVisibility(View.VISIBLE);
-        rvPenjualan.setVisibility(View.GONE);
-        tabSalesReport.setTextColor(getResources().getColor(R.color.DarkSlateBlue));
-        tabPenjualan.setTextColor(getResources().getColor(R.color.Background));
-        btnBarcode.setVisibility(View.VISIBLE);
-        btnAdd.setVisibility(View.GONE);
+    private void viewScreen(int page) {
+        pager = page;
+        if (page == 1) {
+            rvSales.setVisibility(View.VISIBLE);
+            rvPenjualan.setVisibility(View.GONE);
+            tabSalesReport.setTextColor(getResources().getColor(R.color.DarkSlateBlue));
+            tabPenjualan.setTextColor(getResources().getColor(R.color.Background));
+            btnBarcode.setVisibility(View.VISIBLE);
+            btnAdd.setVisibility(View.GONE);
+            btnSubmit.setVisibility(View.VISIBLE);
+        } else if (page == 2) {
+            rvSales.setVisibility(View.GONE);
+            rvPenjualan.setVisibility(View.VISIBLE);
+            tabSalesReport.setTextColor(getResources().getColor(R.color.Background));
+            tabPenjualan.setTextColor(getResources().getColor(R.color.DarkSlateBlue));
+            btnBarcode.setVisibility(View.GONE);
+            btnAdd.setVisibility(View.VISIBLE);
+            btnSubmit.setVisibility(View.GONE);
+        }
     }
 
     public void salesData(List<StokToko> stokTokoList) {
-        this.salesFinal = stokTokoList;
+        this.salesReportTemp = stokTokoList;
     }
 
 }

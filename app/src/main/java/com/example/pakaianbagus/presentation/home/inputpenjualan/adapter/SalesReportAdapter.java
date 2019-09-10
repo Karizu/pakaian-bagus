@@ -80,7 +80,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
                 if (discounts.get(index).getType().equals("2")) {
-                    holder.total = Integer.parseInt(discounts.get(index).getValue());
+                    holder.total = Integer.parseInt(discounts.get(index).getValue()) * stokTokoList.get(position).getQty();
                 } else {
                     int dis = (stokTokoList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
                     holder.total = (stokTokoList.get(position).getPrice() - dis) * stokTokoList.get(position).getQty();

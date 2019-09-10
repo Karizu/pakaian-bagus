@@ -1,34 +1,28 @@
-package com.example.pakaianbagus.models.stock;
+package com.example.pakaianbagus.models.api.penjualankompetitor;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StokToko {
-
+/**
+ * Created by alfianhpratama on 10/09/2019.
+ * Organization: UTeam
+ */
+public class KompetitorResponse {
     @SerializedName("id")
     @Expose
     private int id;
     @SerializedName("m_place_id")
     @Expose
     private int mPlaceId;
-    @SerializedName("m_item_id")
+    @SerializedName("brand")
     @Expose
-    private int mItemId;
-    @SerializedName("place_type")
+    private String brand;
+    @SerializedName("from_date")
     @Expose
-    private String placeType;
-    @SerializedName("series_number")
+    private String fromDate;
+    @SerializedName("to_date")
     @Expose
-    private String seriesNumber;
-    @SerializedName("article_code")
-    @Expose
-    private String articleCode;
-    @SerializedName("size_code")
-    @Expose
-    private String sizeCode;
-    @SerializedName("description")
-    @Expose
-    private String description;
+    private String toDate;
     @SerializedName("qty")
     @Expose
     private int qty;
@@ -53,16 +47,6 @@ public class StokToko {
     @SerializedName("place")
     @Expose
     private Place place;
-    @SerializedName("item")
-    @Expose
-    private Item item;
-    @SerializedName("size")
-    @Expose
-    private Size size;
-
-    private int total;
-
-    private boolean isNew;
 
     public int getId() {
         return id;
@@ -80,52 +64,28 @@ public class StokToko {
         this.mPlaceId = mPlaceId;
     }
 
-    public int getMItemId() {
-        return mItemId;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setMItemId(int mItemId) {
-        this.mItemId = mItemId;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    public String getPlaceType() {
-        return placeType;
+    public String getFromDate() {
+        return fromDate;
     }
 
-    public void setPlaceType(String placeType) {
-        this.placeType = placeType;
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
     }
 
-    public String getSeriesNumber() {
-        return seriesNumber;
+    public String getToDate() {
+        return toDate;
     }
 
-    public void setSeriesNumber(String seriesNumber) {
-        this.seriesNumber = seriesNumber;
-    }
-
-    public String getArticleCode() {
-        return articleCode;
-    }
-
-    public void setArticleCode(String articleCode) {
-        this.articleCode = articleCode;
-    }
-
-    public String getSizeCode() {
-        return sizeCode;
-    }
-
-    public void setSizeCode(String sizeCode) {
-        this.sizeCode = sizeCode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 
     public int getQty() {
@@ -190,37 +150,5 @@ public class StokToko {
 
     public void setPlace(Place place) {
         this.place = place;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public Size getSize() {
-        return size;
-    }
-
-    public void setSize(Size size) {
-        this.size = size;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
     }
 }

@@ -2,6 +2,10 @@ package com.example.pakaianbagus.api;
 
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Discount;
+import com.example.pakaianbagus.models.Kompetitor;
+import com.example.pakaianbagus.models.SalesReport;
+import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
+import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
 import com.example.pakaianbagus.models.stock.StokToko;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
@@ -26,8 +30,24 @@ public class InputHelper {
         service.getEndpoint().getDiscount().enqueue(callback);
     }
 
-    public static void postSalesReport(RequestBody requestBody, RestCallback<ApiResponse> callback){
+    public static void getSalesReport(String userId, String date, RestCallback<ApiResponse<List<SalesReportResponse>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().postSalesReport(requestBody).enqueue(callback);
+        service.getEndpoint().getSalesReport(userId, date).enqueue(callback);
+    }
+
+    public static void getPenjualanKompetitor(String placeId, String date, RestCallback<ApiResponse<List<KompetitorResponse>>> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().getPenjualanKompetitor(placeId, date).enqueue(callback);
+    }
+
+    public static void postSalesReport(SalesReport salesReport, RestCallback<ApiResponse> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().postSalesReport(salesReport).enqueue(callback);
+    }
+
+    public static void postPenjualanKompetitor(Kompetitor data, RestCallback<ApiResponse> callback) {
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().postPenjualanKompetitor(data).enqueue(callback);
+
     }
 }
