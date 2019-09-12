@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
-import com.example.pakaianbagus.models.stock.StokToko;
 
 import java.text.NumberFormat;
 import java.text.ParseException;

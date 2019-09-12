@@ -7,15 +7,19 @@ import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
 
 import java.util.List;
 
+import static com.example.pakaianbagus.api.ApiHeader.getToken;
+
 public class BarangHelper {
 
-    public static void getListBarangMasuk(String id_store, int limit, int offset, RestCallback<ApiResponse<List<PenerimaanBarangResponse>>> callback){
+
+
+    public static void getListBarangMasuk(String id_store, int limit, int offset, RestCallback<ApiResponse<List<PenerimaanBarangResponse>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListBarangMasuk(id_store, limit, offset).enqueue(callback);
+        service.getEndpoint().getListBarangMasuk(getToken(), id_store, limit, offset).enqueue(callback);
     }
 
-    public static void getDetailBarangMasuk(String id, RestCallback<ApiResponse<PenerimaanBarangResponse>> callback){
+    public static void getDetailBarangMasuk(String id, RestCallback<ApiResponse<PenerimaanBarangResponse>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getDetailBarangMasuk(id).enqueue(callback);
+        service.getEndpoint().getDetailBarangMasuk(getToken(), id).enqueue(callback);
     }
 }

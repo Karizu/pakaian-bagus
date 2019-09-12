@@ -28,11 +28,11 @@ public class SessionManagement {
     public static final String KEY_USER_ID = "id";
     public static final String KEY_ROLE_ID = "roleId";
     public static final String KEY_BEARER_TOKEN = "token";
-    public static final String ROLE_ADMIN = "5";
+    public static final String ROLE_ADMIN = "2";
     public static final String ROLE_MANAGER = "4";
-    public static final String ROLE_KOORDINATOR = "3";
-    public static final String ROLE_SPG = "2";
-    public static final String ROLE_SALES = "1";
+    public static final String ROLE_KOORDINATOR = "5";
+    public static final String ROLE_SPG = "1";
+    public static final String ROLE_SALES = "3";
     public static final String CHECK_IN = "CHECK IN";
     public static final String CHECK_OUT = "CHECK OUT";
 

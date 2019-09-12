@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,9 @@ import com.example.pakaianbagus.api.AuthHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.User;
+import com.example.pakaianbagus.models.auth.Auth;
+import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.localdata.LocalData;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
@@ -54,6 +58,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        etUsername.setText("spg_bl");
+        etPassword.setText("1sampai8");
 
         btnLogin.setOnClickListener(v -> {
             Loading.show(LoginActivity.this);
@@ -93,138 +100,136 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            Loading.hide(getApplicationContext());
-            focusView.requestFocus();
-        } else {
-
-            Session.save(new SessionObject("Authorization", "Bearer 123123123123121231233", true));
-            Session.save(new SessionObject("UserId", "3"));
-            Session.save(new SessionObject("RoleId", "4"));
-            Session.save(new SessionObject("Name", "admin"));
+        if (etUsername.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) {
+            Session.save(new SessionObject(Constanta.AUTH, "Bearer 123123123123121231233", true));
+            Session.save(new SessionObject(Constanta.USER_ID, SessionManagement.ROLE_ADMIN));
+            Session.save(new SessionObject(Constanta.ROLE_ID, SessionManagement.ROLE_ADMIN));
+            Session.save(new SessionObject(Constanta.GROUP_ID, SessionManagement.ROLE_ADMIN));
+            Session.save(new SessionObject(Constanta.NAME, "Admin"));
+            Session.save(new SessionObject(Constanta.ADMIN, "1"));
+            Session.save(new SessionObject("isLogin", "1"));
             Loading.hide(getApplicationContext());
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            if (cancel) {
+                Loading.hide(getApplicationContext());
+                focusView.requestFocus();
+            } else {
 
+                LoginRequest loginRequest = new LoginRequest();
+                loginRequest.setLogin(etUsername.getText().toString());
+                loginRequest.setPassword(etPassword.getText().toString());
 
-            /*LoginRequest loginRequest = new LoginRequest();
-            loginRequest.setLogin(etUsername.getText().toString());
-            loginRequest.setPassword(etPassword.getText().toString());
-
-            AuthHelper.login(loginRequest, new Callback<ApiResponse<User>>() {
-                @Override
-                public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
-                    Loading.hide(getApplicationContext());
-                    try {
-                        if (response.body().getData() != null) {
-                            Log.d("TOKEN : ", response.body().getToken());
-                            Session.save(new SessionObject("Authorization", "Bearer " + response.body().getToken(), true));
-                            Session.save(new SessionObject("UserId", response.body().getData().getId()));
-                            Session.save(new SessionObject("RoleId", response.body().getData().getRoleId()));
-                            Session.save(new SessionObject("Name", response.body().getData().getName()));
-                            LocalData.saveOrUpdate(response.body().getData());
+                AuthHelper.login(loginRequest, new Callback<Auth>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Auth> call, @NonNull Response<Auth> response) {
+                        Loading.hide(LoginActivity.this);
+                        Auth data = response.body();
+                        if (data != null) {
+                            Session.save(new SessionObject(Constanta.AUTH, data.getTokenType() + " " + data.getAccessToken(), true));
+                            Session.save(new SessionObject(Constanta.USER_ID, String.valueOf(data.getData().getId())));
+                            Session.save(new SessionObject(Constanta.ROLE_ID, String.valueOf(data.getData().getRoleId())));
+                            Session.save(new SessionObject(Constanta.GROUP_ID, String.valueOf(data.getData().getProfile().getMGroupId())));
+                            Session.save(new SessionObject(Constanta.NAME, data.getData().getName()));
+                            Session.save(new SessionObject("isLogin", "1"));
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
                         } else {
-                            Toast.makeText(LoginActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Tidak ada data pada user ini", Toast.LENGTH_SHORT).show();
                         }
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } catch (Exception e){
-                        e.printStackTrace();
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-                    Loading.hide(getApplicationContext());
-                    Log.d("onFailed Login", t.getMessage());
-                    t.printStackTrace();
-                }
-            });*/
+                    @Override
+                    public void onFailure(@NonNull Call<Auth> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                        Toast.makeText(LoginActivity.this, "Gagal login : " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
 
+
+    }
+
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return true;
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() > 3;
+    }
+
+    private void checkPermissionGrant() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
         }
     }
 
-        private boolean isEmailValid (String email){
-            //TODO: Replace this with your own logic
-            return true;
-        }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-        private boolean isPasswordValid (String password){
-            //TODO: Replace this with your own logic
-            return password.length() > 3;
-        }
-
-        private void checkPermissionGrant () {
-            // Here, thisActivity is the current activity
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                    // Show an expanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
 
                 } else {
 
-                    // No explanation needed, we can request the permission.
-
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
                 }
+                return;
             }
-        }
-
-        @Override
-        public void onRequestPermissionsResult ( int requestCode,
-        String permissions[], int[] grantResults){
-            switch (requestCode) {
-                case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
-                    // If request is cancelled, the result arrays are empty.
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                        // permission was granted, yay! Do the
-                        // contacts-related task you need to do.
-
-                    } else {
-
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
-                    }
-                    return;
-                }
-                // other 'case' lines to check for other
-                // permissions this app might request
-            }
-        }
-
-        @Override
-        protected void onStart () {
-            super.onStart();
-            try {
-                checkPermissionGrant();
-                Session.get("Authorization");
-                Log.d("TOKENNNN", Session.get("Authorization").getValue());
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            } catch (SessionNotFoundException e) {
-                Session.clear();
-                LocalData.clear();
-                e.printStackTrace();
-            }
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        try {
+            checkPermissionGrant();
+            Session.get("Authorization");
+            Log.d("TOKENNNN", Session.get("Authorization").getValue());
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } catch (SessionNotFoundException e) {
+            Session.clear();
+            LocalData.clear();
+            e.printStackTrace();
+        }
+    }
+}

@@ -71,6 +71,7 @@ import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListBrandFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
 import com.example.pakaianbagus.util.Common;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.GetLocation;
 import com.example.pakaianbagus.util.SessionChecklist;
 import com.example.pakaianbagus.util.SessionManagement;
@@ -175,7 +176,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         rootView = inflater.inflate(R.layout.home_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
@@ -200,9 +200,7 @@ public class HomeFragment extends Fragment {
 
 //        hideItemForSPGScreen();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
-                LinearLayout.VERTICAL,
-                false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayout.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
 
@@ -210,7 +208,6 @@ public class HomeFragment extends Fragment {
             if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)
                     || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_MANAGER)
                     || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_ADMIN)) {
-//                hideItemForManagerScreen();
                 Log.d(TAG, "masuk if");
                 hideItemForManagerScreen();
             } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SALES)) {
@@ -218,7 +215,6 @@ public class HomeFragment extends Fragment {
             } else {
                 hideItemForSPGScreen();
             }
-
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
         }
@@ -640,9 +636,25 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.btnStock)
     public void onClickBtnStock() {
+        showDialog(R.layout.dialog_filter_stock);
+        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(v -> dialog.dismiss());
+
+        Button btnFilterArtikel = dialog.findViewById(R.id.btnFilterArtikel);
+        Button btnFilterKategori = dialog.findViewById(R.id.btnFilterKategori);
+
+        btnFilterArtikel.setOnClickListener(v -> doStok(Constanta.STOK_ARTIKEL));
+        btnFilterKategori.setOnClickListener(v -> doStok(Constanta.STOK_KATEGORI));
+    }
+
+    private void doStok(int choose) {
+        dialog.dismiss();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         StockListBrandFragment stockFragment = new StockListBrandFragment();
+        Bundle args = new Bundle();
+        args.putInt("choose", choose);
+        stockFragment.setArguments(args);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, stockFragment);
         ft.commit();
@@ -1069,8 +1081,15 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.toolbar_logout)
     public void onClickToolbar() {
-//        Objects.requireNonNull(getActivity()).finishAffinity();
-//        getActivity().finish();
+        try {
+            if (!Session.get("RoleId").getValue().equals(SessionManagement.ROLE_ADMIN)) {
+                doLogout();
+                return;
+            }
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
+
         View v1 = rootView.findViewById(R.id.toolbar_logout);
         PopupMenu pm = new PopupMenu(Objects.requireNonNull(getActivity()), v1);
         pm.getMenuInflater().inflate(R.menu.menu_switch_account, pm.getMenu());
@@ -1133,14 +1152,7 @@ public class HomeFragment extends Fragment {
                     Button btn_no = dialog.findViewById(R.id.btnTidak);
                     btn_ya.setOnClickListener(v -> {
                         dialog.dismiss();
-
-                        Session.clear();
-                        LocalData.clear();
-
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        Objects.requireNonNull(getActivity()).finish();
+                        doLogout();
                     });
 
                     btn_no.setOnClickListener(v -> dialog.dismiss());
@@ -1149,6 +1161,16 @@ public class HomeFragment extends Fragment {
             return true;
         });
         pm.show();
+    }
+
+    private void doLogout() {
+        Session.clear();
+        LocalData.clear();
+
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     @OnClick(R.id.toolbar_notif)

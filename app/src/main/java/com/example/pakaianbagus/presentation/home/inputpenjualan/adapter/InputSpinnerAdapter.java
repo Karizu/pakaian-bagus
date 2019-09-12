@@ -1,4 +1,4 @@
-package com.example.pakaianbagus.util.adapter;
+package com.example.pakaianbagus.presentation.home.inputpenjualan.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,11 +19,11 @@ import java.util.Locale;
  * Created by alfianhpratama on 05/09/2019.
  * Organization: UTeam
  */
-public class SpinnerAdapter extends ArrayAdapter<Discount> {
+public class InputSpinnerAdapter extends ArrayAdapter<Discount> {
 
     private List<Discount> objects;
 
-    public SpinnerAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Discount> objects) {
+    public InputSpinnerAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Discount> objects) {
         super(context, textViewResourceId, objects);
         this.objects = objects;
     }

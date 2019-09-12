@@ -31,7 +31,7 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.KatalogHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogModel;
-import com.example.pakaianbagus.models.stock.StokToko;
+import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 import com.example.pakaianbagus.util.EndlessRecyclerViewScrollListener;
@@ -234,26 +234,26 @@ public class KatalogListBarang extends Fragment {
     private void getListStokToko() {
         swipeRefresh.setRefreshing(true);
 
-        KatalogHelper.getListStokToko(id, idBrand, limit, offset, new RestCallback<ApiResponse<List<StokToko>>>() {
+        KatalogHelper.getListStokToko(id, idBrand, limit, offset, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 swipeRefresh.setRefreshing(false);
                 if (body.getData() != null) {
-                    List<StokToko> stokTokos = body.getData();
+                    List<Stock> stocks = body.getData();
 
-                    if (stokTokos.size() < 1) {
+                    if (stocks.size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
 
-                    for (int i = 0; i < stokTokos.size(); i++) {
-                        StokToko stokToko = stokTokos.get(i);
-                        katalogModels.add(new KatalogModel(stokToko.getArticleCode(),
-                                stokToko.getItem().getName(),
-                                stokToko.getItem().getImage(),
-                                stokToko.getQty(),
-                                stokToko.getPrice()));
+                    for (int i = 0; i < stocks.size(); i++) {
+                        Stock stock = stocks.get(i);
+                        katalogModels.add(new KatalogModel(stock.getArticleCode(),
+                                stock.getItem().getName(),
+                                stock.getItem().getImage(),
+                                stock.getQty(),
+                                stock.getPrice()));
                     }
 
                     katalogAdapter = new KatalogAdapter(katalogModels, getContext());
@@ -335,21 +335,21 @@ public class KatalogListBarang extends Fragment {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         try {
-            KatalogHelper.getListStokToko(id, idBrand, limit, limit * offset, new RestCallback<ApiResponse<List<StokToko>>>() {
+            KatalogHelper.getListStokToko(id, idBrand, limit, limit * offset, new RestCallback<ApiResponse<List<Stock>>>() {
                 @Override
-                public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
+                public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                     swipeRefresh.setRefreshing(false);
                     try {
                         if (body != null) {
-                            List<StokToko> res = body.getData();
+                            List<Stock> res = body.getData();
                             List<KatalogModel> katalogModelList = new ArrayList<>();
                             for (int i = 0; i < res.size(); i++) {
-                                StokToko stokToko = res.get(i);
-                                katalogModelList.add(new KatalogModel(stokToko.getArticleCode(),
-                                        stokToko.getItem().getName(),
-                                        stokToko.getItem().getImage(),
-                                        stokToko.getQty(),
-                                        stokToko.getPrice()));
+                                Stock stock = res.get(i);
+                                katalogModelList.add(new KatalogModel(stock.getArticleCode(),
+                                        stock.getItem().getName(),
+                                        stock.getItem().getImage(),
+                                        stock.getQty(),
+                                        stock.getPrice()));
                             }
                             Log.d("Masuk", "Masuk onLoad");
                             katalogModels.addAll(katalogModelList);

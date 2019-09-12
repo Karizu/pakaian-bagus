@@ -42,6 +42,8 @@ import retrofit2.Response;
 public class StockListTokoFragment extends Fragment implements IOnBackPressed {
 
     private List<KatalogTokoModel> katalogTokoModels;
+    private int choose;
+    private String idBrand;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -63,7 +65,14 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
         View rootView = inflater.inflate(R.layout.spg_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        toolbar_title.setText("StokToko Opname");
+        try {
+            choose = Objects.requireNonNull(getArguments()).getInt("choose");
+            idBrand = Objects.requireNonNull(getArguments()).getString("id_brand");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        toolbar_title.setText("Stock Opname");
         katalogTokoModels = new ArrayList<>();
 
         getCurrentDateChecklist();
@@ -120,7 +129,9 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
 
     public void onClickItem(String id) {
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("id_toko", id);
+        bundle.putString("id_brand", idBrand);
+        bundle.putInt("choose", choose);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

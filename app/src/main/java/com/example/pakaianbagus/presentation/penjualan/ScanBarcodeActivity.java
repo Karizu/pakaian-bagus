@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.KatalogHelper;
 import com.example.pakaianbagus.models.ApiResponse;
-import com.example.pakaianbagus.models.stock.StokToko;
+import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.util.IntentToFragment;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -125,9 +125,9 @@ public class ScanBarcodeActivity extends AppCompatActivity {
 
     private void getBarang(String keyword) {
         Loading.show(ScanBarcodeActivity.this);
-        KatalogHelper.searchBarangPenjualan(keyword, new RestCallback<ApiResponse<List<StokToko>>>() {
+        KatalogHelper.searchBarangPenjualan(keyword, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 Loading.hide(ScanBarcodeActivity.this);
                 Log.d("TAG RESPOGNSE", body.getMessage());
             }

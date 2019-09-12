@@ -3,7 +3,7 @@ package com.example.pakaianbagus.models.stock;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StokToko {
+public class Stock {
 
     @SerializedName("id")
     @Expose

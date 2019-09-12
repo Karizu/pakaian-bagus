@@ -1,11 +1,10 @@
-package com.example.pakaianbagus.models.stock;
 
-import android.support.annotation.NonNull;
+package com.example.pakaianbagus.models.auth;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Category {
+public class Role {
 
     @SerializedName("id")
     @Expose
@@ -13,9 +12,6 @@ public class Category {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("code")
-    @Expose
-    private String code;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -46,14 +42,6 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public Object getCreatedBy() {
@@ -96,9 +84,4 @@ public class Category {
         this.deletedAt = deletedAt;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return getName();
-    }
 }

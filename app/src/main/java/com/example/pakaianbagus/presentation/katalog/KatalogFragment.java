@@ -81,7 +81,7 @@ public class KatalogFragment extends Fragment {
         getCurrentDateChecklist();
 
         try {
-            idBrand = getArguments().getString("id_brand");
+            idBrand = Objects.requireNonNull(getArguments()).getString("id_brand");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,20 +9,21 @@ import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
-import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.SalesReport;
+import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
 import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
-import com.example.pakaianbagus.models.stock.StokToko;
+import com.example.pakaianbagus.models.auth.Auth;
+import com.example.pakaianbagus.models.stock.Category;
+import com.example.pakaianbagus.models.stock.Item;
+import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.models.user.Checklist;
 
 import java.lang.ref.Reference;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -31,95 +32,87 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-//    String BASE_URL = "http://37.72.172.144/rumah-cemara-api/public/api/";
-
-    //    String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
     String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
+    //String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/public/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/";
 
-    //    @GET("userLocation/nearMe")
-//    Call<ApiResponse<List<OutreachNearMeResponse>>> getOutreachListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius);
-//
-//    @GET("groupLocation/nearMe")
-//    Call<ApiResponse<List<ProviderNearMeResponse>>> getProviderListNearMe(@Query("lat") Double latitude, @Query("long") Double longitude, @Query("radius") int radius, @Query("service_type") String serviceType);
-//
-//    @POST("register")
-//    Call<ApiResponse> postRegister(@Body RequestBody registerRequest);
-//
-    @POST("login")
-    Call<ApiResponse<User>> postLogin(@Body LoginRequest loginRequest);
+
+    @POST("auth/login")
+    Call<Auth> postLogin(@Body LoginRequest loginRequest);
 
     @FormUrlEncoded
-    @POST("login")
-    Call<ResponseBody> loginRequest(@Field("login") String username,
+    @POST("auth/login")
+    Call<ResponseBody> loginRequest(@Field("username") String username,
                                     @Field("password") String password);
 
     @GET("checklists")
-    Call<ApiResponse<List<ChecklistResponse>>> getRoleChecklist(@Query("role_id") String role_id,
-                                                                @Header("Authorization") String token);
+    Call<ApiResponse<List<ChecklistResponse>>> getRoleChecklist(@Header("Authorization") String token,
+                                                                @Query("role_id") String role_id);
 
     @GET("places")
-    Call<ApiResponse<List<TokoResponse>>> getListToko(@Query("type") String type);
-    //Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token);
+    Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token,
+                                                      @Query("type") String type);
 
     @GET("brands")
-    Call<ApiResponse<List<BrandResponse>>> getListBrand();
+    Call<ApiResponse<List<BrandResponse>>> getListBrand(@Header("Authorization") String token);
 
     @GET("stocks")
-    Call<ApiResponse<List<StokToko>>> getListStokToko(@Query("id_store") String id_store,
-                                                      @Query("id_brand") String idBrand,
-                                                      @Query("limit") int limit,
-                                                      @Query("offset") int offset);
+    Call<ApiResponse<List<Stock>>> getListStokToko(@Header("Authorization") String token,
+                                                   @Query("id_store") String id_store,
+                                                   @Query("id_brand") String idBrand,
+                                                   @Query("limit") int limit,
+                                                   @Query("offset") int offset);
 
     @GET("stok_toko/getAllArtikel")
-    Call<ApiResponse<List<StokToko>>> searchKatalog(@Query("id_store") String id_store,
-                                                    @Query("is_exist") String is_exist,
-                                                    @Query("is_vip") String is_vip,
-                                                    @Query("keyword") String keyword,
-                                                    @Query("limit") int limit,
-                                                    @Query("offset") int offset,
-                                                    @Query("order_by") String order_by,
-                                                    @Query("order_type") String order_type);
+    Call<ApiResponse<List<Stock>>> searchKatalog(@Header("Authorization") String token,
+                                                 @Query("id_store") String id_store,
+                                                 @Query("is_exist") String is_exist,
+                                                 @Query("is_vip") String is_vip,
+                                                 @Query("keyword") String keyword,
+                                                 @Query("limit") int limit,
+                                                 @Query("offset") int offset,
+                                                 @Query("order_by") String order_by,
+                                                 @Query("order_type") String order_type);
 
     @GET("stok_toko/getAllArtikelWithStokToko")
-    Call<ApiResponse<List<StokToko>>> searchBarangPenjualan(@Query("keyword") String keyword);
+    Call<ApiResponse<List<Stock>>> searchBarangPenjualan(@Header("Authorization") String token,
+                                                         @Query("keyword") String keyword);
 
     @GET("users")
-    Call<ApiResponse<List<User>>> getListKoordinator(@Query("role_id") String role_id);
+    Call<ApiResponse<List<User>>> getListKoordinator(@Header("Authorization") String token,
+                                                     @Query("role_id") String role_id);
 
     @GET("penerimaan/all")
-    Call<ApiResponse<List<PenerimaanBarangResponse>>> getListBarangMasuk(@Query("id_store") String id_store,
+    Call<ApiResponse<List<PenerimaanBarangResponse>>> getListBarangMasuk(@Header("Authorization") String token,
+                                                                         @Query("id_store") String id_store,
                                                                          @Query("limit") int limit,
                                                                          @Query("offset") int offset);
 
     @GET("penerimaan/byid/{id}")
-    Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Path("id") String id);
+    Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Header("Authorization") String token,
+                                                                     @Path("id") String id);
 
     @POST("attendances/checkIn")
-    Call<ApiResponse> postCheckIn(@Body RequestBody checkInData);
-
-    /*@Multipart
-    @POST("attendances/checkOut")
-    Call<ApiResponse> postCheckOut(@PartMap Map<String,RequestBody> checkInData, @Part MultipartBody.Part image);*/
+    Call<ApiResponse> postCheckIn(@Header("Authorization") String token,
+                                  @Body RequestBody checkInData);
 
     @POST("attendances/checkOut")
-    Call<ApiResponse> postCheckOut(@Body RequestBody checkInData);
+    Call<ApiResponse> postCheckOut(@Header("Authorization") String token,
+                                   @Body RequestBody checkInData);
 
     @GET("announcements")
-    Call<ApiResponse<List<AnnouncementResponse>>> getAnnouncement();
+    Call<ApiResponse<List<AnnouncementResponse>>> getAnnouncement(@Header("Authorization") String token);
 
     @GET("pos/history")
-    Call<ApiResponse<List<PenjualanResponse>>> getPenjualan(@Query("id_store") String id_store,
+    Call<ApiResponse<List<PenjualanResponse>>> getPenjualan(@Header("Authorization") String token,
+                                                            @Query("id_store") String id_store,
                                                             @Query("is_vip") Boolean is_vip,
                                                             @Query("limit") int limit,
                                                             @Query("offset") int offset,
@@ -128,33 +121,54 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("userChecklists")
-    Call<ApiResponse> postChecklistByUserId(@Field("user_id") String userId,
+    Call<ApiResponse> postChecklistByUserId(@Header("Authorization") String token,
+                                            @Field("user_id") String userId,
                                             @Field("date") String date,
                                             @Field("checklists") String checklists);
 
     @GET("userChecklists")
-    Call<ApiResponse<List<Checklist>>> getListChecklistUser(@Query("user_id") String user_id,
+    Call<ApiResponse<List<Checklist>>> getListChecklistUser(@Header("Authorization") String token,
+                                                            @Query("user_id") String user_id,
                                                             @Query("date") String date);
 
     @GET("stocks")
-    Call<ApiResponse<List<StokToko>>> getDetailStockBarcode(@Query("article_code") String barcode);
+    Call<ApiResponse<List<Stock>>> getDetailStockBarcode(@Header("Authorization") String token,
+                                                         @Query("article_code") String barcode);
 
     @GET("discounts")
-    Call<ApiResponse<List<Discount>>> getDiscount();
+    Call<ApiResponse<List<Discount>>> getDiscount(@Header("Authorization") String token);
 
     @POST("transactions")
-    Call<ApiResponse> postSalesReport(@Body SalesReport salesReport);
+    Call<ApiResponse> postSalesReport(@Header("Authorization") String token,
+                                      @Body SalesReport salesReport);
 
     @GET("transactions")
-    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Query("sales_id") String userId,
+    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Header("Authorization") String token,
+                                                                @Query("sales_id") String userId,
                                                                 @Query("date") String date);
 
     @GET("competitorTransactions")
-    Call<ApiResponse<List<KompetitorResponse>>> getPenjualanKompetitor(@Query("m_place_id") String placeId,
-                                                                       @Query("from_date")String date);
+    Call<ApiResponse<List<KompetitorResponse>>> getPenjualanKompetitor(@Header("Authorization") String token,
+                                                                       @Query("m_place_id") String placeId,
+                                                                       @Query("from_date") String date);
 
     @POST("competitorTransactions")
-    Call<ApiResponse> postPenjualanKompetitor(@Body Kompetitor data);
+    Call<ApiResponse> postPenjualanKompetitor(@Header("Authorization") String token,
+                                              @Body Kompetitor data);
+
+    @GET("items")
+    Call<ApiResponse<List<Item>>> getListItems(@Header("Authorization") String token);
+
+    @GET("categories")
+    Call<ApiResponse<List<Category>>> getListCetegories(@Header("Authorization") String token);
+
+    @GET("stocks")
+    Call<ApiResponse<List<Stock>>> getListStockbyToko(@Header("Authorization") String token,
+                                                      @Query("m_place_id") String idToko);
+
+    @POST("stocks")
+    Call<ApiResponse> postStockOpname(@Header("Authorization") String token,
+                                      @Body StockOpnameModel data);
 
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

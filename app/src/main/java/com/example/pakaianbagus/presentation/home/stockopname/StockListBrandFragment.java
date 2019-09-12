@@ -49,6 +49,7 @@ public class StockListBrandFragment extends Fragment implements IOnBackPressed {
 
     View rootView;
     private List<Brand> brandList;
+    private int choose;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -73,11 +74,17 @@ public class StockListBrandFragment extends Fragment implements IOnBackPressed {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView =  inflater.inflate(R.layout.stock_list_brand_fragment, container, false);
+        rootView = inflater.inflate(R.layout.stock_list_brand_fragment, container, false);
         ButterKnife.bind(this, rootView);
         toolbarSeacrh.setVisibility(View.GONE);
         tvTitleHeader.setText("LIST BRAND");
         getCurrentDateChecklist();
+
+        try {
+            choose = Objects.requireNonNull(getArguments()).getInt("choose");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         brandList = new ArrayList<>();
 
@@ -145,6 +152,7 @@ public class StockListBrandFragment extends Fragment implements IOnBackPressed {
     public void onClickItem(String id) {
         Bundle bundle = new Bundle();
         bundle.putString("id_brand", id);
+        bundle.putInt("choose", choose);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

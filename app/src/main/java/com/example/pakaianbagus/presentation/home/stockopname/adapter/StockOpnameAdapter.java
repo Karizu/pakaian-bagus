@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.presentation.home.stockopname.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -19,78 +20,75 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.models.StockOpnameModel;
+import com.example.pakaianbagus.models.stock.Stock;
 
 import java.util.List;
 import java.util.Objects;
 
 public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.ViewHolder> {
-    private List<StockOpnameModel> stockOpnameModels;
+    private List<Stock> stockList;
     private Context context;
     private Dialog dialog;
 
-    public StockOpnameAdapter(List<StockOpnameModel> stockOpnameModels, Context context){
-        this.stockOpnameModels = stockOpnameModels;
+    public StockOpnameAdapter(List<Stock> stockList, Context context) {
+        this.stockList = stockList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public StockOpnameAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.content_item_stockopname, parent, false);
-
+    public StockOpnameAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item_stockopname, parent, false);
         return new StockOpnameAdapter.ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull StockOpnameAdapter.ViewHolder holder, int position){
-        final StockOpnameModel stockOpnameModel = stockOpnameModels.get(position);
-//        final String id = katalogModel.getId();
-        final String name = stockOpnameModel.getName();
-        final String qty = stockOpnameModel.getQty();
+    public void onBindViewHolder(@NonNull StockOpnameAdapter.ViewHolder holder, int position) {
+        final Stock stock = stockList.get(position);
+        final String name = stock.getItem().getCategory().getName();
+        final int qty = stock.getQty();
 
         holder.textViewName.setText(name);
-        holder.textViewQty.setText(qty);
+        holder.textViewQty.setText(String.valueOf(qty) + " pcs");
         holder.imageViewMore.setOnClickListener(v -> {
             View v1 = v.findViewById(R.id.btnMore);
             PopupMenu pm = new PopupMenu(Objects.requireNonNull(context), v1);
             pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
             pm.setOnMenuItemClickListener(menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.navigation_ubah:
-                        showDialog(R.layout.dialog_ubah_qty, context);
-                        ImageView imgClose = dialog.findViewById(R.id.imgClose);
-                        EditText etQty = dialog.findViewById(R.id.etQty);
-                        Button btnUbah = dialog.findViewById(R.id.btnUbah);
-                        btnUbah.setOnClickListener(v2 -> {
-                            if (!etQty.getText().toString().equals("")){
-                                dialog.dismiss();
-                                holder.textViewQty.setText(etQty.getText().toString());
-                            } else {
-                                Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        imgClose.setOnClickListener(v2 -> dialog.dismiss());
-                        break;
+                if (menuItem.getItemId() == R.id.navigation_ubah) {
+                    showDialog(context);
+                    ImageView imgClose = dialog.findViewById(R.id.imgClose);
+                    EditText etQty = dialog.findViewById(R.id.etQty);
+                    Button btnUbah = dialog.findViewById(R.id.btnUbah);
+                    btnUbah.setOnClickListener(v2 -> {
+                        if (!etQty.getText().toString().equals("")) {
+                            dialog.dismiss();
+                            stock.setQty(Integer.parseInt(etQty.getText().toString()));
+                            holder.textViewQty.setText(stock.getQty() + " pcs");
+                        } else {
+                            Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    imgClose.setOnClickListener(v2 -> dialog.dismiss());
                 }
                 return true;
             });
             pm.show();
         });
 
-        holder.layoutListStock.setOnClickListener(view -> {
+        /*holder.layoutListStock.setOnClickListener(view -> {
 //            View viewSheet = LayoutInflater.from(view.getContext()).inflate(R.layout.find_outreach_worker_bottom_sheet_dialog, null);
 //            Log.d( "onClick: ",String.valueOf(viewSheet));
 //            final BottomSheetDialog dialog = new BottomSheetDialog(view.getContext());
 //            dialog.setContentView(viewSheet);
 //            dialog.show();
-        });
+        });*/
     }
 
     @Override
-    public int getItemCount(){
-        return stockOpnameModels.size();
+    public int getItemCount() {
+        return stockList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -99,7 +97,7 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
         LinearLayout layoutListStock;
         ImageView imageViewMore;
 
-        ViewHolder(View v){
+        ViewHolder(View v) {
             super(v);
 
             textViewName = v.findViewById(R.id.tvName);
@@ -109,10 +107,10 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
         }
     }
 
-    private void showDialog(int layout, Context context) {
+    private void showDialog(Context context) {
         dialog = new Dialog(Objects.requireNonNull(context));
         //set content
-        dialog.setContentView(layout);
+        dialog.setContentView(R.layout.dialog_ubah_qty);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));

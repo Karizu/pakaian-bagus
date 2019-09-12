@@ -37,7 +37,7 @@ import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.SalesReport;
 import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
-import com.example.pakaianbagus.models.stock.StokToko;
+import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.PenjualanKompetitorAdapter;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.SalesReportAdapter;
@@ -85,13 +85,14 @@ public class InputPenjualan extends Fragment {
     int pager;
     final int REQUEST_CODE = 564;
     final int REQUEST_SCANNER = 999;
-    private List<StokToko> salesReportList = new ArrayList<>();
-    private List<StokToko> salesReportTemp = new ArrayList<>();
+    private List<Stock> salesReportList = new ArrayList<>();
+    private List<Stock> salesReportTemp = new ArrayList<>();
     private List<KompetitorResponse> kompetitorList = new ArrayList<>();
     //private List<Kompetitor> kompetitorListTemp = new ArrayList<>();
     private List<Discount> discounts = new ArrayList<>();
     private SalesReportAdapter salesReportAdapter;
     private PenjualanKompetitorAdapter kompetitorAdapter;
+    private Dialog dialog;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -175,7 +176,7 @@ public class InputPenjualan extends Fragment {
                         Item item = new Item();
                         item.setName(responses.get(x).);
 
-                        StokToko stokToko = new StokToko();
+                        Stock stokToko = new Stock();
                         stokToko.setNew(false);
                         salesReportList.add(stokToko);
                     }
@@ -229,29 +230,29 @@ public class InputPenjualan extends Fragment {
 
     private void addListFromBarcode(String resultData) {
         Loading.show(getContext());
-        InputHelper.getDetailStock(resultData, new RestCallback<ApiResponse<List<StokToko>>>() {
+        InputHelper.getDetailStock(resultData, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<StokToko>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 Loading.hide(getContext());
                 if (body.getData().size() > 0) {
-                    StokToko stokToko = body.getData().get(0);
+                    Stock stock = body.getData().get(0);
                     if (salesReportList.size() > 0) {
                         boolean done = false;
                         for (int x = 0; x < salesReportList.size(); x++) {
-                            if (salesReportList.get(x).getArticleCode().equals(stokToko.getArticleCode())) {
-                                stokToko.setQty(salesReportList.get(x).getQty() + 1);
-                                salesReportList.set(x, stokToko);
+                            if (salesReportList.get(x).getArticleCode().equals(stock.getArticleCode())) {
+                                stock.setQty(salesReportList.get(x).getQty() + 1);
+                                salesReportList.set(x, stock);
                                 done = true;
                                 break;
                             }
                         }
                         if (!done) {
-                            stokToko.setQty(1);
-                            salesReportList.add(stokToko);
+                            stock.setQty(1);
+                            salesReportList.add(stock);
                         }
                     } else {
-                        stokToko.setQty(1);
-                        salesReportList.add(stokToko);
+                        stock.setQty(1);
+                        salesReportList.add(stock);
                     }
 
                     salesReportAdapter.notifyDataSetChanged();
@@ -395,15 +396,7 @@ public class InputPenjualan extends Fragment {
 
     @OnClick(R.id.btnAdd)
     public void btnAddClicked() {
-        Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
-        dialog.setContentView(R.layout.dialog_penjualan_kompetitor_add);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        showDialog(R.layout.dialog_penjualan_kompetitor_add);
 
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         EditText etNama = dialog.findViewById(R.id.etNama);
@@ -420,9 +413,6 @@ public class InputPenjualan extends Fragment {
                     etQuantity.getText().toString()
             );
         });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
     }
 
     private void addPenjualanKompetitor(String nama, String jumlah, String quantity) {
@@ -500,8 +490,23 @@ public class InputPenjualan extends Fragment {
         }
     }
 
-    public void salesData(List<StokToko> stokTokoList) {
-        this.salesReportTemp = stokTokoList;
+    public void salesData(List<Stock> stockList) {
+        this.salesReportTemp = stockList;
+    }
+
+    private void showDialog(int layout) {
+        dialog = new Dialog(Objects.requireNonNull(getActivity()));
+        //set content
+        dialog.setContentView(layout);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 
 }
