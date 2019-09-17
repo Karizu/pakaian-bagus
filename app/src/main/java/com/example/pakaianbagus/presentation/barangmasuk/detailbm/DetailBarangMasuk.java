@@ -102,7 +102,7 @@ public class DetailBarangMasuk extends Fragment {
 
     private void getDetailBM(String id) {
         swipeRefresh.setRefreshing(true);
-        BarangHelper.getDetailBarangMasuk(id, new RestCallback<ApiResponse<PenerimaanBarangResponse>>() {
+        /*BarangHelper.getDetailBarangMasuk(id, new RestCallback<ApiResponse<PenerimaanBarangResponse>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<PenerimaanBarangResponse> body) {
                 swipeRefresh.setRefreshing(false);
@@ -139,7 +139,7 @@ public class DetailBarangMasuk extends Fragment {
             public void onCanceled() {
 
             }
-        });
+        });*/
     }
 
     @OnClick(R.id.toolbar_back)

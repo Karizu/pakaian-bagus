@@ -1,20 +1,32 @@
 
-package com.example.pakaianbagus.models.auth;
+package com.example.pakaianbagus.models.api.mutation.detail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Group {
+public class Item {
 
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("group_id")
+    @SerializedName("m_specification_id")
     @Expose
-    private Object groupId;
+    private int mSpecificationId;
+    @SerializedName("m_brand_id")
+    @Expose
+    private int mBrandId;
+    @SerializedName("m_pattern_id")
+    @Expose
+    private int mPatternId;
+    @SerializedName("m_category_id")
+    @Expose
+    private int mCategoryId;
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("image")
+    @Expose
+    private String image;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -30,12 +42,6 @@ public class Group {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
-    @SerializedName("m_place_id")
-    @Expose
-    private int mPlaceId;
-    @SerializedName("place")
-    @Expose
-    private Place place;
 
     public int getId() {
         return id;
@@ -45,12 +51,36 @@ public class Group {
         this.id = id;
     }
 
-    public Object getGroupId() {
-        return groupId;
+    public int getMSpecificationId() {
+        return mSpecificationId;
     }
 
-    public void setGroupId(Object groupId) {
-        this.groupId = groupId;
+    public void setMSpecificationId(int mSpecificationId) {
+        this.mSpecificationId = mSpecificationId;
+    }
+
+    public int getMBrandId() {
+        return mBrandId;
+    }
+
+    public void setMBrandId(int mBrandId) {
+        this.mBrandId = mBrandId;
+    }
+
+    public int getMPatternId() {
+        return mPatternId;
+    }
+
+    public void setMPatternId(int mPatternId) {
+        this.mPatternId = mPatternId;
+    }
+
+    public int getMCategoryId() {
+        return mCategoryId;
+    }
+
+    public void setMCategoryId(int mCategoryId) {
+        this.mCategoryId = mCategoryId;
     }
 
     public String getName() {
@@ -59,6 +89,14 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Object getCreatedBy() {
@@ -99,22 +137,6 @@ public class Group {
 
     public void setDeletedAt(Object deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public int getMPlaceId() {
-        return mPlaceId;
-    }
-
-    public void setMPlaceId(int mPlaceId) {
-        this.mPlaceId = mPlaceId;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
     }
 
 }

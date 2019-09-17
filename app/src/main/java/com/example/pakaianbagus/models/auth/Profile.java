@@ -45,9 +45,15 @@ public class Profile {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
+    @SerializedName("brand_id")
+    @Expose
+    private int brandId;
     @SerializedName("group")
     @Expose
     private Group group;
+    @SerializedName("brand")
+    @Expose
+    private Object brand;
 
     public int getUserId() {
         return userId;
@@ -153,12 +159,28 @@ public class Profile {
         this.deletedAt = deletedAt;
     }
 
+    public int getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
+    }
+
     public Group getGroup() {
         return group;
     }
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public Object getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Object brand) {
+        this.brand = brand;
     }
 
 }

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/baseLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/LightSteelBlue"
+    tools:context=".presentation.mutasibarang.MutasiDetail">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#6f3df8"
+            android:minHeight="?attr/actionBarSize">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:id="@+id/toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:text="Detail barang masuk"
+                    android:textAllCaps="true"
+                    android:textColor="@color/White"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            tools:ignore="UnusedAttribute">
+
+            <TextView
+                android:id="@+id/tvNamaToko"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JNE"
+                android:textColor="@color/DarkSlateBlue"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tvNumberPengiriman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1233243545875625"
+                android:textColor="@color/DarkGray"
+                android:textSize="11dp"
+                tools:ignore="HardcodedText,SpUsage" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvDeskripsi"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="16dp"
+                    android:text="LIST TOKO sdf sdf sdf sdf sd sdf sdf"
+                    android:textColor="@color/DarkGray"
+                    android:textSize="11dp"
+                    tools:ignore="HardcodedText,RtlSymmetry,SpUsage" />
+
+                <TextView
+                    android:id="@+id/tvNoReg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end|top"
+                    android:text="BRG-23-2349293"
+                    android:textColor="@color/DarkGray"
+                    android:textSize="11dp"
+                    tools:ignore="HardcodedText,SpUsage" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:elevation="10dp"
+            app:cardCornerRadius="10dp"
+            tools:ignore="UnusedAttribute" >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"/>
+
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/btnAttachment"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/background_button"
+            android:text="Lihat Attachment"
+            android:textColor="@color/White"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/background_button"
+            android:text="Submit"
+            android:textColor="@color/White"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+</FrameLayout>

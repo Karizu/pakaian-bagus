@@ -1,6 +1,8 @@
 package com.example.pakaianbagus.api;
 
 import com.example.pakaianbagus.util.interceptor.HttpJsonInterceptor;
+import com.example.pakaianbagus.util.interceptor.RequestInterceptor;
+import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,17 +12,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Api {
-    private static <T> T builder(Class<T> endpoint) {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+
+    public static Reztrofit<ApiInterface> getService() {
+        //service.addInterceptor(new RequestInterceptor());
+        return (Reztrofit<ApiInterface>) Reztrofit.getInstance();
+    }
+    /*private static <T> T builder(Class<T> endpoint) {
+     *//*HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         HttpJsonInterceptor interceptorJson = new HttpJsonInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*//*
+
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .addNetworkInterceptor(interceptorJson)
+                .addInterceptor(new RequestInterceptor())
+                .addNetworkInterceptor(new RequestInterceptor())
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(5, TimeUnit.MINUTES)
                 .build();
+
         return new Retrofit.Builder()
                 .baseUrl(ApiInterface.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -31,5 +40,5 @@ public class Api {
 
     public static ApiInterface apiInterface() {
         return builder(ApiInterface.class);
-    }
+    }*/
 }

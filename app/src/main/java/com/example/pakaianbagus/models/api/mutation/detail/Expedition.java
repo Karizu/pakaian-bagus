@@ -1,20 +1,20 @@
 
-package com.example.pakaianbagus.models.auth;
+package com.example.pakaianbagus.models.api.mutation.detail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Group {
+public class Expedition {
 
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("group_id")
-    @Expose
-    private Object groupId;
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("address")
+    @Expose
+    private String address;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -30,12 +30,6 @@ public class Group {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
-    @SerializedName("m_place_id")
-    @Expose
-    private int mPlaceId;
-    @SerializedName("place")
-    @Expose
-    private Place place;
 
     public int getId() {
         return id;
@@ -45,20 +39,20 @@ public class Group {
         this.id = id;
     }
 
-    public Object getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Object groupId) {
-        this.groupId = groupId;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Object getCreatedBy() {
@@ -99,22 +93,6 @@ public class Group {
 
     public void setDeletedAt(Object deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public int getMPlaceId() {
-        return mPlaceId;
-    }
-
-    public void setMPlaceId(int mPlaceId) {
-        this.mPlaceId = mPlaceId;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
     }
 
 }

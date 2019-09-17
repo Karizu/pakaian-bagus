@@ -10,12 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -35,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,40 +40,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.pakaianbagus.MainActivity;
-import com.example.pakaianbagus.PrinterActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.HomeHelper;
 import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Checklist;
 import com.example.pakaianbagus.models.ChecklistResponse;
-import com.example.pakaianbagus.models.Locations;
 import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
-import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.presentation.auth.LoginActivity;
 import com.example.pakaianbagus.presentation.home.adapter.ChecklistAdapter;
-import com.example.pakaianbagus.presentation.home.checklist.TambahChecklistFragment;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.InputPenjualan;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.KunjunganKoordinatorFragment;
 import com.example.pakaianbagus.presentation.home.notification.NotificationFragment;
 import com.example.pakaianbagus.presentation.home.photocounter.PhotoCounterActivity;
 import com.example.pakaianbagus.presentation.home.spg.SpgListBrandFragment;
-import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListBrandFragment;
-import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
-import com.example.pakaianbagus.util.Common;
+import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.GetLocation;
-import com.example.pakaianbagus.util.SessionChecklist;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
-import com.google.android.gms.common.util.IOUtils;
-import com.google.gson.JsonObject;
 import com.rezkyatinnov.kyandroid.localdata.LocalData;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
@@ -87,14 +73,7 @@ import com.rezkyatinnov.kyandroid.session.SessionObject;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -102,11 +81,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,8 +93,6 @@ import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import pl.aprilapps.easyphotopicker.DefaultCallback;
-import pl.aprilapps.easyphotopicker.EasyImage;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -159,6 +134,8 @@ public class HomeFragment extends Fragment {
     String groupId;
     String scheduleId;
     String roleId;
+    String brandId;
+    String tokoId;
     String longitude = "asd";
     String latitude = "asd";
     ProgressBar progressBar;
@@ -181,42 +158,39 @@ public class HomeFragment extends Fragment {
 
         checklists = new ArrayList<>();
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
-        //sessionChecklist = new SessionChecklist(getActivity());
-
-        groupId = "4";
-        scheduleId = "1";
-        userId = "1";
-        roleId = "1";
-
-        //Session.save(new SessionObject(SessionManagement.KEY_ROLE_ID, "1"));
 
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
-        /*try {
-            userId = Session.get("UserId").getValue();
-        } catch (SessionNotFoundException e) {
-            e.printStackTrace();
-        }*/
-
-//        hideItemForSPGScreen();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayout.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
 
         try {
-            if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)
-                    || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_MANAGER)
-                    || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_ADMIN)) {
+            groupId = Session.get(Constanta.GROUP_ID).getValue();
+            scheduleId = "1";
+            userId = Session.get(Constanta.USER_ID).getValue();
+            roleId = Session.get(Constanta.ROLE_ID).getValue();
+            userName = Session.get(Constanta.NAME).getValue();
+            brandId = Session.get(Constanta.BRAND).getValue();
+            tokoId = Session.get(Constanta.TOKO).getValue();
+            if (roleId.equals(SessionManagement.ROLE_KOORDINATOR)
+                    || roleId.equals(SessionManagement.ROLE_MANAGER)
+                    || roleId.equals(SessionManagement.ROLE_ADMIN)) {
                 Log.d(TAG, "masuk if");
                 hideItemForManagerScreen();
-            } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SALES)) {
+            } else if (roleId.equals(SessionManagement.ROLE_SALES)) {
                 hideItemForSales();
             } else {
                 hideItemForSPGScreen();
             }
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
+            groupId = "4";
+            scheduleId = "1";
+            userId = "1";
+            roleId = "1";
+            brandId = "1";
+            tokoId = "1";
         }
 
         swipeRefresh.setOnRefreshListener(() -> {
@@ -231,12 +205,7 @@ public class HomeFragment extends Fragment {
         });
 
         TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
-        try {
-            userName = Session.get("Name").getValue();
-            toolbarTitle.setText("Hallo " + userName);
-        } catch (SessionNotFoundException e) {
-            e.printStackTrace();
-        }
+        toolbarTitle.setText("Hallo " + userName);
 
         new GetLocation(getContext(), HomeFragment.this).getLocation();
 
@@ -252,7 +221,7 @@ public class HomeFragment extends Fragment {
 
     private void setTextCheckInOut() {
         try {
-            if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)) {
+            if (Session.get(Constanta.CHECK_INOUT_STATUS).getValue().equals(SessionManagement.CHECK_IN)) {
                 tvCheck.setText(SessionManagement.CHECK_OUT);
             } else {
                 tvCheck.setText(SessionManagement.CHECK_IN);
@@ -651,12 +620,19 @@ public class HomeFragment extends Fragment {
         dialog.dismiss();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        StockListBrandFragment stockFragment = new StockListBrandFragment();
+        Fragment fragment;
         Bundle args = new Bundle();
         args.putInt("choose", choose);
-        stockFragment.setArguments(args);
+        if (roleId.equals(SessionManagement.ROLE_SPG)) {
+            fragment = new StockOpnameFragment();
+            args.putString("id_brand", brandId);
+            args.putString("id_toko", tokoId);
+        } else {
+            fragment = new StockListBrandFragment();
+        }
+        fragment.setArguments(args);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, stockFragment);
+        ft.replace(R.id.baseLayout, fragment);
         ft.commit();
     }
 
@@ -865,7 +841,7 @@ public class HomeFragment extends Fragment {
                 outStream.flush();
                 outStream.close();
 
-                if (Session.get("check").getValue().equals(SessionManagement.CHECK_IN)) {
+                if (Session.get(Constanta.CHECK_INOUT_STATUS).getValue().equals(SessionManagement.CHECK_IN)) {
                     postCheckOut(result);
                 } else {
                     postCheckIn(result);
@@ -900,7 +876,7 @@ public class HomeFragment extends Fragment {
                 TextView tvTime = dialog.findViewById(R.id.tvTime);
                 Button btnOK = dialog.findViewById(R.id.btnOK);
                 btnOK.setOnClickListener(view -> {
-                    Session.save(new SessionObject("check", SessionManagement.CHECK_IN));
+                    Session.save(new SessionObject(Constanta.CHECK_INOUT_STATUS, SessionManagement.CHECK_IN));
                     setTextCheckInOut();
                     dialog.dismiss();
                 });
@@ -915,7 +891,7 @@ public class HomeFragment extends Fragment {
                 Loading.hide(getContext());
                 Log.d("TAG CheckIN", error.getMessage());
                 if (error.getMessage().equalsIgnoreCase("Data already exist")) {
-                    Session.save(new SessionObject("check", SessionManagement.CHECK_IN));
+                    Session.save(new SessionObject(Constanta.CHECK_INOUT_STATUS, SessionManagement.CHECK_IN));
                     setTextCheckInOut();
                 }
             }
@@ -953,7 +929,7 @@ public class HomeFragment extends Fragment {
                 TextView tvTime = dialog.findViewById(R.id.tvTime);
                 Button btnOK = dialog.findViewById(R.id.btnOK);
                 btnOK.setOnClickListener(view -> {
-                    Session.save(new SessionObject("check", SessionManagement.CHECK_OUT));
+                    Session.save(new SessionObject(Constanta.CHECK_INOUT_STATUS, SessionManagement.CHECK_OUT));
                     dialog.dismiss();
                     setTextCheckInOut();
                 });
@@ -999,16 +975,8 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.btnKunjungan)
     public void onClickBtnKunjungan() {
-        String sales = null;
-        try {
-            sales = Session.get("RoleId").getValue();
-        } catch (SessionNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        assert sales != null;
-
-        if (Flag == 4 || sales.equals("4")) {
+        if (Flag == 4 || roleId.equals("4")) {
             showDialog(R.layout.dialog_pilih_kunjungan);
             Button btnKunjunganKoordinator = dialog.findViewById(R.id.btnKunjunganKoordinator);
             btnKunjunganKoordinator.setOnClickListener(v -> {
@@ -1081,13 +1049,9 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.toolbar_logout)
     public void onClickToolbar() {
-        try {
-            if (!Session.get("RoleId").getValue().equals(SessionManagement.ROLE_ADMIN)) {
-                doLogout();
-                return;
-            }
-        } catch (SessionNotFoundException e) {
-            e.printStackTrace();
+        if (!roleId.equals(SessionManagement.ROLE_ADMIN)) {
+            doLogout();
+            return;
         }
 
         View v1 = rootView.findViewById(R.id.toolbar_logout);

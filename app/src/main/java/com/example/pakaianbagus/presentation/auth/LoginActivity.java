@@ -18,25 +18,18 @@ import android.widget.Toast;
 import com.example.pakaianbagus.MainActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.AuthHelper;
-import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
-import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.models.auth.Auth;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.localdata.LocalData;
-import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
-import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 import com.rezkyatinnov.kyandroid.session.SessionObject;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Headers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -134,6 +127,10 @@ public class LoginActivity extends AppCompatActivity {
                             Session.save(new SessionObject(Constanta.GROUP_ID, String.valueOf(data.getData().getProfile().getMGroupId())));
                             Session.save(new SessionObject(Constanta.NAME, data.getData().getName()));
                             Session.save(new SessionObject("isLogin", "1"));
+                            if (String.valueOf(data.getData().getRoleId()).equals(SessionManagement.ROLE_SPG)) {
+                                Session.save(new SessionObject(Constanta.TOKO, String.valueOf(data.getData().getProfile().getGroup().getMPlaceId())));
+                                Session.save(new SessionObject(Constanta.BRAND, String.valueOf(data.getData().getProfile().getBrandId())));
+                            }
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {

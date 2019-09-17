@@ -7,12 +7,15 @@ import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.LoginRequest;
+import com.example.pakaianbagus.models.MutationRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.SalesReport;
 import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
+import com.example.pakaianbagus.models.api.mutation.Mutation;
+import com.example.pakaianbagus.models.api.mutation.detail.MutationDetail;
 import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
 import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
 import com.example.pakaianbagus.models.auth.Auth;
@@ -20,6 +23,7 @@ import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.models.user.Checklist;
+import com.example.pakaianbagus.presentation.mutasibarang.MutasiDetail;
 
 import java.lang.ref.Reference;
 import java.util.List;
@@ -31,7 +35,6 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -53,26 +56,22 @@ public interface ApiInterface {
                                     @Field("password") String password);
 
     @GET("checklists")
-    Call<ApiResponse<List<ChecklistResponse>>> getRoleChecklist(@Header("Authorization") String token,
-                                                                @Query("role_id") String role_id);
+    Call<ApiResponse<List<ChecklistResponse>>> getRoleChecklist(@Query("role_id") String role_id);
 
     @GET("places")
-    Call<ApiResponse<List<TokoResponse>>> getListToko(@Header("Authorization") String token,
-                                                      @Query("type") String type);
+    Call<ApiResponse<List<TokoResponse>>> getListToko(@Query("type") String type);
 
     @GET("brands")
-    Call<ApiResponse<List<BrandResponse>>> getListBrand(@Header("Authorization") String token);
+    Call<ApiResponse<List<BrandResponse>>> getListBrand();
 
     @GET("stocks")
-    Call<ApiResponse<List<Stock>>> getListStokToko(@Header("Authorization") String token,
-                                                   @Query("id_store") String id_store,
+    Call<ApiResponse<List<Stock>>> getListStokToko(@Query("id_store") String id_store,
                                                    @Query("id_brand") String idBrand,
                                                    @Query("limit") int limit,
                                                    @Query("offset") int offset);
 
     @GET("stok_toko/getAllArtikel")
-    Call<ApiResponse<List<Stock>>> searchKatalog(@Header("Authorization") String token,
-                                                 @Query("id_store") String id_store,
+    Call<ApiResponse<List<Stock>>> searchKatalog(@Query("id_store") String id_store,
                                                  @Query("is_exist") String is_exist,
                                                  @Query("is_vip") String is_vip,
                                                  @Query("keyword") String keyword,
@@ -82,37 +81,27 @@ public interface ApiInterface {
                                                  @Query("order_type") String order_type);
 
     @GET("stok_toko/getAllArtikelWithStokToko")
-    Call<ApiResponse<List<Stock>>> searchBarangPenjualan(@Header("Authorization") String token,
-                                                         @Query("keyword") String keyword);
+    Call<ApiResponse<List<Stock>>> searchBarangPenjualan(@Query("keyword") String keyword);
 
     @GET("users")
-    Call<ApiResponse<List<User>>> getListKoordinator(@Header("Authorization") String token,
-                                                     @Query("role_id") String role_id);
+    Call<ApiResponse<List<User>>> getListKoordinator(@Query("role_id") String role_id);
 
     @GET("penerimaan/all")
-    Call<ApiResponse<List<PenerimaanBarangResponse>>> getListBarangMasuk(@Header("Authorization") String token,
-                                                                         @Query("id_store") String id_store,
+    Call<ApiResponse<List<PenerimaanBarangResponse>>> getListBarangMasuk(@Query("id_store") String id_store,
                                                                          @Query("limit") int limit,
                                                                          @Query("offset") int offset);
 
-    @GET("penerimaan/byid/{id}")
-    Call<ApiResponse<PenerimaanBarangResponse>> getDetailBarangMasuk(@Header("Authorization") String token,
-                                                                     @Path("id") String id);
-
     @POST("attendances/checkIn")
-    Call<ApiResponse> postCheckIn(@Header("Authorization") String token,
-                                  @Body RequestBody checkInData);
+    Call<ApiResponse> postCheckIn(@Body RequestBody checkInData);
 
     @POST("attendances/checkOut")
-    Call<ApiResponse> postCheckOut(@Header("Authorization") String token,
-                                   @Body RequestBody checkInData);
+    Call<ApiResponse> postCheckOut(@Body RequestBody checkInData);
 
     @GET("announcements")
-    Call<ApiResponse<List<AnnouncementResponse>>> getAnnouncement(@Header("Authorization") String token);
+    Call<ApiResponse<List<AnnouncementResponse>>> getAnnouncement();
 
     @GET("pos/history")
-    Call<ApiResponse<List<PenjualanResponse>>> getPenjualan(@Header("Authorization") String token,
-                                                            @Query("id_store") String id_store,
+    Call<ApiResponse<List<PenjualanResponse>>> getPenjualan(@Query("id_store") String id_store,
                                                             @Query("is_vip") Boolean is_vip,
                                                             @Query("limit") int limit,
                                                             @Query("offset") int offset,
@@ -121,54 +110,57 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("userChecklists")
-    Call<ApiResponse> postChecklistByUserId(@Header("Authorization") String token,
-                                            @Field("user_id") String userId,
+    Call<ApiResponse> postChecklistByUserId(@Field("user_id") String userId,
                                             @Field("date") String date,
                                             @Field("checklists") String checklists);
 
     @GET("userChecklists")
-    Call<ApiResponse<List<Checklist>>> getListChecklistUser(@Header("Authorization") String token,
-                                                            @Query("user_id") String user_id,
+    Call<ApiResponse<List<Checklist>>> getListChecklistUser(@Query("user_id") String user_id,
                                                             @Query("date") String date);
 
     @GET("stocks")
-    Call<ApiResponse<List<Stock>>> getDetailStockBarcode(@Header("Authorization") String token,
-                                                         @Query("article_code") String barcode);
+    Call<ApiResponse<List<Stock>>> getDetailStockBarcode(@Query("article_code") String barcode);
 
     @GET("discounts")
-    Call<ApiResponse<List<Discount>>> getDiscount(@Header("Authorization") String token);
+    Call<ApiResponse<List<Discount>>> getDiscount();
 
     @POST("transactions")
-    Call<ApiResponse> postSalesReport(@Header("Authorization") String token,
-                                      @Body SalesReport salesReport);
+    Call<ApiResponse> postSalesReport(@Body SalesReport salesReport);
 
     @GET("transactions")
-    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Header("Authorization") String token,
-                                                                @Query("sales_id") String userId,
+    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Query("sales_id") String userId,
                                                                 @Query("date") String date);
 
     @GET("competitorTransactions")
-    Call<ApiResponse<List<KompetitorResponse>>> getPenjualanKompetitor(@Header("Authorization") String token,
-                                                                       @Query("m_place_id") String placeId,
+    Call<ApiResponse<List<KompetitorResponse>>> getPenjualanKompetitor(@Query("m_place_id") String placeId,
                                                                        @Query("from_date") String date);
 
     @POST("competitorTransactions")
-    Call<ApiResponse> postPenjualanKompetitor(@Header("Authorization") String token,
-                                              @Body Kompetitor data);
+    Call<ApiResponse> postPenjualanKompetitor(@Body Kompetitor data);
 
     @GET("items")
-    Call<ApiResponse<List<Item>>> getListItems(@Header("Authorization") String token);
+    Call<ApiResponse<List<Item>>> getListItems();
 
     @GET("categories")
-    Call<ApiResponse<List<Category>>> getListCetegories(@Header("Authorization") String token);
+    Call<ApiResponse<List<Category>>> getListCetegories();
 
     @GET("stocks")
-    Call<ApiResponse<List<Stock>>> getListStockbyToko(@Header("Authorization") String token,
-                                                      @Query("m_place_id") String idToko);
+    Call<ApiResponse<List<Stock>>> getListStockbyToko(@Query("m_place_id") String idToko);
 
     @POST("stocks")
-    Call<ApiResponse> postStockOpname(@Header("Authorization") String token,
-                                      @Body StockOpnameModel data);
+    Call<ApiResponse> postStockOpname(@Body StockOpnameModel data);
+
+    @GET("mutations")
+    Call<ApiResponse<List<Mutation>>> getListMutation(@Query("status[]") List<Integer> status,
+                                                      @Query("m_brand_id") String id_brand,
+                                                      @Query("m_place_id") String id_toko);
+
+    @GET("mutations/{id}")
+    Call<ApiResponse<MutationDetail>> getDetailMutation(@Path(value = "id", encoded = true) int id);
+
+    @POST("mutations")
+    Call<ApiResponse> postDetailMutation(@Body MutationRequest mutationRequest);
+
 
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

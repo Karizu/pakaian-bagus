@@ -26,41 +26,41 @@ import static com.example.pakaianbagus.api.ApiHeader.getToken;
 public class HomeHelper {
 
     public static void getListChecklist(Context context, Callback<ApiResponse<List<ChecklistResponse>>> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        Reztrofit<ApiInterface> service = Api.getService();
         SessionManagement session = new SessionManagement(context);
         HashMap<String, String> user = session.getUserDetails();
-        service.getEndpoint().getRoleChecklist(user.get(SessionManagement.KEY_ROLE_ID), user.get(SessionManagement.KEY_BEARER_TOKEN)).enqueue(callback);
+        service.getEndpoint().getRoleChecklist(user.get(SessionManagement.KEY_ROLE_ID)).enqueue(callback);
     }
 
     public static void getListKoordinator(RestCallback<ApiResponse<List<User>>> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListKoordinator(getToken(), "2").enqueue(callback);
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().getListKoordinator("2").enqueue(callback);
     }
 
     public static void postCheckIn(RequestBody requestBody, RestCallback<ApiResponse> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().postCheckIn(getToken(), requestBody).enqueue(callback);
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().postCheckIn(requestBody).enqueue(callback);
     }
 
     //public static void postCheckOut(Map<String,RequestBody> requestBody, MultipartBody.Part images, RestCallback<ApiResponse> callback){
     public static void postCheckOut(RequestBody requestBody, RestCallback<ApiResponse> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().postCheckOut(getToken(), requestBody).enqueue(callback);
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().postCheckOut(requestBody).enqueue(callback);
         //service.getEndpoint().postCheckOut(requestBody, images).enqueue(callback);
     }
 
     public static void getAnnouncement(RestCallback<ApiResponse<List<AnnouncementResponse>>> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getAnnouncement(getToken()).enqueue(callback);
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().getAnnouncement().enqueue(callback);
     }
 
     public static void postChecklistByUserId(String userId, String date, String checklist, RestCallback<ApiResponse> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().postChecklistByUserId(getToken(), userId, date, checklist).enqueue(callback);
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().postChecklistByUserId(userId, date, checklist).enqueue(callback);
     }
 
     public static void getListChecklistUser(String user_id, String date, Callback<ApiResponse<List<Checklist>>> apiResponseCallback) {
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListChecklistUser(getToken(), user_id, date).enqueue(apiResponseCallback);
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().getListChecklistUser(user_id, date).enqueue(apiResponseCallback);
     }
 }

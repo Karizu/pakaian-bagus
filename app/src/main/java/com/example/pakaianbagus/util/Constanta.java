@@ -16,7 +16,13 @@ public class Constanta {
     public static final String GROUP_ID  = "mGroupId";
     public static final String NAME  = "Name";
     public static final String ADMIN  = "Admin";
+    public static final String BRAND  = "BrandID";
+    public static final String TOKO  = "PlaceID";
+
+    public static final String CHECK_INOUT_STATUS  = "CheckINOUTStatus";
 
     public static final int STOK_KATEGORI = 1;
     public static final int STOK_ARTIKEL = 2;
+    public static final int MUTASI_NOT_VERIFIED = 3;
+    public static final int MUTASI_VERIFIED = 4;
 }

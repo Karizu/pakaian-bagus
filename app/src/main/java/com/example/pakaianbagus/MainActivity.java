@@ -19,20 +19,20 @@ import android.widget.Toast;
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
 import com.example.pakaianbagus.presentation.barangmasuk.ListTokoBMFragment;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
-import com.example.pakaianbagus.presentation.katalog.KatalogBrandFragment;
-import com.example.pakaianbagus.presentation.katalog.KatalogFragment;
-import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
-import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.presentation.katalog.KatalogBrandFragment;
+import com.example.pakaianbagus.presentation.katalog.KatalogListBarang;
+import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangFragment;
+import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangSPG;
+import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.penjualan.PenjualanBrandFragment;
-import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 import com.rezkyatinnov.kyandroid.session.SessionObject;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -46,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentStockOpname = new StockOpnameFragment();
     final Fragment fragmentBarangMasuk = new BarangMasukFragment();
     final Fragment fragmentListTokoBM = new ListTokoBMFragment();
+    final Fragment fragmentMutasiSPG = new MutasiBarangSPG();
     final Fragment fragmentInputHarian = new InputHarianFragment();
     final Fragment fragmentPenjualanListToko = new PenjualanBrandFragment();
     final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
     final Fragment katalogFragment = new KatalogBrandFragment();
+    final Fragment katalogSpgFragment = new KatalogListBarang();
     FragmentManager fm = getSupportFragmentManager();
     FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
     Fragment active = fragmentHome;
@@ -64,12 +66,27 @@ public class MainActivity extends AppCompatActivity {
                 active = fragmentHome;
                 return true;
             case R.id.navigation_katalog:
-                setFragments(katalogFragment, "2");
-                active = fragmentMutasiBarang;
+                try {
+                    if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("id_brand", Session.get(Constanta.BRAND).getValue());
+                        bundle.putString("id", Session.get(Constanta.TOKO).getValue());
+
+                        setFragments(katalogSpgFragment, "2", bundle);
+                    } else {
+                        setFragments(katalogFragment, "2");
+                        active = fragmentMutasiBarang;
+                    }
+                } catch (SessionNotFoundException e) {
+                    e.printStackTrace();
+                    setFragments(katalogFragment, "2");
+                    active = fragmentMutasiBarang;
+                }
                 return true;
             case R.id.navigation_mutasi_barang:
                 try {
-                    if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_MANAGER) || Session.get("RoleId").getValue().equals(SessionManagement.ROLE_KOORDINATOR)) {
+                    if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_MANAGER) ||
+                            Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_KOORDINATOR)) {
                         showDialog();
                         Log.d("Masuk", "Role id 3 || 4");
                         Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
@@ -84,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
                             active = fragmentMutasiBarang;
                             dialog.dismiss();
                         });
-                    } else if (Session.get("RoleId").getValue().equals(SessionManagement.ROLE_SPG)) {
-                        setFragments(fragmentListTokoBM, "3");
+                    } else if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)) {
+                        setFragments(fragmentMutasiSPG, "3");
                         active = fragmentListTokoBM;
                     } else {
                         setFragments(fragmentListTokoBM, "3");
@@ -110,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         try {
             Objects.requireNonNull(getSupportActionBar()).hide(); //<< this
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -158,6 +175,15 @@ public class MainActivity extends AppCompatActivity {
     private void setFragments(Fragment fragment, String string) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        ft.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
+        ft.replace(R.id.main_container, fragment, string);
+        ft.commit();
+    }
+
+    private void setFragments(Fragment fragment, String string, Bundle bundle) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        fragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left);
         ft.replace(R.id.main_container, fragment, string);
         ft.commit();

@@ -41,10 +41,14 @@ import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.PenjualanKompetitorAdapter;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.SalesReportAdapter;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.Scanner;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -82,6 +86,9 @@ public class InputPenjualan extends Fragment {
     String userId;
     String date;
     String placeId;
+    String brandId;
+    String roleId;
+    boolean isSpg;
     int pager;
     final int REQUEST_CODE = 564;
     final int REQUEST_SCANNER = 999;
@@ -104,8 +111,21 @@ public class InputPenjualan extends Fragment {
 
         date = Objects.requireNonNull(getArguments()).getString("date");
 
-        userId = "1";
-        placeId = "1";
+        try {
+            userId = Session.get(Constanta.USER_ID).getValue();
+            isSpg = Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG);
+            if (isSpg) {
+                placeId = Session.get(Constanta.TOKO).getValue();
+                brandId = Session.get(Constanta.BRAND).getValue();
+            } else {
+                placeId = Objects.requireNonNull(getArguments()).getString("id_toko");
+                brandId = Objects.requireNonNull(getArguments()).getString("id_brand");
+            }
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+            placeId = "1";
+            brandId = "1";
+        }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         SimpleDateFormat dateFormatView = new SimpleDateFormat("yyyy MMMM dd", Locale.US);
@@ -142,7 +162,7 @@ public class InputPenjualan extends Fragment {
     }
 
     private boolean getKompetitorData() {
-        InputHelper.getPenjualanKompetitor(placeId, date, new RestCallback<ApiResponse<List<KompetitorResponse>>>() {
+        InputHelper.getPenjualanKompetitor(userId, date, new RestCallback<ApiResponse<List<KompetitorResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<KompetitorResponse>> body) {
                 kompetitorList.clear();
@@ -236,26 +256,34 @@ public class InputPenjualan extends Fragment {
                 Loading.hide(getContext());
                 if (body.getData().size() > 0) {
                     Stock stock = body.getData().get(0);
-                    if (salesReportList.size() > 0) {
-                        boolean done = false;
-                        for (int x = 0; x < salesReportList.size(); x++) {
-                            if (salesReportList.get(x).getArticleCode().equals(stock.getArticleCode())) {
-                                stock.setQty(salesReportList.get(x).getQty() + 1);
-                                salesReportList.set(x, stock);
-                                done = true;
-                                break;
+                    String mPlaceId = String.valueOf(stock.getMPlaceId());
+                    String mBrandId = String.valueOf(stock.getItem().getMBrandId());
+                    boolean placeTrue = placeId.equals(mPlaceId);
+                    boolean brandTrue = brandId.equals(mBrandId);
+                    if (placeTrue && brandTrue) {
+                        if (salesReportList.size() > 0) {
+                            boolean done = false;
+                            for (int x = 0; x < salesReportList.size(); x++) {
+                                if (salesReportList.get(x).getArticleCode().equals(stock.getArticleCode())) {
+                                    stock.setQty(salesReportList.get(x).getQty() + 1);
+                                    salesReportList.set(x, stock);
+                                    done = true;
+                                    break;
+                                }
                             }
-                        }
-                        if (!done) {
+                            if (!done) {
+                                stock.setQty(1);
+                                salesReportList.add(stock);
+                            }
+                        } else {
                             stock.setQty(1);
                             salesReportList.add(stock);
                         }
-                    } else {
-                        stock.setQty(1);
-                        salesReportList.add(stock);
-                    }
 
-                    salesReportAdapter.notifyDataSetChanged();
+                        salesReportAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "Tolong scan barcode sesuai dengan toko dan brand anda", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(getContext(), "Tidak ada dari barcode tersebut, mohon periksa kembali barcode atau coba lagi.", Toast.LENGTH_LONG).show();
                 }

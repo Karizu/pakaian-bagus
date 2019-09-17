@@ -1,20 +1,26 @@
 
-package com.example.pakaianbagus.models.auth;
+package com.example.pakaianbagus.models.api.mutation.detail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Group {
+public class Detail {
 
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("group_id")
+    @SerializedName("mutation_id")
     @Expose
-    private Object groupId;
-    @SerializedName("name")
+    private int mutationId;
+    @SerializedName("stock_id")
     @Expose
-    private String name;
+    private int stockId;
+    @SerializedName("qty")
+    @Expose
+    private int qty;
+    @SerializedName("price")
+    @Expose
+    private int price;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -30,12 +36,9 @@ public class Group {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
-    @SerializedName("m_place_id")
+    @SerializedName("stock")
     @Expose
-    private int mPlaceId;
-    @SerializedName("place")
-    @Expose
-    private Place place;
+    private Stock stock;
 
     public int getId() {
         return id;
@@ -45,20 +48,36 @@ public class Group {
         this.id = id;
     }
 
-    public Object getGroupId() {
-        return groupId;
+    public int getMutationId() {
+        return mutationId;
     }
 
-    public void setGroupId(Object groupId) {
-        this.groupId = groupId;
+    public void setMutationId(int mutationId) {
+        this.mutationId = mutationId;
     }
 
-    public String getName() {
-        return name;
+    public int getStockId() {
+        return stockId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStockId(int stockId) {
+        this.stockId = stockId;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public Object getCreatedBy() {
@@ -101,20 +120,12 @@ public class Group {
         this.deletedAt = deletedAt;
     }
 
-    public int getMPlaceId() {
-        return mPlaceId;
+    public Stock getStock() {
+        return stock;
     }
 
-    public void setMPlaceId(int mPlaceId) {
-        this.mPlaceId = mPlaceId;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setStock(Stock stock) {
+        this.stock = stock;
     }
 
 }

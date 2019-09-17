@@ -16,6 +16,6 @@ import static com.example.pakaianbagus.api.ApiHeader.getToken;
 public class SpgHelper {
     public static void getListBrand(RestCallback<ApiResponse<List<BrandResponse>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListBrand(getToken()).enqueue(callback);
+        service.getEndpoint().getListBrand().enqueue(callback);
     }
 }

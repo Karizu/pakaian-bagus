@@ -44,7 +44,7 @@
             android:id="@+id/checkBoxBM"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/checked"
+            android:src="@drawable/unchecked"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>

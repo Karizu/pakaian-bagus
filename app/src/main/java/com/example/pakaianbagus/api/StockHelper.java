@@ -18,29 +18,29 @@ import static com.example.pakaianbagus.api.ApiHeader.getToken;
  * Organization: UTeam
  */
 public class StockHelper {
-    public static void getListBrand(RestCallback<ApiResponse<List<BrandResponse>>> callback){
+    public static void getListBrand(RestCallback<ApiResponse<List<BrandResponse>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListBrand(getToken()).enqueue(callback);
+        service.getEndpoint().getListBrand().enqueue(callback);
     }
 
-    public static void getListItems(RestCallback<ApiResponse<List<Item>>> callback){
+    public static void getListItems(RestCallback<ApiResponse<List<Item>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListItems(getToken()).enqueue(callback);
+        service.getEndpoint().getListItems().enqueue(callback);
     }
 
-    public static void getListCategories(RestCallback<ApiResponse<List<Category>>> callback){
+    public static void getListCategories(RestCallback<ApiResponse<List<Category>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListCetegories(getToken()).enqueue(callback);
+        service.getEndpoint().getListCetegories().enqueue(callback);
     }
 
     public static void getListStock(String idToko, RestCallback<ApiResponse<List<Stock>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListStockbyToko(getToken(), idToko).enqueue(callback);
+        service.getEndpoint().getListStockbyToko(idToko).enqueue(callback);
     }
 
     public static void postStockOpname(StockOpnameModel data, RestCallback<ApiResponse> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().postStockOpname(getToken(), data).enqueue(callback);
+        service.getEndpoint().postStockOpname(data).enqueue(callback);
 
     }
 }

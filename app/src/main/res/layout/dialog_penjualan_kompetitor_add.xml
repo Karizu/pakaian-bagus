@@ -54,7 +54,8 @@
             android:textSize="13sp"
             android:gravity="center"
             android:background="@drawable/background_input"
-            android:hint="@string/nama_barang"/>
+            android:textAllCaps="true"
+            android:hint="NAMA KOMPETITOR"/>
 
         <EditText
             android:id="@+id/etJumlah"
@@ -66,7 +67,7 @@
             android:gravity="center"
             android:inputType="number"
             android:background="@drawable/background_input"
-            android:hint="JUMLAH"/>
+            android:hint="JUMLAH PENDAPATAN"/>
 
         <EditText
             android:id="@+id/etQuantity"

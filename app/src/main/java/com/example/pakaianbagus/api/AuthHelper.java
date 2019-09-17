@@ -1,16 +1,9 @@
 package com.example.pakaianbagus.api;
 
-import android.content.Context;
-
-import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.LoginRequest;
-import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.models.auth.Auth;
-import com.example.pakaianbagus.util.SessionManagement;
-import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.example.pakaianbagus.util.interceptor.RequestInterceptor;
 import com.rezkyatinnov.kyandroid.reztrofit.Reztrofit;
-
-import java.util.HashMap;
 
 import okhttp3.ResponseBody;
 import retrofit2.Callback;
@@ -24,12 +17,12 @@ public class AuthHelper {
 
     //public static void login(LoginRequest loginRequest, Callback<ApiResponse<User>> callback){
     public static void login(LoginRequest loginRequest, Callback<Auth> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        Reztrofit<ApiInterface> service = Api.getService();
         service.getEndpoint().postLogin(loginRequest).enqueue(callback);
     }
 
     public static void doLogin(String username, String password, Callback<ResponseBody> callback){
-        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        Reztrofit<ApiInterface> service = Api.getService();
         service.getEndpoint().loginRequest(username, password).enqueue(callback);
     }
 

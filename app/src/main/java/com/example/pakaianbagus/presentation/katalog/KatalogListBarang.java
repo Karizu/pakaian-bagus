@@ -34,9 +34,13 @@ import com.example.pakaianbagus.models.KatalogModel;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.EndlessRecyclerViewScrollListener;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,20 +53,6 @@ import okhttp3.Headers;
 
 public class KatalogListBarang extends Fragment {
 
-    Dialog dialog;
-    View rootView;
-    private int limit = 10;
-    private int offset = 0;
-    private EndlessRecyclerViewScrollListener scrollListener;
-    private List<KatalogModel> katalogModels;
-    boolean isLoading = false;
-    private KatalogAdapter katalogAdapter;
-    private String id, idBrand;
-    private List<String> kategori;
-    private List<String> terbaru;
-    private Spinner spinnerKategori, spinnerTerbaru;
-
-
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.swipeRefresh)
@@ -71,6 +61,21 @@ public class KatalogListBarang extends Fragment {
     TextView tvNoData;
     @BindView(R.id.toolbar_filter)
     ImageView toolbar_filter;
+    @BindView(R.id.toolbar_back)
+    ImageView toolbar_back;
+
+    Dialog dialog;
+    View rootView;
+    private int limit = 10;
+    private int offset = 0;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private List<KatalogModel> katalogModels;
+    boolean isLoading = false;
+    private KatalogAdapter katalogAdapter;
+    private String id, idBrand, roleId;
+    private List<String> kategori;
+    private List<String> terbaru;
+    private Spinner spinnerKategori, spinnerTerbaru;
 
     public KatalogListBarang() {
     }
@@ -83,13 +88,21 @@ public class KatalogListBarang extends Fragment {
         rootView = inflater.inflate(R.layout.katalog_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
+        try {
+            roleId = Session.get(Constanta.ROLE_ID).getValue();
+            if (roleId.equals(SessionManagement.ROLE_SPG)) {
+                toolbar_back.setVisibility(View.GONE);
+            }
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
+
         toolbar_filter.setVisibility(View.VISIBLE);
         LinearLayout layout = rootView.findViewById(R.id.layoutHeaderKatalog);
         layout.setVisibility(View.GONE);
         katalogModels = new ArrayList<>();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-//        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getActivity(), LinearLayout.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
 
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {

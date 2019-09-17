@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,16 +35,19 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
-import com.example.pakaianbagus.models.stock.Category;
-import com.example.pakaianbagus.models.stock.Stock;
-import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
 import com.example.pakaianbagus.models.StockOpnameModel;
+import com.example.pakaianbagus.models.stock.Stock;
+import com.example.pakaianbagus.presentation.home.HomeFragment;
+import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockSpinnerAdapter;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.Scanner;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,7 @@ public class StockOpnameFragment extends Fragment {
     ImageView btnAdd;
 
     private Dialog dialog;
+    private String roleId;
     private List<StockOpnameModel> stockOpnameModels = new ArrayList<>();
     private List<Stock> stockOpnameList = new ArrayList<>();
     private List<Stock> categoryList = new ArrayList<>();
@@ -93,6 +96,12 @@ public class StockOpnameFragment extends Fragment {
         choose = Objects.requireNonNull(getArguments()).getInt("choose");
         idBrand = Objects.requireNonNull(getArguments()).getString("id_brand");
         idToko = Objects.requireNonNull(getArguments()).getString("id_toko");
+
+        try {
+            roleId = Session.get(Constanta.ROLE_ID).getValue();
+        } catch (SessionNotFoundException e) {
+            e.printStackTrace();
+        }
 
         setScreen();
 
@@ -304,10 +313,15 @@ public class StockOpnameFragment extends Fragment {
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        StockListTokoFragment homeFragment = new StockListTokoFragment();
-        homeFragment.setArguments(bundle);
+        Fragment fragment;
+        if (roleId.equals(SessionManagement.ROLE_SPG)) {
+            fragment = new HomeFragment();
+        } else {
+            fragment = new StockListTokoFragment();
+        }
+        fragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.mainBaseStockOpname, homeFragment);
+        ft.replace(R.id.mainBaseStockOpname, fragment);
         ft.commit();
     }
 
