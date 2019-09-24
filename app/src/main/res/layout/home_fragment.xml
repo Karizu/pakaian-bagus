@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         tools:ignore="UselessParent">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,9 +72,9 @@
             </LinearLayout>
 
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                 android:layout_height="match_parent"
                 tools:ignore="UnknownIdInLayout">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
@@ -124,7 +124,7 @@
                                 android:padding="4dp"
                                 android:weightSum="2">
 
-                                <android.support.v7.widget.CardView
+                                <androidx.cardview.widget.CardView
                                     android:id="@+id/btnKunjungan"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -151,9 +151,9 @@
 
                                     </LinearLayout>
 
-                                </android.support.v7.widget.CardView>
+                                </androidx.cardview.widget.CardView>
 
-                                <android.support.v7.widget.CardView
+                                <androidx.cardview.widget.CardView
                                     android:id="@+id/btnSPG"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -179,9 +179,9 @@
 
                                     </LinearLayout>
 
-                                </android.support.v7.widget.CardView>
+                                </androidx.cardview.widget.CardView>
 
-                                <android.support.v7.widget.CardView
+                                <androidx.cardview.widget.CardView
                                     android:id="@+id/btnPiutang"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
 
                                     </LinearLayout>
 
-                                </android.support.v7.widget.CardView>
+                                </androidx.cardview.widget.CardView>
 
                             </LinearLayout>
 
@@ -269,7 +269,7 @@
                                 android:padding="4dp"
                                 android:weightSum="3">
 
-                                <android.support.v7.widget.CardView
+                                <androidx.cardview.widget.CardView
                                     android:id="@+id/btnPenjualan"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -296,9 +296,9 @@
 
                                     </LinearLayout>
 
-                                </android.support.v7.widget.CardView>
+                                </androidx.cardview.widget.CardView>
 
-                                <android.support.v7.widget.CardView
+                                <androidx.cardview.widget.CardView
                                     android:id="@+id/btnCheck"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -325,9 +325,9 @@
 
                                     </LinearLayout>
 
-                                </android.support.v7.widget.CardView>
+                                </androidx.cardview.widget.CardView>
 
-                                <android.support.v7.widget.CardView
+                                <androidx.cardview.widget.CardView
                                     android:id="@+id/btnStock"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -353,7 +353,7 @@
 
                                     </LinearLayout>
 
-                                </android.support.v7.widget.CardView>
+                                </androidx.cardview.widget.CardView>
 
                             </LinearLayout>
 
@@ -455,7 +455,7 @@
 
                         </LinearLayout>
 
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -485,11 +485,11 @@
 
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
             </ScrollView>
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 

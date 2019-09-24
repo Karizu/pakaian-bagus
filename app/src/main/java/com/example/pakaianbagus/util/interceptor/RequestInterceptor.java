@@ -1,24 +1,19 @@
 package com.example.pakaianbagus.util.interceptor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.example.pakaianbagus.util.Constanta;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import okhttp3.CacheControl;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Created by alfianhpratama on 13/09/2019.

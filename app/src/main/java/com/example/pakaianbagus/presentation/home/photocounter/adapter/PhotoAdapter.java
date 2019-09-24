@@ -2,28 +2,22 @@ package com.example.pakaianbagus.presentation.home.photocounter.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.models.KunjunganModel;
 import com.example.pakaianbagus.models.PlaceWorkModel;
-import com.example.pakaianbagus.util.CircleTransform;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {

@@ -2,13 +2,13 @@ package com.example.pakaianbagus.presentation.barangmasuk;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,6 @@ import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.barangmasuk.adapter.ListTokoBMAdapter;
 import com.example.pakaianbagus.util.Constanta;
-import com.example.pakaianbagus.util.dialog.Loading;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

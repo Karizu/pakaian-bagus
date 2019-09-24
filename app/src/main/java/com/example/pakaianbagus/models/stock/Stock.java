@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.models.stock;
 
+import com.example.pakaianbagus.models.Discount;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -59,6 +60,9 @@ public class Stock {
     @SerializedName("size")
     @Expose
     private Size size;
+    @SerializedName("discount")
+    @Expose
+    private Discount discount;
 
     private int total;
 
@@ -222,5 +226,13 @@ public class Stock {
 
     public void setNew(boolean aNew) {
         isNew = aNew;
+    }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 }

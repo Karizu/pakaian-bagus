@@ -21,8 +21,8 @@ public class Constanta {
 
     public static final String CHECK_INOUT_STATUS  = "CheckINOUTStatus";
 
-    public static final int STOK_KATEGORI = 1;
-    public static final int STOK_ARTIKEL = 2;
+    public static final int STOK_KATEGORI = 2;
+    public static final int STOK_ARTIKEL = 1;
     public static final int MUTASI_NOT_VERIFIED = 3;
     public static final int MUTASI_VERIFIED = 4;
 }

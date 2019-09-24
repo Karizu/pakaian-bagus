@@ -1,21 +1,21 @@
 package com.example.pakaianbagus.presentation.penjualan;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +24,10 @@ import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.SalesReport;
-import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
+import com.example.pakaianbagus.models.api.penjualankompetitor.Kompetitor;
 import com.example.pakaianbagus.models.api.salesreport.Detail;
+import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
+import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.PenjualanKompetitorAdapter;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.SalesReportAdapter;
@@ -39,6 +41,7 @@ import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,17 +71,17 @@ public class InputHarianFragment extends Fragment {
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
 
-    View rootView;
-    String userId;
-    String date;
-    String placeId;
-    String brandId;
-    String roleId;
-    boolean isSpg;
-    int pager;
+    private View rootView;
+    private String userId;
+    private String date;
+    private String placeId;
+    private String brandId;
+    private String roleId;
+    private boolean isSpg;
+    private int pager;
     private List<Stock> salesReportList = new ArrayList<>();
     private List<Stock> salesReportTemp = new ArrayList<>();
-    private List<KompetitorResponse> kompetitorList = new ArrayList<>();
+    private List<Kompetitor> kompetitorList = new ArrayList<>();
     //private List<Kompetitor> kompetitorListTemp = new ArrayList<>();
     private List<Discount> discounts = new ArrayList<>();
     private SalesReportAdapter salesReportAdapter;
@@ -116,14 +119,14 @@ public class InputHarianFragment extends Fragment {
 
         viewScreen(1);
 
-        LinearLayoutManager salesLayoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+        LinearLayoutManager salesLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         rvSales.setLayoutManager(salesLayoutManager);
         salesReportAdapter = new SalesReportAdapter(salesReportList, getContext(), InputHarianFragment.this, discounts);
         rvSales.setAdapter(salesReportAdapter);
 
-        LinearLayoutManager kompetitorlayoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+        LinearLayoutManager kompetitorlayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         rvPenjualan.setLayoutManager(kompetitorlayoutManager);
-        kompetitorAdapter = new PenjualanKompetitorAdapter(kompetitorList, getContext(), InputHarianFragment.this, date);
+        kompetitorAdapter = new PenjualanKompetitorAdapter(kompetitorList, getContext(), InputHarianFragment.this);
         rvPenjualan.setAdapter(kompetitorAdapter);
 
         getData();
@@ -139,9 +142,9 @@ public class InputHarianFragment extends Fragment {
     }
 
     private boolean getKompetitorData() {
-        InputHelper.getPenjualanKompetitor(userId, date, new RestCallback<ApiResponse<List<KompetitorResponse>>>() {
+        InputHelper.getPenjualanKompetitor(userId, date, new RestCallback<ApiResponse<List<Kompetitor>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<KompetitorResponse>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<Kompetitor>> body) {
                 kompetitorList.clear();
                 kompetitorList.addAll(body.getData());
                 kompetitorAdapter.notifyDataSetChanged();
@@ -164,19 +167,33 @@ public class InputHarianFragment extends Fragment {
     private boolean getSalesReport() {
         salesReportList.clear();
         salesReportTemp.clear();
-        /*InputHelper.getSalesReport(userId, date, new RestCallback<ApiResponse<List<SalesReportResponse>>>() {
+        InputHelper.getSalesReport(placeId, date, new RestCallback<ApiResponse<List<SalesReportResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<SalesReportResponse>> body) {
                 if (body.getData().size() > 0) {
                     List<SalesReportResponse> responses = body.getData();
                     for (int x = 0; x < responses.size(); x++) {
-                        Item item = new Item();
-                        item.setName(responses.get(x).);
+                        SalesReportResponse reportResponse = body.getData().get(x);
 
-                        Stock stokToko = new Stock();
-                        stokToko.setNew(false);
-                        salesReportList.add(stokToko);
+                        for (int y = 0; y < reportResponse.getDetails().size(); y++) {
+                            Item item = new Item();
+                            item.setName(reportResponse.getDetails().get(y).getStock().getItem().getName());
+                            item.setImage(reportResponse.getDetails().get(y).getStock().getItem().getImage());
+
+                            Stock stokToko = new Stock();
+                            stokToko.setId(reportResponse.getDetails().get(y).getStock().getId());
+                            stokToko.setMPlaceId(reportResponse.getDetails().get(y).getStock().getMPlaceId());
+                            stokToko.setMItemId(reportResponse.getDetails().get(y).getStock().getMItemId());
+                            stokToko.setItem(item);
+                            stokToko.setArticleCode(reportResponse.getDetails().get(y).getStock().getArticleCode());
+                            stokToko.setPrice(reportResponse.getDetails().get(y).getPrice());
+                            stokToko.setQty(reportResponse.getDetails().get(y).getQty());
+                            stokToko.setNew(false);
+
+                            salesReportList.add(stokToko);
+                        }
                     }
+                    salesReportAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -189,7 +206,7 @@ public class InputHarianFragment extends Fragment {
             public void onCanceled() {
 
             }
-        });*/
+        });
         return true;
     }
 
@@ -332,17 +349,22 @@ public class InputHarianFragment extends Fragment {
 
     @OnClick(R.id.btnFilter)
     public void clickFilterBtn() {
+        Calendar newCalendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getContext()),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    Calendar newDate = Calendar.getInstance();
+                    newDate.set(year, monthOfYear, dayOfMonth);
+                    date = new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd");
+                    Loading.show(getContext());
+                    if (getKompetitorData()) {
+                        Loading.hide(getContext());
+                    }
+                },
+                newCalendar.get(Calendar.YEAR),
+                newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
 
-    }
-
-    @OnClick(R.id.toolbar_back)
-    public void toolbarBack() {
-        /*FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();*/
+        datePickerDialog.show();
     }
 
     private void viewScreen(int page) {
@@ -366,21 +388,35 @@ public class InputHarianFragment extends Fragment {
     }
 
     public void salesData(List<Stock> stockList) {
-        this.salesReportTemp = stockList;
+        salesReportTemp.clear();
+        for (int x = 0; x < stockList.size(); x++) {
+            if (stockList.get(x).isNew()) {
+                salesReportTemp.add(stockList.get(x));
+            }
+        }
     }
 
-    private void showDialog(int layout) {
-        dialog = new Dialog(Objects.requireNonNull(getActivity()));
-        //set content
-        dialog.setContentView(layout);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+    public void addPenjualanKompetitor(String id, Kompetitor kompetitor) {
+        Loading.show(getContext());
+        InputHelper.postUpdatePenjualanKompetitor(id, kompetitor, new RestCallback<ApiResponse>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse body) {
+                Toast.makeText(getContext(), "Berhasil mengirimkan data penjualan kompetitor", Toast.LENGTH_SHORT).show();
+                if (getKompetitorData()) {
+                    Loading.hide(getContext());
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                Toast.makeText(getContext(), "Gagal mengirimkan data penjualan kompetitor : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
     }
 }

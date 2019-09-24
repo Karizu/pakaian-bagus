@@ -5,9 +5,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +23,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.models.stock.Stock;
+import com.example.pakaianbagus.models.StockOpnameModel;
+import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
+import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
 
 import java.util.List;
 import java.util.Objects;
 
 public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.ViewHolder> {
-    private List<Stock> stockList;
+    private List<StockCategoryResponse> stockList;
     private Context context;
     private Dialog dialog;
+    private Fragment fragment;
 
-    public StockOpnameAdapter(List<Stock> stockList, Context context) {
+    public StockOpnameAdapter(List<StockCategoryResponse> stockList, Context context, Fragment fragment) {
         this.stockList = stockList;
         this.context = context;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -45,12 +52,19 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull StockOpnameAdapter.ViewHolder holder, int position) {
-        final Stock stock = stockList.get(position);
-        final String name = stock.getItem().getCategory().getName();
+        final StockCategoryResponse stock = stockList.get(position);
         final int qty = stock.getQty();
 
+        String name;
+        if (stock.getType() == 1) {
+            name = stock.getItem().getName();
+        } else {
+            name = stock.getCategory().getName();
+        }
+
         holder.textViewName.setText(name);
-        holder.textViewQty.setText(String.valueOf(qty) + " pcs");
+        holder.textViewQty.setText(qty + " pcs");
+
         holder.imageViewMore.setOnClickListener(v -> {
             View v1 = v.findViewById(R.id.btnMore);
             PopupMenu pm = new PopupMenu(Objects.requireNonNull(context), v1);
@@ -66,6 +80,7 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
                             dialog.dismiss();
                             stock.setQty(Integer.parseInt(etQty.getText().toString()));
                             holder.textViewQty.setText(stock.getQty() + " pcs");
+                            doPosting(stock, stock.getType());
                         } else {
                             Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
                         }
@@ -84,6 +99,26 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
 //            dialog.setContentView(viewSheet);
 //            dialog.show();
         });*/
+    }
+
+    private void doPosting(StockCategoryResponse response, int type) {
+        StockOpnameModel data = new StockOpnameModel();
+        if (type == 1) {
+            data.setType(1);
+            data.setmPlaceId(String.valueOf(response.getMPlaceId()));
+            data.setmItemId(String.valueOf(response.getMItemId()));
+            data.setPlaceType(response.getPlaceType());
+            data.setArticleCode(response.getArticleCode());
+            data.setSizeCode(response.getSizeCode());
+            data.setQty(response.getQty());
+        } else {
+            data.setType(2);
+            data.setmPlaceId(String.valueOf(response.getMPlaceId()));
+            data.setmCategoryId(String.valueOf(response.getMCategoryId()));
+            data.setPlaceType(response.getPlaceType());
+            data.setQty(response.getQty());
+        }
+        ((StockOpnameFragment) fragment).doPostStock(data);
     }
 
     @Override

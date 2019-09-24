@@ -3,12 +3,12 @@ package com.example.pakaianbagus.presentation.home.stockopname;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.api.SpgHelper;
 import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Brand;
@@ -126,7 +125,7 @@ public class StockListBrandFragment extends Fragment implements IOnBackPressed {
                                 response.getName(),
                                 response.getCode()));
                     }
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                     StockBrandAdapter adapter = new StockBrandAdapter(brandList, getContext(), StockListBrandFragment.this);
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(adapter);

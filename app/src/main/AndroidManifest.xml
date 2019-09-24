@@ -22,7 +22,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.categoryResponse.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".presentation.penjualan.ScanBarcodeActivity" />
@@ -30,7 +30,7 @@
             <intent-filter>
                 <action android:name=".MainActivity" />
 
-                <category android:name="android.intent.categoryResponse.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".util.Scanner" />

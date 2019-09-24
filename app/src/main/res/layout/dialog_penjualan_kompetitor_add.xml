@@ -47,15 +47,15 @@
         android:padding="16dp">
 
         <EditText
-            android:id="@+id/etNama"
+            android:id="@+id/etNamaKompetitor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:background="@drawable/background_input"
-            android:textAllCaps="true"
-            android:hint="NAMA KOMPETITOR"/>
+            android:textSize="13dp"
+            android:textAlignment="center"
+            android:inputType="textCapCharacters"
+            android:hint="NAMA KOMPETITOR"
+            android:background="@drawable/background_input" />
 
         <EditText
             android:id="@+id/etJumlah"

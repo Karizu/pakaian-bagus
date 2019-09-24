@@ -9,15 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,17 +17,27 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.StockOpnameModel;
-import com.example.pakaianbagus.models.api.CategoryResponse;
+import com.example.pakaianbagus.models.api.StockCategory;
+import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
@@ -61,8 +62,10 @@ import okhttp3.Headers;
 
 public class StockOpnameFragment extends Fragment {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    @BindView(R.id.rvArtikel)
+    RecyclerView rvArtikel;
+    @BindView(R.id.rvKategori)
+    RecyclerView rvKategori;
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.tvTitle)
@@ -74,14 +77,14 @@ public class StockOpnameFragment extends Fragment {
 
     private Dialog dialog;
     private String roleId;
-    private List<StockOpnameModel> stockOpnameModels = new ArrayList<>();
-    private List<Stock> stockOpnameList = new ArrayList<>();
-    private List<CategoryResponse> categoryList = new ArrayList<>();
-    private int choose = 1; //1 artikel 2 kategori
+    private List<StockCategoryResponse> stockOpnameArticleList = new ArrayList<>();
+    private List<StockCategoryResponse> stockOpnameCategoryList = new ArrayList<>();
+    private List<StockCategory> categoryList = new ArrayList<>();
+    private int choose = Constanta.STOK_ARTIKEL;
     private String idBrand, idToko;
-    private StockOpnameAdapter stockOpnameAdapter;
-    final int REQUEST_CODE = 564;
-    final int REQUEST_SCANNER = 999;
+    private StockOpnameAdapter artikelAdapter, kategoriAdapter;
+    private final int REQUEST_CODE = 564;
+    private final int REQUEST_SCANNER = 999;
 
     public StockOpnameFragment() {
     }
@@ -107,18 +110,82 @@ public class StockOpnameFragment extends Fragment {
         setScreen();
 
         swipeRefresh.setOnRefreshListener(() -> {
-            stockOpnameList.clear();
+            stockOpnameArticleList.clear();
+            stockOpnameCategoryList.clear();
             swipeRefresh.setRefreshing(true);
-            if (getData()) {
-                swipeRefresh.setRefreshing(false);
+            if (choose == 1) {
+                if (getDataArticle()) {
+                    swipeRefresh.setRefreshing(false);
+                }
+            } else {
+                if (getDataCategory()) {
+                    swipeRefresh.setRefreshing(false);
+                }
             }
         });
 
-        stockOpnameAdapter = new StockOpnameAdapter(stockOpnameList, getContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayout.VERTICAL, false));
-        recyclerView.setAdapter(stockOpnameAdapter);
+        initData();
+
+        artikelAdapter = new StockOpnameAdapter(stockOpnameArticleList, getContext(), StockOpnameFragment.this);
+        rvArtikel.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        rvArtikel.setAdapter(artikelAdapter);
+
+        kategoriAdapter = new StockOpnameAdapter(stockOpnameCategoryList, getContext(), StockOpnameFragment.this);
+        rvKategori.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        rvKategori.setAdapter(kategoriAdapter);
 
         return rootView;
+    }
+
+    private void initData() {
+        Loading.show(getContext());
+        if (getDataArticle() && getListStock() && getDataCategory()) {
+            Loading.hide(getContext());
+        }
+    }
+
+    private boolean getDataArticle() {
+        StockHelper.getListStockOpname(idBrand, idToko, 1, new RestCallback<ApiResponse<List<StockCategoryResponse>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<StockCategoryResponse>> body) {
+                stockOpnameArticleList.clear();
+                stockOpnameArticleList.addAll(body.getData());
+                artikelAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+        return true;
+    }
+
+    private boolean getDataCategory() {
+        StockHelper.getListStockOpname(idBrand, idToko, 2, new RestCallback<ApiResponse<List<StockCategoryResponse>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<StockCategoryResponse>> body) {
+                stockOpnameCategoryList.clear();
+                stockOpnameCategoryList.addAll(body.getData());
+                kategoriAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+        return true;
     }
 
     @SuppressLint("SetTextI18n")
@@ -126,18 +193,23 @@ public class StockOpnameFragment extends Fragment {
         if (choose == Constanta.STOK_ARTIKEL) {
             btnBarcode.setVisibility(View.VISIBLE);
             btnAdd.setVisibility(View.GONE);
+            rvArtikel.setVisibility(View.VISIBLE);
+            rvKategori.setVisibility(View.GONE);
             tvTitle.setText("Stock Artikel".toUpperCase());
         } else if (choose == Constanta.STOK_KATEGORI) {
             btnBarcode.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);
+            rvArtikel.setVisibility(View.GONE);
+            rvKategori.setVisibility(View.VISIBLE);
             tvTitle.setText("Stock Kategori".toUpperCase());
         }
     }
 
-    private boolean getData() {
-        StockHelper.getListStock(idToko, new RestCallback<ApiResponse<List<CategoryResponse>>>() {
+    private boolean getListStock() {
+        StockHelper.getListStock(idToko, idBrand, new RestCallback<ApiResponse<List<StockCategory>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<CategoryResponse>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<StockCategory>> body) {
+                categoryList.clear();
                 categoryList.addAll(body.getData());
             }
 
@@ -169,10 +241,10 @@ public class StockOpnameFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /*if (requestCode == REQUEST_SCANNER && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_SCANNER && resultCode == Activity.RESULT_OK) {
             String resultData = data.getStringExtra("scan_data");
             addListFromBarcode(resultData);
-        }*/
+        }
     }
 
     private void addListFromBarcode(String resultData) {
@@ -183,28 +255,24 @@ public class StockOpnameFragment extends Fragment {
                 Loading.hide(getContext());
                 if (body.getData().size() > 0) {
                     Stock stock = body.getData().get(0);
-                    if (stockOpnameList.size() > 0) {
-                        boolean done = false;
-                        for (int x = 0; x < stockOpnameList.size(); x++) {
-                            if (stockOpnameList.get(x).getArticleCode().equals(stock.getArticleCode())) {
-                                stock.setQty(stockOpnameList.get(x).getQty() + 1);
-                                stockOpnameList.set(x, stock);
-                                done = true;
-                                break;
-                            }
-                        }
-                        if (!done) {
-                            stock.setQty(1);
-                            stockOpnameList.add(stock);
-                        }
+                    String mPlaceId = String.valueOf(stock.getMPlaceId());
+                    String mBrandId = String.valueOf(stock.getItem().getMBrandId());
+                    boolean placeTrue = idToko.equals(mPlaceId);
+                    boolean brandTrue = idBrand.equals(mBrandId);
+                    if (placeTrue && brandTrue) {
+                        StockOpnameModel model = new StockOpnameModel();
+                        model.setType(1);
+                        model.setmPlaceId(idToko);
+                        model.setmItemId(String.valueOf(stock.getItem().getId()));
+                        model.setPlaceType("S");
+                        model.setArticleCode(stock.getArticleCode());
+                        model.setSizeCode(stock.getSizeCode());
+                        model.setQty(stock.getQty() + 1);
+
+                        doPostStock(model);
                     } else {
-                        stock.setQty(1);
-                        stockOpnameList.add(stock);
+                        Toast.makeText(getContext(), "Tolong scan barcode sesuai dengan toko dan brand anda", Toast.LENGTH_SHORT).show();
                     }
-
-                    stockOpnameAdapter.notifyDataSetChanged();
-
-                    doPostStock(stock);
                 } else {
                     Toast.makeText(getContext(), "Tidak ada dari barcode tersebut, mohon periksa kembali barcode atau coba lagi.", Toast.LENGTH_LONG).show();
                 }
@@ -241,59 +309,37 @@ public class StockOpnameFragment extends Fragment {
             imgClose.setOnClickListener(v -> dialog.dismiss());
             btnAdd.setOnClickListener(v -> {
                 dialog.dismiss();
-                CategoryResponse response = (CategoryResponse) spinner.getSelectedItem();
-                Stock stock = new Stock();
+                StockCategory response = (StockCategory) spinner.getSelectedItem();
+                StockOpnameModel data = new StockOpnameModel();
+                data.setType(2);
+                data.setmPlaceId(String.valueOf(response.getMPlaceId()));
+                data.setmCategoryId(String.valueOf(response.getMCategoryId()));
+                data.setPlaceType("S");
+                data.setQty(Integer.parseInt(etQuantity.getText().toString()));
 
-                addList(stock, Integer.parseInt(etQuantity.getText().toString()));
+                doPostStock(data);
             });
         } else {
             Toast.makeText(getContext(), "Data kategori pada toko ini tidak ada", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void addList(Stock stock, int qty) {
-        if (stockOpnameList.size() > 0) {
-            boolean done = false;
-            for (int x = 0; x < stockOpnameList.size(); x++) {
-                if (stockOpnameList.get(x).getArticleCode().equals(stock.getArticleCode())) {
-                    stock.setQty(stockOpnameList.get(x).getQty() + qty);
-                    stockOpnameList.set(x, stock);
-                    done = true;
-                    break;
-                }
-            }
-            if (!done) {
-                stock.setQty(qty);
-                stockOpnameList.add(stock);
-            }
-        } else {
-            stock.setQty(qty);
-            stockOpnameList.add(stock);
-        }
-
-        doPostStock(stock);
-
-        stockOpnameAdapter.notifyDataSetChanged();
-
-    }
-
-    private void doPostStock(Stock stock) {
+    public void doPostStock(StockOpnameModel data) {
         Loading.show(getContext());
-        StockOpnameModel data = new StockOpnameModel();
-        data.setMPlaceId(String.valueOf(stock.getMPlaceId()));
-        data.setMItemId(String.valueOf(stock.getMItemId()));
-        data.setPlaceType(stock.getPlaceType());
-        data.setSeriesNumber(stock.getSeriesNumber());
-        data.setSizeCode(stock.getSizeCode());
-        data.setDescription(stock.getDescription());
-        data.setQty(stock.getQty());
-        data.setPrice(stock.getPrice());
 
         StockHelper.postStockOpname(data, new RestCallback<ApiResponse>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse body) {
-                Loading.hide(getContext());
-                Toast.makeText(getContext(), "Berhasil mengirimkan data Stock Opname", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Berhasil mengirimkan data Stock Opname ", Toast.LENGTH_SHORT).show();
+                if (choose == 1) {
+                    if (getDataArticle()) {
+                        Loading.hide(getContext());
+                    }
+                } else {
+                    if (getDataCategory()) {
+                        Loading.hide(getContext());
+                    }
+                }
             }
 
             @Override
@@ -340,7 +386,7 @@ public class StockOpnameFragment extends Fragment {
             choose = Constanta.STOK_ARTIKEL;
             setScreen();
             Loading.show(getContext());
-            if (getData()) {
+            if (getDataArticle()) {
                 Loading.hide(getContext());
             }
         });
@@ -350,7 +396,7 @@ public class StockOpnameFragment extends Fragment {
             choose = Constanta.STOK_KATEGORI;
             setScreen();
             Loading.show(getContext());
-            if (getData()) {
+            if (getDataCategory()) {
                 Loading.hide(getContext());
             }
         });

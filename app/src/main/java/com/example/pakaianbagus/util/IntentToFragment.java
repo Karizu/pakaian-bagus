@@ -1,16 +1,15 @@
 package com.example.pakaianbagus.util;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.pakaianbagus.MainActivity;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.katalog.SearchKatalogFragment;
-import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
 
 import java.util.Objects;
 

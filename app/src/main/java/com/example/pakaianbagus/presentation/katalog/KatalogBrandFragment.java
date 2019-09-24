@@ -5,14 +5,13 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +26,7 @@ import com.example.pakaianbagus.api.KatalogHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Brand;
 import com.example.pakaianbagus.models.BrandResponse;
-import com.example.pakaianbagus.models.KatalogTokoModel;
-import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogBrandAdapter;
-import com.example.pakaianbagus.presentation.katalog.adapter.KatalogTokoAdapter;
-import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 
@@ -46,9 +41,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Headers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class KatalogBrandFragment extends Fragment {
 

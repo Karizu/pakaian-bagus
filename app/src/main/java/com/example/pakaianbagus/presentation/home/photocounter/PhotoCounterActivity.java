@@ -9,14 +9,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -29,10 +29,6 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.PlaceWorkModel;
 import com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter;
 import com.example.pakaianbagus.util.LinePagerIndicatorDecoration;
-import com.example.pakaianbagus.util.SessionManagement;
-import com.example.pakaianbagus.util.SpanningLinearLayoutManager;
-import com.rezkyatinnov.kyandroid.session.Session;
-import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,8 +41,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static java.security.AccessController.getContext;
 
 public class PhotoCounterActivity extends AppCompatActivity {
 

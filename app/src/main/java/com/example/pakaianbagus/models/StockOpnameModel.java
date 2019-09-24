@@ -4,24 +4,30 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class StockOpnameModel {
+    @SerializedName("type")
+    @Expose
+    private int type;
     @SerializedName("m_place_id")
     @Expose
     private String mPlaceId;
     @SerializedName("m_item_id")
     @Expose
     private String mItemId;
+    @SerializedName("m_category_id")
+    @Expose
+    private String mCategoryId;
+    @SerializedName("m_brand_id")
+    @Expose
+    private String mBrandId;
     @SerializedName("place_type")
     @Expose
     private String placeType;
-    @SerializedName("series_number")
+    @SerializedName("article_code")
     @Expose
-    private String seriesNumber;
+    private String articleCode;
     @SerializedName("size_code")
     @Expose
     private String sizeCode;
-    @SerializedName("description")
-    @Expose
-    private String description;
     @SerializedName("qty")
     @Expose
     private int qty;
@@ -29,20 +35,44 @@ public class StockOpnameModel {
     @Expose
     private int price;
 
-    public String getMPlaceId() {
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getmPlaceId() {
         return mPlaceId;
     }
 
-    public void setMPlaceId(String mPlaceId) {
+    public void setmPlaceId(String mPlaceId) {
         this.mPlaceId = mPlaceId;
     }
 
-    public String getMItemId() {
+    public String getmItemId() {
         return mItemId;
     }
 
-    public void setMItemId(String mItemId) {
+    public void setmItemId(String mItemId) {
         this.mItemId = mItemId;
+    }
+
+    public String getmCategoryId() {
+        return mCategoryId;
+    }
+
+    public void setmCategoryId(String mCategoryId) {
+        this.mCategoryId = mCategoryId;
+    }
+
+    public String getmBrandId() {
+        return mBrandId;
+    }
+
+    public void setmBrandId(String mBrandId) {
+        this.mBrandId = mBrandId;
     }
 
     public String getPlaceType() {
@@ -53,12 +83,12 @@ public class StockOpnameModel {
         this.placeType = placeType;
     }
 
-    public String getSeriesNumber() {
-        return seriesNumber;
+    public String getArticleCode() {
+        return articleCode;
     }
 
-    public void setSeriesNumber(String seriesNumber) {
-        this.seriesNumber = seriesNumber;
+    public void setArticleCode(String articleCode) {
+        this.articleCode = articleCode;
     }
 
     public String getSizeCode() {
@@ -67,14 +97,6 @@ public class StockOpnameModel {
 
     public void setSizeCode(String sizeCode) {
         this.sizeCode = sizeCode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getQty() {

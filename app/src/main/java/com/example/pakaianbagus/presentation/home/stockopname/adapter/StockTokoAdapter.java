@@ -1,8 +1,8 @@
 package com.example.pakaianbagus.presentation.home.stockopname.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.KatalogTokoModel;
-import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListTokoFragment;
 
 import java.util.List;

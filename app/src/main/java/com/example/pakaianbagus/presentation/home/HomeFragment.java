@@ -14,18 +14,22 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,7 +136,6 @@ public class HomeFragment extends Fragment {
     EditText endDate;
     private final int REQEUST_CAMERA = 1;
     private String TAG = "Home Fragment";
-    Realm realmDb;
     String groupId;
     String scheduleId;
     String roleId;
@@ -160,7 +163,7 @@ public class HomeFragment extends Fragment {
         checklists = new ArrayList<>();
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayout.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
 
@@ -820,7 +823,7 @@ public class HomeFragment extends Fragment {
 
     private void selectImage() {
         final CharSequence[] options = {"Take Photo", "Cancel"};
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         builder.setTitle("Select Option");
         builder.setItems(options, (dialog, item) -> {
             if (options[item].equals("Take Photo")) {
@@ -851,19 +854,24 @@ public class HomeFragment extends Fragment {
 
             try {
                 File result = File.createTempFile("photo", ".jpeg",
-                        getContext().getExternalCacheDir());
+                        Objects.requireNonNull(getContext()).getExternalCacheDir());
 
                 OutputStream outStream = new FileOutputStream(result);
-                photoResult.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                Objects.requireNonNull(photoResult).compress(Bitmap.CompressFormat.JPEG, 100, outStream);
                 outStream.flush();
                 outStream.close();
 
-                if (Session.get(Constanta.CHECK_INOUT_STATUS).getValue().equals(SessionManagement.CHECK_IN)) {
-                    postCheckOut(result);
-                } else {
+                try {
+                    if (Session.get(Constanta.CHECK_INOUT_STATUS).getValue().equals(SessionManagement.CHECK_IN)) {
+                        postCheckOut(result);
+                    } else {
+                        postCheckIn(result);
+                    }
+                } catch (SessionNotFoundException e) {
                     postCheckIn(result);
                 }
-            } catch (SessionNotFoundException | IOException e) {
+
+            } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(getContext(), "Terjadi kesalahan ketika mengunggah file", Toast.LENGTH_SHORT).show();
             }

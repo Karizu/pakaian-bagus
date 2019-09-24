@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutPenjualan"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -42,12 +43,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|right"
+                android:layout_gravity="center_vertical"
+                android:gravity="end"
                 android:text="@string/date"
                 android:textColor="@color/Black"
                 android:textSize="13sp"
-                android:textStyle="bold"
-                tools:ignore="RtlHardcoded" />
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnMore"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:contentDescription="@string/todo"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
         </LinearLayout>
 

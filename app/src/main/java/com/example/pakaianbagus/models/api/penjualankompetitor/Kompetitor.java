@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alfianhpratama on 10/09/2019.
  * Organization: UTeam
  */
-public class KompetitorResponse {
+public class Kompetitor {
     @SerializedName("id")
     @Expose
     private int id;

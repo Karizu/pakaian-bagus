@@ -4,6 +4,8 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.api.CategoryResponse;
+import com.example.pakaianbagus.models.api.StockCategory;
+import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
 import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
@@ -34,14 +36,21 @@ public class StockHelper {
         service.getEndpoint().getListCetegories().enqueue(callback);
     }
 
-    public static void getListStock(String idToko, RestCallback<ApiResponse<List<CategoryResponse>>> callback) {
+    public static void getListStock(String idToko, String idBrand,
+                                    RestCallback<ApiResponse<List<StockCategory>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListStockbyToko(idToko).enqueue(callback);
+        service.getEndpoint().getListStockbyToko(idToko, idBrand).enqueue(callback);
     }
 
     public static void postStockOpname(StockOpnameModel data, RestCallback<ApiResponse> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
         service.getEndpoint().postStockOpname(data).enqueue(callback);
 
+    }
+
+    public static void getListStockOpname(String brandId, String placeId, int type,
+                                      RestCallback<ApiResponse<List<StockCategoryResponse>>> callback) {
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().getListStockOpname(brandId, placeId, type).enqueue(callback);
     }
 }

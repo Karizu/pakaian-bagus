@@ -6,7 +6,7 @@
     android:layout_margin="@dimen/margin_padding_size_medium"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

@@ -5,35 +5,23 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
-import com.example.pakaianbagus.api.BarangHelper;
-import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.DetailBarangMasukModel;
-import com.example.pakaianbagus.models.PenerimaanBarangResponse;
-import com.example.pakaianbagus.models.StokPenerimaan;
 import com.example.pakaianbagus.presentation.barangmasuk.BarangMasukFragment;
-import com.example.pakaianbagus.presentation.barangmasuk.ListTokoBMFragment;
-import com.example.pakaianbagus.presentation.barangmasuk.detailbm.adapter.DetailBarangMasukAdapter;
-import com.example.pakaianbagus.util.dialog.Loading;
-import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
-import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +33,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Headers;
 
 public class DetailBarangMasuk extends Fragment {
 

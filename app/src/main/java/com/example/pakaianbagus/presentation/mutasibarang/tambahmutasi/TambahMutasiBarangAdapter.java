@@ -4,8 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.MutasiBarang;
-import com.example.pakaianbagus.models.MutasiBarangModel;
 
 import java.util.List;
 import java.util.Objects;

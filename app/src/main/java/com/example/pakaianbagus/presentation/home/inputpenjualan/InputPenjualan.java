@@ -9,14 +9,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +25,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +32,8 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Discount;
-import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.SalesReport;
-import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
+import com.example.pakaianbagus.models.api.penjualankompetitor.Kompetitor;
 import com.example.pakaianbagus.models.api.salesreport.Detail;
 import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
 import com.example.pakaianbagus.models.stock.Item;
@@ -81,20 +79,19 @@ public class InputPenjualan extends Fragment {
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
 
-    View rootView;
-    String userId;
-    String date;
-    String placeId;
-    String brandId;
-    String roleId;
-    boolean isSpg;
-    int pager;
-    final int REQUEST_CODE = 564;
-    final int REQUEST_SCANNER = 999;
+    private View rootView;
+    private String userId;
+    private String date;
+    private String placeId;
+    private String brandId;
+    private String roleId;
+    private boolean isSpg;
+    private int pager;
+    private final int REQUEST_CODE = 564;
+    private final int REQUEST_SCANNER = 999;
     private List<Stock> salesReportList = new ArrayList<>();
     private List<Stock> salesReportTemp = new ArrayList<>();
-    private List<KompetitorResponse> kompetitorList = new ArrayList<>();
-    //private List<Kompetitor> kompetitorListTemp = new ArrayList<>();
+    private List<Kompetitor> kompetitorList = new ArrayList<>();
     private List<Discount> discounts = new ArrayList<>();
     private SalesReportAdapter salesReportAdapter;
     private PenjualanKompetitorAdapter kompetitorAdapter;
@@ -131,14 +128,14 @@ public class InputPenjualan extends Fragment {
 
         viewScreen(1);
 
-        LinearLayoutManager salesLayoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+        LinearLayoutManager salesLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         rvSales.setLayoutManager(salesLayoutManager);
         salesReportAdapter = new SalesReportAdapter(salesReportList, getContext(), InputPenjualan.this, discounts);
         rvSales.setAdapter(salesReportAdapter);
 
-        LinearLayoutManager kompetitorlayoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+        LinearLayoutManager kompetitorlayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         rvPenjualan.setLayoutManager(kompetitorlayoutManager);
-        kompetitorAdapter = new PenjualanKompetitorAdapter(kompetitorList, getContext(), InputPenjualan.this, date);
+        kompetitorAdapter = new PenjualanKompetitorAdapter(kompetitorList, getContext(), InputPenjualan.this);
         rvPenjualan.setAdapter(kompetitorAdapter);
 
         getData();
@@ -154,9 +151,9 @@ public class InputPenjualan extends Fragment {
     }
 
     private boolean getKompetitorData() {
-        InputHelper.getPenjualanKompetitor(userId, date, new RestCallback<ApiResponse<List<KompetitorResponse>>>() {
+        InputHelper.getPenjualanKompetitor(userId, date, new RestCallback<ApiResponse<List<Kompetitor>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<KompetitorResponse>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<Kompetitor>> body) {
                 kompetitorList.clear();
                 kompetitorList.addAll(body.getData());
                 kompetitorAdapter.notifyDataSetChanged();
@@ -197,6 +194,7 @@ public class InputPenjualan extends Fragment {
                             stokToko.setMPlaceId(reportResponse.getDetails().get(y).getStock().getMPlaceId());
                             stokToko.setMItemId(reportResponse.getDetails().get(y).getStock().getMItemId());
                             stokToko.setItem(item);
+                            stokToko.setArticleCode(reportResponse.getDetails().get(y).getStock().getArticleCode());
                             stokToko.setPrice(reportResponse.getDetails().get(y).getPrice());
                             stokToko.setQty(reportResponse.getDetails().get(y).getQty());
                             stokToko.setNew(false);
@@ -430,15 +428,28 @@ public class InputPenjualan extends Fragment {
 
     @OnClick(R.id.btnAdd)
     public void btnAddClicked() {
-        showDialog(R.layout.dialog_penjualan_kompetitor_add);
+        dialog = new Dialog(Objects.requireNonNull(getContext()));
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_penjualan_kompetitor_add);
+
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
 
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
-        EditText etNama = dialog.findViewById(R.id.etNama);
+        imgClose.setOnClickListener(v -> dialog.dismiss());
+
+        EditText etNama = dialog.findViewById(R.id.etNamaKompetitor);
         EditText etJumlah = dialog.findViewById(R.id.etJumlah);
         EditText etQuantity = dialog.findViewById(R.id.etQuantity);
-        Button btnAdd = dialog.findViewById(R.id.btnAdd);
 
-        imgClose.setOnClickListener(v -> dialog.dismiss());
+        Button btnAdd = dialog.findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(v -> {
             dialog.dismiss();
             addPenjualanKompetitor(
@@ -453,7 +464,7 @@ public class InputPenjualan extends Fragment {
         Loading.show(getContext());
 
         Kompetitor kompetitor = new Kompetitor();
-        kompetitor.setmPlaceId(placeId);
+        kompetitor.setMPlaceId(Integer.parseInt(placeId));
         kompetitor.setBrand(nama);
         kompetitor.setFromDate(date);
         kompetitor.setToDate(date);
@@ -531,21 +542,6 @@ public class InputPenjualan extends Fragment {
                 salesReportTemp.add(stockList.get(x));
             }
         }
-    }
-
-    private void showDialog(int layout) {
-        dialog = new Dialog(Objects.requireNonNull(getActivity()));
-        //set content
-        dialog.setContentView(layout);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
     }
 
 }

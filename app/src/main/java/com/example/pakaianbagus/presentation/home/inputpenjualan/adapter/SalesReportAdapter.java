@@ -1,18 +1,28 @@
 package com.example.pakaianbagus.presentation.home.inputpenjualan.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -20,11 +30,13 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.InputPenjualan;
+import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter.sCorner;
 import static com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter.sMargin;
@@ -34,6 +46,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
     private List<Discount> discounts;
     private Context context;
     private Fragment fragment;
+    private Dialog dialog;
 
     public SalesReportAdapter(List<Stock> stockList, Context context, Fragment fragment, List<Discount> discounts) {
         this.stockList = stockList;
@@ -69,35 +82,118 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
 
         final InputSpinnerAdapter adapter = new InputSpinnerAdapter(context, android.R.layout.simple_spinner_item, discounts);
         holder.spDiskon.setAdapter(adapter);
-        holder.spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
-                if (discounts.get(index).getType().equals("2")) {
-                    holder.total = Integer.parseInt(discounts.get(index).getValue()) * stockList.get(position).getQty();
-                } else {
-                    int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
-                    holder.total = (stockList.get(position).getPrice() - dis) * stockList.get(position).getQty();
-                }
-
-                holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
-
-                stockList.get(position).setTotal(holder.total);
-
-                ((InputPenjualan) fragment).salesData(stockList);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         if (fragment instanceof InputPenjualan) {
-            holder.tvDiskon.setVisibility(View.GONE);
-            holder.spDiskon.setVisibility(View.VISIBLE);
+            holder.spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
+                    if (discounts.get(index).getType().equals("2")) {
+                        holder.total = Integer.parseInt(discounts.get(index).getValue()) * stockList.get(position).getQty();
+                    } else {
+                        int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
+                        holder.total = (stockList.get(position).getPrice() - dis) * stockList.get(position).getQty();
+                    }
+
+                    holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
+
+                    Discount disco = discounts.get(index);
+
+                    holder.tvDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US)
+                            .format(Integer.parseInt(disco.getValue())));
+
+                    stockList.get(position).setDiscount(disco);
+                    stockList.get(position).setTotal(holder.total);
+
+                    ((InputPenjualan) fragment).salesData(stockList);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+
+        if (fragment instanceof InputPenjualan) {
+            holder.btnMore.setVisibility(View.GONE);
+            if (stockList.get(position).isNew()) {
+                holder.tvDiskon.setVisibility(View.GONE);
+                holder.spDiskon.setVisibility(View.VISIBLE);
+            } else {
+
+                holder.tvDiskon.setVisibility(View.VISIBLE);
+                holder.spDiskon.setVisibility(View.GONE);
+            }
         } else {
             holder.tvDiskon.setVisibility(View.VISIBLE);
             holder.spDiskon.setVisibility(View.GONE);
+            holder.btnMore.setVisibility(View.VISIBLE);
+        }
+
+        if (fragment instanceof InputHarianFragment) {
+            holder.btnMore.setOnClickListener(v -> {
+                View v1 = v.findViewById(R.id.btnMore);
+                PopupMenu pm = new PopupMenu(Objects.requireNonNull(context), v1);
+                pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
+                pm.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.navigation_ubah) {
+                        showDialog(context);
+                        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+                        EditText etQty = dialog.findViewById(R.id.etQty);
+                        etQty.setText(String.valueOf(stockList.get(position).getQty()));
+                        Button btnUbah = dialog.findViewById(R.id.btnUbah);
+                        Spinner spDiskon = dialog.findViewById(R.id.spDiskon);
+                        spDiskon.setAdapter(adapter);
+                        spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
+                                if (discounts.get(index).getType().equals("2")) {
+                                    holder.dialogTotal = Integer.parseInt(discounts.get(index).getValue());
+                                    ;// * stockList.get(position).getQty();
+                                } else {
+                                    int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
+                                    holder.dialogTotal = (stockList.get(position).getPrice() - dis);// * stockList.get(position).getQty();
+                                }
+                                holder.discount = discounts.get(index);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
+                        btnUbah.setOnClickListener(v2 -> {
+                            if (!etQty.getText().toString().equals("")) {
+                                dialog.dismiss();
+                                holder.total = holder.dialogTotal * Integer.parseInt(etQty.getText().toString());
+                                holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
+                                holder.tvQty.setText(etQty.getText().toString());
+
+                                if (holder.discount.getType().equals("2")) {
+                                    holder.tvDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US)
+                                            .format(Integer.parseInt(holder.discount.getValue())));
+                                } else {
+                                    holder.tvDiskon.setText(holder.discount.getValue() + " %");
+                                }
+
+                                stockList.get(position).setDiscount(holder.discount);
+                                stockList.get(position).setQty(Integer.parseInt(etQty.getText().toString()));
+                                stockList.get(position).setTotal(holder.total);
+                                stockList.get(position).setNew(true);
+
+                                ((InputHarianFragment) fragment).salesData(stockList);
+
+                            } else {
+                                Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        imgClose.setOnClickListener(v2 -> dialog.dismiss());
+                    }
+                    return true;
+                });
+                pm.show();
+            });
         }
 
         holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
@@ -121,6 +217,8 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         LinearLayout layoutListBarangMasuk;
 
         private int total = 0;
+        private int dialogTotal = 0;
+        private Discount discount;
 
         ViewHolder(View v) {
             super(v);
@@ -134,5 +232,20 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
             tvDiskon = v.findViewById(R.id.tvDiskon);
             layoutListBarangMasuk = v.findViewById(R.id.layoutListBarangMasuk);
         }
+    }
+
+    private void showDialog(Context context) {
+        dialog = new Dialog(Objects.requireNonNull(context));
+        //set content
+        dialog.setContentView(R.layout.dialog_diskon_qty);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 }

@@ -6,7 +6,6 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.Discount;
-import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.MutationRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
@@ -15,19 +14,18 @@ import com.example.pakaianbagus.models.SalesReport;
 import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
-import com.example.pakaianbagus.models.api.CategoryResponse;
+import com.example.pakaianbagus.models.api.StockCategory;
 import com.example.pakaianbagus.models.api.mutation.Mutation;
 import com.example.pakaianbagus.models.api.mutation.detail.MutationDetail;
-import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
+import com.example.pakaianbagus.models.api.penjualankompetitor.Kompetitor;
 import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
+import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
 import com.example.pakaianbagus.models.auth.Auth;
 import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.models.user.Checklist;
-import com.example.pakaianbagus.presentation.mutasibarang.MutasiDetail;
 
-import java.lang.ref.Reference;
 import java.util.List;
 
 import okhttp3.RequestBody;
@@ -134,11 +132,15 @@ public interface ApiInterface {
                                                                 @Query("date") String date);
 
     @GET("competitorTransactions")
-    Call<ApiResponse<List<KompetitorResponse>>> getPenjualanKompetitor(@Query("m_place_id") String placeId,
-                                                                       @Query("from_date") String date);
+    Call<ApiResponse<List<Kompetitor>>> getPenjualanKompetitor(@Query("m_place_id") String placeId,
+                                                               @Query("from_date") String date);
 
     @POST("competitorTransactions")
     Call<ApiResponse> postPenjualanKompetitor(@Body Kompetitor data);
+
+    @POST("competitorTransactions/{competitor_trx_id}")
+    Call<ApiResponse> postUpdatePenjualanKompetitor(@Path("competitor_trx_id") String id,
+                                                    @Body Kompetitor data);
 
     @GET("items")
     Call<ApiResponse<List<Item>>> getListItems();
@@ -146,10 +148,11 @@ public interface ApiInterface {
     @GET("categories")
     Call<ApiResponse<List<Category>>> getListCetegories();
 
-    @GET("stocks")
-    Call<ApiResponse<List<CategoryResponse>>> getListStockbyToko(@Query("m_place_id") String idToko);
+    @GET("stocks/listCategory")
+    Call<ApiResponse<List<StockCategory>>> getListStockbyToko(@Query("m_place_id") String idToko,
+                                                              @Query("m_brand_id") String idBrand);
 
-    @POST("stocks")
+    @POST("stockOpnames")
     Call<ApiResponse> postStockOpname(@Body StockOpnameModel data);
 
     @GET("mutations")
@@ -165,6 +168,11 @@ public interface ApiInterface {
 
     @GET("announcements/{id}")
     Call<ApiResponse<AnnouncementDetailResponse>> getDetailAnnouncement(@Path("id") String id);
+
+    @GET("stockOpnames")
+    Call<ApiResponse<List<StockCategoryResponse>>> getListStockOpname(@Query("m_brand_id") String id_brand,
+                                                                      @Query("m_place_id") String id_toko,
+                                                                      @Query("type") int type);
 
 
 //    @GET("group")
