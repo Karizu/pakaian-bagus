@@ -27,6 +27,7 @@ import com.example.pakaianbagus.presentation.mutasibarang.MutasiBarangSPG;
 import com.example.pakaianbagus.presentation.penjualan.InputHarianFragment;
 import com.example.pakaianbagus.presentation.penjualan.PenjualanBrandFragment;
 import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.DateUtils;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
     Fragment active = fragmentHome;
     Dialog dialog;
+    String roleId, brandId, tokoId;
 
     @SuppressLint("CommitTransaction")
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -66,56 +68,53 @@ public class MainActivity extends AppCompatActivity {
                 active = fragmentHome;
                 return true;
             case R.id.navigation_katalog:
-                try {
-                    if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("id_brand", Session.get(Constanta.BRAND).getValue());
-                        bundle.putString("id", Session.get(Constanta.TOKO).getValue());
+                if (roleId.equals(SessionManagement.ROLE_SPG)) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id_brand", brandId);
+                    bundle.putString("id", tokoId);
 
-                        setFragments(katalogSpgFragment, "2", bundle);
-                    } else {
-                        setFragments(katalogFragment, "2");
-                        active = fragmentMutasiBarang;
-                    }
-                } catch (SessionNotFoundException e) {
-                    e.printStackTrace();
+                    setFragments(katalogSpgFragment, "2", bundle);
+                } else {
                     setFragments(katalogFragment, "2");
                     active = fragmentMutasiBarang;
                 }
                 return true;
             case R.id.navigation_mutasi_barang:
-                try {
-                    if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_MANAGER) ||
-                            Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_KOORDINATOR)) {
-                        showDialog();
-                        Log.d("Masuk", "Role id 3 || 4");
-                        Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
-                        btnBM.setOnClickListener(v -> {
-                            setFragments(fragmentListTokoBM, "3");
-                            active = fragmentListTokoBM;
-                            dialog.dismiss();
-                        });
-                        Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
-                        btnMB.setOnClickListener(v -> {
-                            setFragments(fragmentMutasiBarang, "3");
-                            active = fragmentMutasiBarang;
-                            dialog.dismiss();
-                        });
-                    } else if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)) {
-                        setFragments(fragmentMutasiSPG, "3");
-                        active = fragmentListTokoBM;
-                    } else {
+                if (roleId.equals(SessionManagement.ROLE_MANAGER) ||
+                        roleId.equals(SessionManagement.ROLE_KOORDINATOR)) {
+                    showDialog();
+                    Log.d("Masuk", "Role id 3 || 4");
+                    Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
+                    btnBM.setOnClickListener(v -> {
                         setFragments(fragmentListTokoBM, "3");
                         active = fragmentListTokoBM;
-                    }
-
-                } catch (SessionNotFoundException e) {
-                    e.printStackTrace();
+                        dialog.dismiss();
+                    });
+                    Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
+                    btnMB.setOnClickListener(v -> {
+                        setFragments(fragmentMutasiBarang, "3");
+                        active = fragmentMutasiBarang;
+                        dialog.dismiss();
+                    });
+                } else if (roleId.equals(SessionManagement.ROLE_SPG)) {
+                    setFragments(fragmentMutasiSPG, "3");
+                    active = fragmentListTokoBM;
+                } else {
+                    setFragments(fragmentListTokoBM, "3");
+                    active = fragmentListTokoBM;
                 }
+
                 return true;
             case R.id.navigation_penjualan:
-                setFragments(fragmentPenjualanListToko, "4");
-                active = fragmentPenjualanListToko;
+                if (roleId.equals(SessionManagement.ROLE_SPG)) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("date", new DateUtils().getTodayWithFormat("yyyy-MM-dd"));
+
+                    setFragments(fragmentInputHarian, "4", bundle);
+                } else {
+                    setFragments(fragmentPenjualanListToko, "4");
+                    active = fragmentPenjualanListToko;
+                }
                 return true;
         }
         return false;
@@ -132,6 +131,17 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        try {
+            roleId = Session.get(Constanta.ROLE_ID).getValue();
+            if (roleId.equals(SessionManagement.ROLE_SPG)) {
+                brandId = Session.get(Constanta.BRAND).getValue();
+                tokoId = Session.get(Constanta.TOKO).getValue();
+            }
+        } catch (SessionNotFoundException e) {
+            roleId = "-1";
+            e.printStackTrace();
+        }
 
         Intent i = getIntent();
         String data = i.getStringExtra("FromHome");

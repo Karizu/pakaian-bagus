@@ -57,6 +57,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         holder.tvNamaBarang.setText(stockList.get(position).getItem().getName());
         holder.tvHarga.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(stockList.get(position).getPrice()));
         holder.tvQty.setText(String.valueOf(stockList.get(position).getQty()));
+        holder.total = stockList.get(position).getPrice() * stockList.get(position).getQty();
 
         Glide.with(context)
                 .applyDefaultRequestOptions(
@@ -68,9 +69,6 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
 
         final InputSpinnerAdapter adapter = new InputSpinnerAdapter(context, android.R.layout.simple_spinner_item, discounts);
         holder.spDiskon.setAdapter(adapter);
-
-        holder.total = stockList.get(position).getPrice() * stockList.get(position).getQty();
-
         holder.spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
@@ -94,8 +92,16 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
             }
         });
 
+        if (fragment instanceof InputPenjualan) {
+            holder.tvDiskon.setVisibility(View.GONE);
+            holder.spDiskon.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvDiskon.setVisibility(View.VISIBLE);
+            holder.spDiskon.setVisibility(View.GONE);
+        }
+
         holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
-        stockList.get(position).setTotal(holder.total);
+
     }
 
     @Override
@@ -111,6 +117,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         ImageView imgBarang;
         ImageView btnMore;
         Spinner spDiskon;
+        TextView tvDiskon;
         LinearLayout layoutListBarangMasuk;
 
         private int total = 0;
@@ -124,6 +131,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
             imgBarang = v.findViewById(R.id.imgBarang);
             btnMore = v.findViewById(R.id.btnMore);
             spDiskon = v.findViewById(R.id.spDiskon);
+            tvDiskon = v.findViewById(R.id.tvDiskon);
             layoutListBarangMasuk = v.findViewById(R.id.layoutListBarangMasuk);
         }
     }

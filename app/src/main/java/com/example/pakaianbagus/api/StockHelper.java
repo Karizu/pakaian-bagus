@@ -3,6 +3,7 @@ package com.example.pakaianbagus.api;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.StockOpnameModel;
+import com.example.pakaianbagus.models.api.CategoryResponse;
 import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
@@ -33,7 +34,7 @@ public class StockHelper {
         service.getEndpoint().getListCetegories().enqueue(callback);
     }
 
-    public static void getListStock(String idToko, RestCallback<ApiResponse<List<Stock>>> callback) {
+    public static void getListStock(String idToko, RestCallback<ApiResponse<List<CategoryResponse>>> callback) {
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
         service.getEndpoint().getListStockbyToko(idToko).enqueue(callback);
     }

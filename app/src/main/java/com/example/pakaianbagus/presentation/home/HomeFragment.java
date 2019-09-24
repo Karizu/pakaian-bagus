@@ -50,6 +50,7 @@ import com.example.pakaianbagus.models.ChecklistResponse;
 import com.example.pakaianbagus.models.News;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.models.RoleChecklistModel;
+import com.example.pakaianbagus.presentation.announcement.AnnouncementFragment;
 import com.example.pakaianbagus.presentation.auth.LoginActivity;
 import com.example.pakaianbagus.presentation.home.adapter.ChecklistAdapter;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.InputPenjualan;
@@ -61,6 +62,7 @@ import com.example.pakaianbagus.presentation.home.spg.SpgListBrandFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockListBrandFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
 import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.DateUtils;
 import com.example.pakaianbagus.util.GetLocation;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
@@ -143,7 +145,6 @@ public class HomeFragment extends Fragment {
     String userId;
     String userName = "Hallo Null";
     private DatePickerDialog datePickerDialog;
-    private SimpleDateFormat dateFormatter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -159,8 +160,6 @@ public class HomeFragment extends Fragment {
         checklists = new ArrayList<>();
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
 
-        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayout.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         roleChecklistModels = new ArrayList<>();
@@ -171,8 +170,10 @@ public class HomeFragment extends Fragment {
             userId = Session.get(Constanta.USER_ID).getValue();
             roleId = Session.get(Constanta.ROLE_ID).getValue();
             userName = Session.get(Constanta.NAME).getValue();
-            brandId = Session.get(Constanta.BRAND).getValue();
-            tokoId = Session.get(Constanta.TOKO).getValue();
+            if (roleId.equals(SessionManagement.ROLE_SPG)) {
+                brandId = Session.get(Constanta.BRAND).getValue();
+                tokoId = Session.get(Constanta.TOKO).getValue();
+            }
             if (roleId.equals(SessionManagement.ROLE_KOORDINATOR)
                     || roleId.equals(SessionManagement.ROLE_MANAGER)
                     || roleId.equals(SessionManagement.ROLE_ADMIN)) {
@@ -202,6 +203,23 @@ public class HomeFragment extends Fragment {
                 checklists.clear();
             }
             getListChecklist();
+        });
+
+        customCarouselView.setImageClickListener(position ->
+        {
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("announcement_id", newsPager.get(position).getId());
+            bundle.putString("fragment", "home");
+
+            AnnouncementFragment fragment = new AnnouncementFragment();
+            fragment.setArguments(bundle);
+
+            ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+            ft.replace(R.id.baseLayout, fragment);
+            ft.commit();
         });
 
         TextView toolbarTitle = rootView.findViewById(R.id.toolbar_title);
@@ -241,9 +259,7 @@ public class HomeFragment extends Fragment {
 
     private void getCurrentDateChecklist() {
         Date c = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy");
-        String formattedDate = df.format(c);
-        tvDateChecklist.setText(formattedDate);
+        tvDateChecklist.setText(new DateUtils().formatDateToString(c, "dd MMMM yyyy"));
     }
 
 //    @OnClick(R.id.btnTambah)
@@ -393,10 +409,8 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    @SuppressLint("SimpleDateFormat")
     private void getUserChecklist(List<Checklist> checklists) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String today = dateFormat.format(new Date());
+        String today = new DateUtils().getTodayWithFormat("yyyy-MM-dd");
         HomeHelper.getListChecklistUser(userId, today, new Callback<ApiResponse<List<com.example.pakaianbagus.models.user.Checklist>>>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<com.example.pakaianbagus.models.user.Checklist>>> call,
@@ -486,9 +500,12 @@ public class HomeFragment extends Fragment {
                     List<AnnouncementResponse> responses = body.getData();
                     for (int i = 0; i < responses.size(); i++) {
                         AnnouncementResponse announcementResponse = responses.get(i);
-                        newsPager.add(new News(announcementResponse.getTitle(),
-                                announcementResponse.getDescription(),
-                                announcementResponse.getImage()));
+                        News news = new News();
+                        news.setId(announcementResponse.getId());
+                        news.setTitle(announcementResponse.getTitle());
+                        news.setContent(announcementResponse.getDescription());
+                        news.setBanner(announcementResponse.getImage());
+                        newsPager.add(news);
                     }
 
                     customCarouselView.setViewListener(viewListener);
@@ -647,7 +664,7 @@ public class HomeFragment extends Fragment {
                     FragmentManager fm = getFragmentManager();
                     FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
                     Bundle bundle = new Bundle();
-                    bundle.putString("date", dateFormatter.format(newDate.getTime()));
+                    bundle.putString("date", new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd"));
                     InputPenjualan inputPenjualan = new InputPenjualan();
                     inputPenjualan.setArguments(bundle);
                     ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
@@ -881,8 +898,7 @@ public class HomeFragment extends Fragment {
                     dialog.dismiss();
                 });
                 Date c = Calendar.getInstance().getTime();
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("hh:mm");
-                String formattedDate = df.format(c);
+                String formattedDate = new DateUtils().formatDateToString(c, "hh:mm");
                 tvTime.setText(formattedDate);
             }
 
@@ -934,8 +950,7 @@ public class HomeFragment extends Fragment {
                     setTextCheckInOut();
                 });
                 Date c = Calendar.getInstance().getTime();
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("hh:mm");
-                String formattedDate = df.format(c);
+                String formattedDate = new DateUtils().formatDateToString(c, "hh:mm");
                 tvTime.setText(formattedDate);
             }
 
@@ -1152,8 +1167,7 @@ public class HomeFragment extends Fragment {
         if (checklist == null) {
             Toast.makeText(getContext(), "this", Toast.LENGTH_SHORT).show();
         } else {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String date = dateFormat.format(new Date());
+            String date = new DateUtils().getTodayWithFormat("yyyy-MM-dd");
             Loading.show(getActivity());
             HomeHelper.postChecklistByUserId(userId, date, checklist, new RestCallback<ApiResponse>() {
                 @Override

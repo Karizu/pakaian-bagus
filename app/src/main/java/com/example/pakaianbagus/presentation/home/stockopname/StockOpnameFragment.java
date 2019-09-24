@@ -36,6 +36,7 @@ import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.StockOpnameModel;
+import com.example.pakaianbagus.models.api.CategoryResponse;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
@@ -75,7 +76,7 @@ public class StockOpnameFragment extends Fragment {
     private String roleId;
     private List<StockOpnameModel> stockOpnameModels = new ArrayList<>();
     private List<Stock> stockOpnameList = new ArrayList<>();
-    private List<Stock> categoryList = new ArrayList<>();
+    private List<CategoryResponse> categoryList = new ArrayList<>();
     private int choose = 1; //1 artikel 2 kategori
     private String idBrand, idToko;
     private StockOpnameAdapter stockOpnameAdapter;
@@ -134,9 +135,9 @@ public class StockOpnameFragment extends Fragment {
     }
 
     private boolean getData() {
-        StockHelper.getListStock(idToko, new RestCallback<ApiResponse<List<Stock>>>() {
+        StockHelper.getListStock(idToko, new RestCallback<ApiResponse<List<CategoryResponse>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<CategoryResponse>> body) {
                 categoryList.addAll(body.getData());
             }
 
@@ -168,10 +169,10 @@ public class StockOpnameFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SCANNER && resultCode == Activity.RESULT_OK) {
+        /*if (requestCode == REQUEST_SCANNER && resultCode == Activity.RESULT_OK) {
             String resultData = data.getStringExtra("scan_data");
             addListFromBarcode(resultData);
-        }
+        }*/
     }
 
     private void addListFromBarcode(String resultData) {
@@ -240,7 +241,10 @@ public class StockOpnameFragment extends Fragment {
             imgClose.setOnClickListener(v -> dialog.dismiss());
             btnAdd.setOnClickListener(v -> {
                 dialog.dismiss();
-                addList((Stock) spinner.getSelectedItem(), Integer.parseInt(etQuantity.getText().toString()));
+                CategoryResponse response = (CategoryResponse) spinner.getSelectedItem();
+                Stock stock = new Stock();
+
+                addList(stock, Integer.parseInt(etQuantity.getText().toString()));
             });
         } else {
             Toast.makeText(getContext(), "Data kategori pada toko ini tidak ada", Toast.LENGTH_SHORT).show();

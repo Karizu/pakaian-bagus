@@ -1,27 +1,22 @@
+package com.example.pakaianbagus.models.api;
 
-package com.example.pakaianbagus.models.api.salesreport;
-
-import com.example.pakaianbagus.models.api.mutation.detail.Stock;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Detail {
-
+/**
+ * Created by alfianhpratama on 21/09/2019.
+ * Organization: UTeam
+ */
+public class Category {
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("transaction_id")
+    @SerializedName("name")
     @Expose
-    private int transactionId;
-    @SerializedName("stock_id")
+    private String name;
+    @SerializedName("code")
     @Expose
-    private int stockId;
-    @SerializedName("qty")
-    @Expose
-    private int qty;
-    @SerializedName("price")
-    @Expose
-    private int price;
+    private String code;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -37,9 +32,6 @@ public class Detail {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
-    @SerializedName("stock")
-    @Expose
-    private Stock stock;
 
     public int getId() {
         return id;
@@ -49,36 +41,20 @@ public class Detail {
         this.id = id;
     }
 
-    public int getTransactionId() {
-        return transactionId;
+    public String getName() {
+        return name;
     }
 
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getStockId() {
-        return stockId;
+    public String getCode() {
+        return code;
     }
 
-    public void setStockId(int stockId) {
-        this.stockId = stockId;
-    }
-
-    public int getQty() {
-        return qty;
-    }
-
-    public void setQty(int qty) {
-        this.qty = qty;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Object getCreatedBy() {
@@ -119,13 +95,5 @@ public class Detail {
 
     public void setDeletedAt(Object deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public Stock getStock() {
-        return stock;
-    }
-
-    public void setStock(Stock stock) {
-        this.stock = stock;
     }
 }

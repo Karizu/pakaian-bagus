@@ -91,8 +91,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
@@ -107,19 +106,19 @@
             <Spinner
                 android:id="@+id/spDiskon"
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-            <!--<TextView
+            <TextView
                 android:id="@+id/tvDiskon"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical|right"
                 android:text="Rp. 50.000"
                 android:textColor="@color/DarkSlateBlue"
                 android:textSize="11sp"
-                tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />-->
+                tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
 
         </LinearLayout>
 

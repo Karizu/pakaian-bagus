@@ -1,27 +1,28 @@
+package com.example.pakaianbagus.models;
 
-package com.example.pakaianbagus.models.api.salesreport;
-
-import com.example.pakaianbagus.models.api.mutation.detail.Stock;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Detail {
-
+/**
+ * Created by alfianhpratama on 18/09/2019.
+ * Organization: UTeam
+ */
+public class AnnouncementDetailResponse {
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("transaction_id")
+    @SerializedName("m_announcement_type_id")
     @Expose
-    private int transactionId;
-    @SerializedName("stock_id")
+    private int mAnnouncementTypeId;
+    @SerializedName("title")
     @Expose
-    private int stockId;
-    @SerializedName("qty")
+    private String title;
+    @SerializedName("description")
     @Expose
-    private int qty;
-    @SerializedName("price")
+    private String description;
+    @SerializedName("image")
     @Expose
-    private int price;
+    private String image;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -37,9 +38,9 @@ public class Detail {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
-    @SerializedName("stock")
+    @SerializedName("announcement_type")
     @Expose
-    private Stock stock;
+    private AnnouncementType announcementType;
 
     public int getId() {
         return id;
@@ -49,36 +50,36 @@ public class Detail {
         this.id = id;
     }
 
-    public int getTransactionId() {
-        return transactionId;
+    public int getMAnnouncementTypeId() {
+        return mAnnouncementTypeId;
     }
 
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
+    public void setMAnnouncementTypeId(int mAnnouncementTypeId) {
+        this.mAnnouncementTypeId = mAnnouncementTypeId;
     }
 
-    public int getStockId() {
-        return stockId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setStockId(int stockId) {
-        this.stockId = stockId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public int getQty() {
-        return qty;
+    public String getDescription() {
+        return description;
     }
 
-    public void setQty(int qty) {
-        this.qty = qty;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getPrice() {
-        return price;
+    public String getImage() {
+        return image;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Object getCreatedBy() {
@@ -121,11 +122,11 @@ public class Detail {
         this.deletedAt = deletedAt;
     }
 
-    public Stock getStock() {
-        return stock;
+    public AnnouncementType getAnnouncementType() {
+        return announcementType;
     }
 
-    public void setStock(Stock stock) {
-        this.stock = stock;
+    public void setAnnouncementType(AnnouncementType announcementType) {
+        this.announcementType = announcementType;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.api;
 
+import com.example.pakaianbagus.models.AnnouncementDetailResponse;
 import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
@@ -14,6 +15,7 @@ import com.example.pakaianbagus.models.SalesReport;
 import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.TokoResponse;
 import com.example.pakaianbagus.models.User;
+import com.example.pakaianbagus.models.api.CategoryResponse;
 import com.example.pakaianbagus.models.api.mutation.Mutation;
 import com.example.pakaianbagus.models.api.mutation.detail.MutationDetail;
 import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
@@ -128,7 +130,7 @@ public interface ApiInterface {
     Call<ApiResponse> postSalesReport(@Body SalesReport salesReport);
 
     @GET("transactions")
-    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Query("sales_id") String userId,
+    Call<ApiResponse<List<SalesReportResponse>>> getSalesReport(@Query("from") String placeID,
                                                                 @Query("date") String date);
 
     @GET("competitorTransactions")
@@ -145,7 +147,7 @@ public interface ApiInterface {
     Call<ApiResponse<List<Category>>> getListCetegories();
 
     @GET("stocks")
-    Call<ApiResponse<List<Stock>>> getListStockbyToko(@Query("m_place_id") String idToko);
+    Call<ApiResponse<List<CategoryResponse>>> getListStockbyToko(@Query("m_place_id") String idToko);
 
     @POST("stocks")
     Call<ApiResponse> postStockOpname(@Body StockOpnameModel data);
@@ -156,10 +158,13 @@ public interface ApiInterface {
                                                       @Query("m_place_id") String id_toko);
 
     @GET("mutations/{id}")
-    Call<ApiResponse<MutationDetail>> getDetailMutation(@Path(value = "id", encoded = true) int id);
+    Call<ApiResponse<MutationDetail>> getDetailMutation(@Path("id") int id);
 
     @POST("mutations")
     Call<ApiResponse> postDetailMutation(@Body MutationRequest mutationRequest);
+
+    @GET("announcements/{id}")
+    Call<ApiResponse<AnnouncementDetailResponse>> getDetailAnnouncement(@Path("id") String id);
 
 
 //    @GET("group")

@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.models;
 
+import com.example.pakaianbagus.models.api.salesreport.Detail;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

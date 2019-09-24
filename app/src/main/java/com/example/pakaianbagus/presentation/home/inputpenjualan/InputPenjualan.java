@@ -32,16 +32,19 @@ import android.widget.Toast;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.models.ApiResponse;
-import com.example.pakaianbagus.models.Detail;
 import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.Kompetitor;
 import com.example.pakaianbagus.models.SalesReport;
 import com.example.pakaianbagus.models.api.penjualankompetitor.KompetitorResponse;
+import com.example.pakaianbagus.models.api.salesreport.Detail;
+import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
+import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.PenjualanKompetitorAdapter;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.SalesReportAdapter;
 import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.DateUtils;
 import com.example.pakaianbagus.util.Scanner;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
@@ -50,12 +53,8 @@ import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -113,7 +112,8 @@ public class InputPenjualan extends Fragment {
 
         try {
             userId = Session.get(Constanta.USER_ID).getValue();
-            isSpg = Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG);
+            roleId = Session.get(Constanta.ROLE_ID).getValue();
+            isSpg = roleId.equals(SessionManagement.ROLE_SPG);
             if (isSpg) {
                 placeId = Session.get(Constanta.TOKO).getValue();
                 brandId = Session.get(Constanta.BRAND).getValue();
@@ -127,15 +127,7 @@ public class InputPenjualan extends Fragment {
             brandId = "1";
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        SimpleDateFormat dateFormatView = new SimpleDateFormat("yyyy MMMM dd", Locale.US);
-        try {
-            Date theDate = dateFormat.parse(date);
-            tvDate.setText(dateFormatView.format(theDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            tvDate.setText(date);
-        }
+        tvDate.setText(new DateUtils().formatDateStringToString(date, "yyyy-MM-dd", "yyyy MMMM dd"));
 
         viewScreen(1);
 
@@ -187,19 +179,32 @@ public class InputPenjualan extends Fragment {
     private boolean getSalesReport() {
         salesReportList.clear();
         salesReportTemp.clear();
-        /*InputHelper.getSalesReport(userId, date, new RestCallback<ApiResponse<List<SalesReportResponse>>>() {
+        InputHelper.getSalesReport(placeId, date, new RestCallback<ApiResponse<List<SalesReportResponse>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<SalesReportResponse>> body) {
                 if (body.getData().size() > 0) {
                     List<SalesReportResponse> responses = body.getData();
                     for (int x = 0; x < responses.size(); x++) {
-                        Item item = new Item();
-                        item.setName(responses.get(x).);
+                        SalesReportResponse reportResponse = body.getData().get(x);
 
-                        Stock stokToko = new Stock();
-                        stokToko.setNew(false);
-                        salesReportList.add(stokToko);
+                        for (int y = 0; y < reportResponse.getDetails().size(); y++) {
+                            Item item = new Item();
+                            item.setName(reportResponse.getDetails().get(y).getStock().getItem().getName());
+                            item.setImage(reportResponse.getDetails().get(y).getStock().getItem().getImage());
+
+                            Stock stokToko = new Stock();
+                            stokToko.setId(reportResponse.getDetails().get(y).getStock().getId());
+                            stokToko.setMPlaceId(reportResponse.getDetails().get(y).getStock().getMPlaceId());
+                            stokToko.setMItemId(reportResponse.getDetails().get(y).getStock().getMItemId());
+                            stokToko.setItem(item);
+                            stokToko.setPrice(reportResponse.getDetails().get(y).getPrice());
+                            stokToko.setQty(reportResponse.getDetails().get(y).getQty());
+                            stokToko.setNew(false);
+
+                            salesReportList.add(stokToko);
+                        }
                     }
+                    salesReportAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -212,7 +217,7 @@ public class InputPenjualan extends Fragment {
             public void onCanceled() {
 
             }
-        });*/
+        });
         return true;
     }
 
@@ -256,6 +261,7 @@ public class InputPenjualan extends Fragment {
                 Loading.hide(getContext());
                 if (body.getData().size() > 0) {
                     Stock stock = body.getData().get(0);
+                    stock.setNew(true);
                     String mPlaceId = String.valueOf(stock.getMPlaceId());
                     String mBrandId = String.valueOf(stock.getItem().getMBrandId());
                     boolean placeTrue = placeId.equals(mPlaceId);
@@ -519,7 +525,12 @@ public class InputPenjualan extends Fragment {
     }
 
     public void salesData(List<Stock> stockList) {
-        this.salesReportTemp = stockList;
+        salesReportTemp.clear();
+        for (int x = 0; x < stockList.size(); x++) {
+            if (stockList.get(x).isNew()) {
+                salesReportTemp.add(stockList.get(x));
+            }
+        }
     }
 
     private void showDialog(int layout) {

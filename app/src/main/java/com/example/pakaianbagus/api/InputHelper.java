@@ -30,9 +30,9 @@ public class InputHelper {
         service.getEndpoint().getDiscount().enqueue(callback);
     }
 
-    public static void getSalesReport(String userId, String date, RestCallback<ApiResponse<List<SalesReportResponse>>> callback){
+    public static void getSalesReport(String placeID, String date, RestCallback<ApiResponse<List<SalesReportResponse>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getSalesReport(userId, date).enqueue(callback);
+        service.getEndpoint().getSalesReport(placeID, date).enqueue(callback);
     }
 
     public static void getPenjualanKompetitor(String placeId, String date, RestCallback<ApiResponse<List<KompetitorResponse>>> callback){

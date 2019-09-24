@@ -3,7 +3,6 @@ package com.example.pakaianbagus.models.api.salesreport;
 
 import java.util.List;
 
-import com.example.pakaianbagus.models.Detail;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -68,7 +67,7 @@ public class SalesReportResponse {
     private Object member;
     @SerializedName("details")
     @Expose
-    private List<com.example.pakaianbagus.models.Detail> details = null;
+    private List<Detail> details = null;
     @SerializedName("shipment")
     @Expose
     private Object shipment;
@@ -225,7 +224,7 @@ public class SalesReportResponse {
         this.member = member;
     }
 
-    public List<com.example.pakaianbagus.models.Detail> getDetails() {
+    public List<Detail> getDetails() {
         return details;
     }
 

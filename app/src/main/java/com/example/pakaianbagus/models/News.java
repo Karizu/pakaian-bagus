@@ -28,10 +28,20 @@ public class News {
     @Expose
     private String content;
 
+    public News() {
+    }
+
     public News(String title, String content, String banner) {
         this.title = title;
         this.content = content;
         this.banner = banner;
+    }
+
+    public News(String id, String title, String content, String banner) {
+        this.id = id;
+        this.title = title;
+        this.banner = banner;
+        this.content = content;
     }
 
     public String getId() {
