@@ -121,6 +121,8 @@ public class HomeFragment extends Fragment {
     TextView tvNoData;
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.btnSubmit)
+    Button btnSubmit;
 
     Dialog dialog;
     List<News> newsPager = new ArrayList<>();
@@ -148,6 +150,7 @@ public class HomeFragment extends Fragment {
     String userId;
     String userName = "Hallo Null";
     private DatePickerDialog datePickerDialog;
+    private List<Checklist> checklistssss = new ArrayList<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -321,17 +324,15 @@ public class HomeFragment extends Fragment {
                         } else {
                             tvNoData.setVisibility(View.GONE);
 
-                            List<Checklist> checklists = new ArrayList<>();
-
                             for (int i = 0; i < res.size(); i++) {
                                 ChecklistResponse checklistResponse = res.get(i);
                                 Checklist checklist = new Checklist();
                                 checklist.setName(checklistResponse.getName());
                                 checklist.setId(String.valueOf(checklistResponse.getId()));
-                                checklists.add(checklist);
+                                checklistssss.add(checklist);
                             }
 
-                            getUserChecklist(checklists);
+                            getUserChecklist(checklistssss);
                         }
 
                         /*for (int i = 0; i < res.size(); i++) {
@@ -432,6 +433,21 @@ public class HomeFragment extends Fragment {
                                 }
                             }
                         }
+                    }
+
+                    int sumc = 0;
+                    for (int x = 0; x < checklists.size(); x++) {
+                        if (checklists.get(x).isChecked()) {
+                            sumc = sumc + 1;
+                        }
+                    }
+                    if (checklists.size() == sumc) {
+                        btnSubmit.setEnabled(false);
+                        //btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.background_photo_counter));
+                        btnSubmit.setBackgroundColor(getResources().getColor(R.color.Gray));
+                    } else {
+                        //btnSubmit.setBackgroundColor(getResources().getColor(R.color.DarkSlateBlue));
+                        btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.btn_rounded_blackyellow));
                     }
                 }
 
@@ -1173,7 +1189,7 @@ public class HomeFragment extends Fragment {
     @OnClick(R.id.btnSubmit)
     public void onClickSubmit() {
         if (checklist == null) {
-            Toast.makeText(getContext(), "this", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Tidak ada yang harus dikirimkan", Toast.LENGTH_SHORT).show();
         } else {
             String date = new DateUtils().getTodayWithFormat("yyyy-MM-dd");
             Loading.show(getActivity());
@@ -1183,6 +1199,7 @@ public class HomeFragment extends Fragment {
                     Loading.hide(getContext());
                     Toast.makeText(getContext(), "Berhasil menyimpan data checklist hari ini", Toast.LENGTH_SHORT).show();
                     Log.d("onSuccess: ", body.getMessage());
+                    getUserChecklist(checklistssss);
                 }
 
                 @Override

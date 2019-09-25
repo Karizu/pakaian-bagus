@@ -123,7 +123,11 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
             });
             if (checklistList.get(position).isChecked()) {
                 holder.checkBox.setChecked(true);
+                holder.checkBox.setEnabled(false);
             }
+
+            int sum =0;
+
         } else if (roleChecklists != null) {
             final RoleChecklist roleChecklistModel = roleChecklists.get(position);
             SessionManagement session = new SessionManagement(Objects.requireNonNull(context));

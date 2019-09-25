@@ -64,6 +64,8 @@ public class InputHarianFragment extends Fragment {
     ImageView btnAdd;
     @BindView(R.id.btnFilter)
     ImageView btnFilter;
+    @BindView(R.id.toolbar_back)
+    ImageView toolbar_back;
     @BindView(R.id.rvSales)
     RecyclerView rvSales;
     @BindView(R.id.rvPenjualan)
@@ -97,6 +99,7 @@ public class InputHarianFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         date = Objects.requireNonNull(getArguments()).getString("date");
+        toolbar_back.setVisibility(View.GONE);
 
         try {
             userId = Session.get(Constanta.USER_ID).getValue();
