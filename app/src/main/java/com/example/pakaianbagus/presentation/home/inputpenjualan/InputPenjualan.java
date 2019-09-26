@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -221,6 +223,11 @@ public class InputPenjualan extends Fragment {
 
     private boolean getDiscount() {
         discounts.clear();
+        Discount di = new Discount();
+        di.setId(0);
+        di.setName("-- Pilih --");
+        di.setValue("Tidak Ada");
+        discounts.add(di);
         InputHelper.getDiscount(new RestCallback<ApiResponse<List<Discount>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Discount>> body) {

@@ -215,6 +215,11 @@ public class InputHarianFragment extends Fragment {
 
     private boolean getDiscount() {
         discounts.clear();
+        Discount di = new Discount();
+        di.setId(0);
+        di.setName("-- Pilih --");
+        di.setValue("Tidak Ada");
+        discounts.add(di);
         InputHelper.getDiscount(new RestCallback<ApiResponse<List<Discount>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Discount>> body) {

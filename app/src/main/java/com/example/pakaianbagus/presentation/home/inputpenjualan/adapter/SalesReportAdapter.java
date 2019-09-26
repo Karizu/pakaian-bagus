@@ -83,23 +83,33 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         final InputSpinnerAdapter adapter = new InputSpinnerAdapter(context, android.R.layout.simple_spinner_item, discounts);
         holder.spDiskon.setAdapter(adapter);
 
+        holder.tvDiskon.setText(discounts.get(0).getValue());
+
         if (fragment instanceof InputPenjualan) {
             holder.spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
-                    if (discounts.get(index).getType().equals("2")) {
-                        holder.total = Integer.parseInt(discounts.get(index).getValue()) * stockList.get(position).getQty();
+                    if (index > 0) {
+                        if (discounts.get(index).getType().equals("2")) {
+                            holder.total = Integer.parseInt(discounts.get(index).getValue()) * stockList.get(position).getQty();
+                        } else {
+                            int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
+                            holder.total = (stockList.get(position).getPrice() - dis) * stockList.get(position).getQty();
+                        }
                     } else {
-                        int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
-                        holder.total = (stockList.get(position).getPrice() - dis) * stockList.get(position).getQty();
+                        holder.total = stockList.get(position).getPrice() * stockList.get(position).getQty();
                     }
 
                     holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
 
                     Discount disco = discounts.get(index);
 
-                    holder.tvDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US)
-                            .format(Integer.parseInt(disco.getValue())));
+                    if (index > 0) {
+                        holder.tvDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US)
+                                .format(Integer.parseInt(disco.getValue())));
+                    } else {
+                        holder.tvDiskon.setText(disco.getValue());
+                    }
 
                     stockList.get(position).setDiscount(disco);
                     stockList.get(position).setTotal(holder.total);
@@ -147,12 +157,16 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
                         spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
-                                if (discounts.get(index).getType().equals("2")) {
-                                    holder.dialogTotal = Integer.parseInt(discounts.get(index).getValue());
-                                    ;// * stockList.get(position).getQty();
+                                if (index > 0) {
+                                    if (discounts.get(index).getType().equals("2")) {
+                                        holder.dialogTotal = Integer.parseInt(discounts.get(index).getValue());
+                                        // * stockList.get(position).getQty();
+                                    } else {
+                                        int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
+                                        holder.dialogTotal = (stockList.get(position).getPrice() - dis);// * stockList.get(position).getQty();
+                                    }
                                 } else {
-                                    int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
-                                    holder.dialogTotal = (stockList.get(position).getPrice() - dis);// * stockList.get(position).getQty();
+                                    holder.dialogTotal = stockList.get(position).getPrice();
                                 }
                                 holder.discount = discounts.get(index);
                             }
@@ -170,11 +184,15 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
                                 holder.tvTotal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(holder.total));
                                 holder.tvQty.setText(etQty.getText().toString());
 
-                                if (holder.discount.getType().equals("2")) {
-                                    holder.tvDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US)
-                                            .format(Integer.parseInt(holder.discount.getValue())));
+                                if (holder.dialogTotal != stockList.get(position).getPrice()) {
+                                    if (holder.discount.getType().equals("2")) {
+                                        holder.tvDiskon.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US)
+                                                .format(Integer.parseInt(holder.discount.getValue())));
+                                    } else {
+                                        holder.tvDiskon.setText(holder.discount.getValue() + " %");
+                                    }
                                 } else {
-                                    holder.tvDiskon.setText(holder.discount.getValue() + " %");
+                                    holder.tvDiskon.setText(holder.discount.getValue());
                                 }
 
                                 stockList.get(position).setDiscount(holder.discount);

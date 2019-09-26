@@ -441,14 +441,16 @@ public class HomeFragment extends Fragment {
                             sumc = sumc + 1;
                         }
                     }
-                    if (checklists.size() == sumc) {
-                        btnSubmit.setEnabled(false);
-                        //btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.background_photo_counter));
-                        btnSubmit.setBackgroundColor(getResources().getColor(R.color.Gray));
-                    } else {
-                        //btnSubmit.setBackgroundColor(getResources().getColor(R.color.DarkSlateBlue));
-                        btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.btn_rounded_blackyellow));
-                    }
+                    try {
+                        if (checklists.size() == sumc) {
+                            btnSubmit.setEnabled(false);
+                            //btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.background_photo_counter));
+                            btnSubmit.setBackgroundColor(getResources().getColor(R.color.Gray));
+                        } else {
+                            //btnSubmit.setBackgroundColor(getResources().getColor(R.color.DarkSlateBlue));
+                            btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.btn_rounded_blackyellow));
+                        }
+                    } catch (Exception ignore){}
                 }
 
                 checklistAdapter = new ChecklistAdapter(checklists, getContext(), HomeFragment.this);
