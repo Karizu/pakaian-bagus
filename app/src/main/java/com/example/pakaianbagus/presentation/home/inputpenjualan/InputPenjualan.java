@@ -70,6 +70,8 @@ public class InputPenjualan extends Fragment {
     TextView tabSalesReport;
     @BindView(R.id.tabPenjualan)
     TextView tabPenjualan;
+    @BindView(R.id.toolbar_title)
+    TextView toolbar_title;
     @BindView(R.id.btnBarcode)
     ImageView btnBarcode;
     @BindView(R.id.btnAdd)
@@ -108,6 +110,7 @@ public class InputPenjualan extends Fragment {
         ButterKnife.bind(this, rootView);
 
         date = Objects.requireNonNull(getArguments()).getString("date");
+        toolbar_title.setText("Input Penjualan");
 
         try {
             userId = Session.get(Constanta.USER_ID).getValue();
@@ -147,7 +150,7 @@ public class InputPenjualan extends Fragment {
 
     private void getData() {
         Loading.show(getContext());
-        if (getDiscount() && getSalesReport() && getKompetitorData()) {
+        if (getDiscount() /*&& getSalesReport()*/ && getKompetitorData()) {
             Loading.hide(getContext());
         }
     }
