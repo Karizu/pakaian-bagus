@@ -90,7 +90,7 @@ public class BarangMasukFragment extends Fragment {
             });
         }
 
-        LinearLayoutManager linearLayout = new LinearLayoutManager(getActivity(),
+        @SuppressLint("WrongConstant") LinearLayoutManager linearLayout = new LinearLayoutManager(getActivity(),
                 LinearLayout.VERTICAL,
                 false);
         recyclerView.setLayoutManager(linearLayout);
@@ -159,13 +159,8 @@ public class BarangMasukFragment extends Fragment {
         });
     }
 
-    public void loadNextDataFromApi(int offset) {
+    private void loadNextDataFromApi(int offset) {
         swipeRefresh.setRefreshing(true);
-        // Send an API request to retrieve appropriate paginated data
-        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
-        //  --> Deserialize and construct new model objects from the API response
-        //  --> Append the new data objects to the existing set of items inside the array of items
-        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         try {
             BarangHelper.getListBarangMasuk(id, limit, limit*offset, new RestCallback<ApiResponse<List<PenerimaanBarangResponse>>>() {
                 @Override

@@ -23,10 +23,10 @@ public class Profile {
     private Object birthDate;
     @SerializedName("entry_date")
     @Expose
-    private Object entryDate;
+    private String entryDate;
     @SerializedName("phone")
     @Expose
-    private Object phone;
+    private String phone;
     @SerializedName("image")
     @Expose
     private String image;
@@ -95,11 +95,11 @@ public class Profile {
         this.birthDate = birthDate;
     }
 
-    public Object getEntryDate() {
+    public String getEntryDate() {
         return entryDate;
     }
 
-    public void setEntryDate(Object entryDate) {
+    public void setEntryDate(String entryDate) {
         this.entryDate = entryDate;
     }
 
@@ -107,7 +107,7 @@ public class Profile {
         return phone;
     }
 
-    public void setPhone(Object phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

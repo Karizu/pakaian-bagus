@@ -86,6 +86,7 @@
                         android:weightSum="2">
 
                         <TextView
+                            android:id="@+id/tvTitleHeader"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -120,7 +121,8 @@
                         android:text="Tidak ada data"
                         android:visibility="gone"
                         android:gravity="center"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

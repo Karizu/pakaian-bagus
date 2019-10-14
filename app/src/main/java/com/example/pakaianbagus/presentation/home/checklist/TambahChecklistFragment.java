@@ -74,6 +74,7 @@ public class TambahChecklistFragment extends Fragment implements IOnBackPressed 
         return rootView;
     }
 
+    @SuppressLint("WrongConstant")
     @OnClick(R.id.btnAddChecklist)
     public void tambahChecklist2() {
         showDialog();

@@ -48,7 +48,7 @@ public class MutasiSpgAdapter extends RecyclerView.Adapter<MutasiSpgAdapter.View
         Mutation mutation = mutationList.get(i);
         holder.tvAticleBM.setText(mutation.getReceiptNo());
         holder.tvQtyBM.setText(String.valueOf(mutation.getTotalQty()));
-        if (mutation.getStatus() == Constanta.MUTASI_VERIFIED) {
+        if (mutation.getStatus() == Constanta.MUTASI_VERIFIED_BY_SPG) {
             holder.checkBoxBM.setImageResource(R.drawable.checked);
         } else {
             holder.checkBoxBM.setImageResource(R.drawable.unchecked);

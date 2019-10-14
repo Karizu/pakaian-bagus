@@ -30,6 +30,8 @@ public class Loading {
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             dialog.show();
             dialog.getWindow().setAttributes(lp);
+
+
         }
     }
     public static void hide(final Context context){

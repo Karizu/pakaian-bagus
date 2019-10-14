@@ -1,41 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView android:layout_width="match_parent"
-    android:id="@+id/cvSpg"
-    android:layout_height="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="12dp"
+    android:id="@+id/cvSpg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
+    android:layout_marginTop="12dp"
     android:layout_marginEnd="4dp"
     android:layout_marginBottom="4dp"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
-        android:background="@drawable/custom_ripple"
-        android:padding="16dp"
         android:layout_weight="2"
-        android:orientation="horizontal">
+        android:background="@drawable/custom_ripple"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/imgStatusCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:background="@drawable/background_circle_green"
+                tools:ignore="ContentDescription" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:layout_marginStart="4dp"
             android:layout_weight="1"
+            android:text="@string/spg_name"
             android:textSize="13sp"
-            android:text="@string/spg_name"/>
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/tvNamaToko"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:textSize="11sp"
-            tools:ignore="SmallSp" />
+            android:layout_marginEnd="8dp"
+            android:text="Toko Adiguna"
+            tools:ignore="HardcodedText,SmallSp" />
+
+
 
     </LinearLayout>
 

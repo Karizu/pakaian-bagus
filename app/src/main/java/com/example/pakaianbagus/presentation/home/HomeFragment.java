@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 
+import com.example.pakaianbagus.presentation.home.piutang.PiutangListTokoFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -115,6 +116,8 @@ public class HomeFragment extends Fragment {
     TextView tvDateChecklist;
     @BindView(R.id.imgCheck)
     ImageView imgCheck;
+    @BindView(R.id.toolbarPhoto)
+    ImageView toolbarPhoto;
     @BindView(R.id.tvCheck)
     TextView tvCheck;
     @BindView(R.id.tvNoData)
@@ -578,6 +581,8 @@ public class HomeFragment extends Fragment {
         cardViewPenjualan.setVisibility(View.VISIBLE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
         tvTitlePenjualan.setVisibility(View.VISIBLE);
+
+        toolbarPhoto.setVisibility(View.VISIBLE);
     }
 
     private void hideItemForKoordinatorScreen() {
@@ -596,6 +601,8 @@ public class HomeFragment extends Fragment {
         cardViewPenjualan.setVisibility(View.GONE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
         tvTitlePenjualan.setVisibility(View.GONE);
+
+        toolbarPhoto.setVisibility(View.VISIBLE);
     }
 
     private void hideItemForManagerScreen() {
@@ -614,6 +621,8 @@ public class HomeFragment extends Fragment {
         cardViewPenjualan.setVisibility(View.GONE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
         tvTitlePenjualan.setVisibility(View.GONE);
+
+        toolbarPhoto.setVisibility(View.VISIBLE);
     }
 
     private void hideItemForSales() {
@@ -623,22 +632,29 @@ public class HomeFragment extends Fragment {
         button.setVisibility(View.VISIBLE);
 
         LinearLayout layoutHead = rootView.findViewById(R.id.layoutHeaderIcon01);
-        layoutHead.setWeightSum(3f);
-        CardView cardViewPiutang = rootView.findViewById(R.id.btnPiutang);
-        cardViewPiutang.setVisibility(View.VISIBLE);
-        TextView tvTitlePiutang = rootView.findViewById(R.id.tvPiutang);
-        tvTitlePiutang.setVisibility(View.VISIBLE);
+        layoutHead.setWeightSum(2f);
 
         LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
         layout1.setWeightSum(2f);
         LinearLayout layoutTitle1 = rootView.findViewById(R.id.layoutHeaderTitle02);
         layoutTitle1.setWeightSum(2f);
         LinearLayout layoutTitle2 = rootView.findViewById(R.id.layoutHeaderTitle01);
-        layoutTitle2.setWeightSum(3f);
+        layoutTitle2.setWeightSum(2f);
+
         CardView cardViewPenjualan = rootView.findViewById(R.id.btnPenjualan);
         cardViewPenjualan.setVisibility(View.GONE);
+        CardView cardViewStock = rootView.findViewById(R.id.btnStock);
+        cardViewStock.setVisibility(View.GONE);
         TextView tvTitlePenjualan = rootView.findViewById(R.id.tvPenjualan);
         tvTitlePenjualan.setVisibility(View.GONE);
+        TextView tvStock = rootView.findViewById(R.id.tvStock);
+        tvStock.setVisibility(View.GONE);
+        CardView cardViewPiutang = rootView.findViewById(R.id.btnPiutang);
+        cardViewPiutang.setVisibility(View.VISIBLE);
+        TextView tvTitlePiutang = rootView.findViewById(R.id.tvPiutang);
+        tvTitlePiutang.setVisibility(View.VISIBLE);
+
+        toolbarPhoto.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.btnStock)
@@ -670,7 +686,17 @@ public class HomeFragment extends Fragment {
         }
         fragment.setArguments(args);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, fragment);
+        ft.replace(R.id.baseLayout, fragment).addToBackStack("fragment");
+        ft.commit();
+    }
+
+    @OnClick(R.id.btnPiutang)
+    void onClickBtnPiutang(){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        PiutangListTokoFragment piutangListTokoFragment = new PiutangListTokoFragment();
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.replace(R.id.baseLayout, piutangListTokoFragment).addToBackStack("piutangListTokoFragment");
         ft.commit();
     }
 
@@ -689,7 +715,7 @@ public class HomeFragment extends Fragment {
                     InputPenjualan inputPenjualan = new InputPenjualan();
                     inputPenjualan.setArguments(bundle);
                     ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-                    ft.replace(R.id.baseLayout, inputPenjualan);
+                    ft.replace(R.id.baseLayout, inputPenjualan).addToBackStack("inputPenjualan");
                     ft.commit();
 
                     //Toast.makeText(getContext(), "Tanggal dipilih : " + dateFormatter.format(newDate.getTime()), Toast.LENGTH_SHORT).show();
@@ -767,13 +793,14 @@ public class HomeFragment extends Fragment {
         PendingIntent mPendingIntent = PendingIntent.getActivity(getActivity(), mPendingIntentId, mStartActivity,
                 PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        Objects.requireNonNull(mgr).set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -800,11 +827,9 @@ public class HomeFragment extends Fragment {
                 2f
         );
         startDate.setLayoutParams(param);
-        startDate.setOnClickListener(v -> {
-            new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+        startDate.setOnClickListener(v -> new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
         startDate.setText(sdf.format(myCalendar.getTime()));
 
@@ -835,7 +860,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnCheck)
-    public void onClickBtnCheck() {
+    void onClickBtnCheck() {
         selectImage();
     }
 
@@ -1005,31 +1030,32 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnSPG)
-    public void onClickBtnSPG() {
+    void onClickBtnSPG() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListBrandFragment spgListBrandFragment = new SpgListBrandFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, spgListBrandFragment);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListBrandFragment");
+        ft.replace(R.id.baseLayout, spgListBrandFragment).addToBackStack("spgListBrandFragment");
         ft.commit();
     }
 
     @OnClick(R.id.btnKunjungan)
-    public void onClickBtnKunjungan() {
+    void onClickBtnKunjungan() {
 
-        if (Flag == 4 || roleId.equals("4")) {
+        if (roleId.equals(SessionManagement.ROLE_MANAGER)) {
             showDialog(R.layout.dialog_pilih_kunjungan);
+
             Button btnKunjunganKoordinator = dialog.findViewById(R.id.btnKunjunganKoordinator);
             btnKunjunganKoordinator.setOnClickListener(v -> {
                 dialog.dismiss();
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-                KunjunganKoordinatorFragment kunjunganFragment = new KunjunganKoordinatorFragment();
+                KunjunganFragment kunjunganFragment = new KunjunganFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("kunjunganKoordinator", "KUNJUNGAN KOORDINATOR");
                 kunjunganFragment.setArguments(bundle);
                 ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-                ft.replace(R.id.baseLayout, kunjunganFragment);
+                ft.replace(R.id.baseLayout, kunjunganFragment).addToBackStack("kunjunganFragment");
                 ft.commit();
             });
 
@@ -1043,15 +1069,18 @@ public class HomeFragment extends Fragment {
                 bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
                 kunjunganFragment.setArguments(bundle);
                 ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-                ft.replace(R.id.baseLayout, kunjunganFragment);
+                ft.replace(R.id.baseLayout, kunjunganFragment).addToBackStack("kunjunganFragment");
                 ft.commit();
             });
         } else {
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
             KunjunganFragment kunjunganFragment = new KunjunganFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
+            kunjunganFragment.setArguments(bundle);
             ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-            ft.replace(R.id.baseLayout, kunjunganFragment);
+            ft.replace(R.id.baseLayout, kunjunganFragment).addToBackStack("kunjunganFragment");
             ft.commit();
         }
     }
@@ -1067,7 +1096,7 @@ public class HomeFragment extends Fragment {
 //    }
 
     @OnClick(R.id.btnTambah)
-    public void btnTambah() {
+    void btnTambah() {
 //        showDialog(R.layout.dialog_tambah_barang);
 //        ImageView imgClose = dialog.findViewById(R.id.imgClose);
 //        imgClose.setOnClickListener(v -> dialog.dismiss());
@@ -1089,7 +1118,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.toolbar_logout)
-    public void onClickToolbar() {
+    void onClickToolbar() {
         if (!roleId.equals(SessionManagement.ROLE_ADMIN)) {
             doLogout();
             return;
@@ -1179,7 +1208,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.toolbar_notif)
-    public void onClickToolbarNotif() {
+    void onClickToolbarNotif() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         NotificationFragment notifFragment = new NotificationFragment();
@@ -1189,7 +1218,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnSubmit)
-    public void onClickSubmit() {
+    void onClickSubmit() {
         if (checklist == null) {
             Toast.makeText(getContext(), "Tidak ada yang harus dikirimkan", Toast.LENGTH_SHORT).show();
         } else {

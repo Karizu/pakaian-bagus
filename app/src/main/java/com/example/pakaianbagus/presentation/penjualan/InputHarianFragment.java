@@ -40,8 +40,10 @@ import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -118,7 +120,7 @@ public class InputHarianFragment extends Fragment {
             brandId = "1";
         }
 
-        tvDate.setText(new DateUtils().formatDateStringToString(date, "yyyy-MM-dd", "yyyy MMMM dd"));
+        getCurrentDateChecklist();
 
         viewScreen(1);
 
@@ -135,6 +137,13 @@ public class InputHarianFragment extends Fragment {
         getData();
 
         return rootView;
+    }
+
+    private void getCurrentDateChecklist() {
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy MMMM dd");
+        String formattedDate = df.format(c);
+        tvDate.setText(formattedDate);
     }
 
     private void getData() {

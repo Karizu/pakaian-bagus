@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.Brand;
 import com.example.pakaianbagus.presentation.home.spg.SpgListBrandFragment;
+import com.example.pakaianbagus.presentation.mutasibarang.ListBrandMutasiBarangFragment;
 
 import java.util.List;
 
@@ -51,7 +52,13 @@ public class SpgBrandAdapter extends RecyclerView.Adapter<SpgBrandAdapter.ViewHo
         holder.textViewAddress.setText(address);
 //        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
 
-        holder.layout.setOnClickListener(view -> ((SpgListBrandFragment) fragment).onClickItem(id));
+        holder.layout.setOnClickListener(view -> {
+            if (fragment instanceof SpgListBrandFragment){
+                ((SpgListBrandFragment) fragment).onClickItem(id);
+            } else if (fragment instanceof ListBrandMutasiBarangFragment){
+                ((ListBrandMutasiBarangFragment)fragment).onClickItem(id);
+            }
+        });
     }
 
     @Override

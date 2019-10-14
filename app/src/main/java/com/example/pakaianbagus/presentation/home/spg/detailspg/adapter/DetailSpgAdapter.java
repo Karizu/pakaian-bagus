@@ -3,6 +3,8 @@ package com.example.pakaianbagus.presentation.home.spg.detailspg.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
+
+import com.example.pakaianbagus.util.Constanta;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,8 +47,8 @@ public class DetailSpgAdapter extends RecyclerView.Adapter<DetailSpgAdapter.View
         final String endTime = detailSpgModel.getEndTime();
 
         holder.textViewName.setText(date);
-        holder.textViewStartTime.setText(startTime);
-        holder.textViewEndTime.setText(endTime);
+        holder.textViewStartTime.setText(startTime.equals(Constanta.BELUM_ABSEN) ? "Belum Absen" : startTime);
+        holder.textViewEndTime.setText(endTime.equals(Constanta.BELUM_ABSEN) ? "Belum Absen" : endTime);
         holder.layoutDetailSpg.setOnClickListener(view -> {
             Snackbar.make(view, date + "\n" +startTime+" - "+endTime, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();

@@ -24,7 +24,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:paddingStart="8dp"
                 tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
                 <ImageView
@@ -121,6 +120,19 @@
                     tools:ignore="Autofill" />
 
                 <TextView
+                    android:id="@+id/tvDateTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/background_input_kunjungan"
+                    android:padding="16dp"
+                    android:text="PILIH WAKTU KUNJUNGAN"
+                    android:drawableEnd="@drawable/ic_keyboard_arrow_down_black_24dp"
+                    android:textSize="13sp"
+                    tools:ignore="HardcodedText,NestedWeights" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -211,6 +223,7 @@
                     android:padding="16dp">
 
                     <ImageView
+                        android:id="@+id/imgPhotoCounter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_add_black_24dp"
@@ -234,7 +247,7 @@
             android:clickable="true"
             android:background="@drawable/background_button"
             android:textColor="@color/White"
-            android:text="LANJUT"
+            android:text="PROSES"
             tools:ignore="HardcodedText"
             android:focusable="true" />
 

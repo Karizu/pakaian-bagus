@@ -1,226 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/baseLayoutDetailSpg"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/baseLayoutDetailSpg"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/LightSteelBlue">
+
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/LightSteelBlue">
+    tools:ignore="UselessParent">
 
-    <RelativeLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/DarkSlateBlue"
+        android:minHeight="?attr/actionBarSize">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/DarkSlateBlue"
-            android:minHeight="?attr/actionBarSize">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/toolbar_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/margin_padding_size_small"
+                android:contentDescription="@string/todo"
+                app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
+                tools:ignore="RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:text="@string/detail_spg"
+                android:textColor="@color/White"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/toolbar_date"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="@string/todo"
+                app:srcCompat="@drawable/ic_date_range_black_24dp"
+                tools:ignore="RtlHardcoded" />
+
+            <ImageView
+                android:id="@+id/toolbar_mutasi"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/todo"
+                app:srcCompat="@drawable/mutasi_spg"
+                tools:ignore="RtlHardcoded" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                tools:ignore="RtlSymmetry,UseCompoundDrawables">
+                android:weightSum="5"
+                android:padding="12dp">
 
-                <ImageView
-                    android:id="@+id/toolbar_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/margin_padding_size_small"
-                    android:contentDescription="@string/todo"
-                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
-                    tools:ignore="RtlHardcoded" />
-
-                <TextView
-                    android:id="@+id/toolbar_title"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:gravity="center_vertical"
-                    android:maxLength="25"
-                    android:maxLines="1"
-                    android:text="@string/detail_spg"
-                    android:textColor="@color/White"
-                    android:textStyle="bold" />
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/toolbar_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="12dp"
-                    android:contentDescription="@string/todo"
-                    app:srcCompat="@drawable/ic_date_range_black_24dp"
-                    tools:ignore="RtlHardcoded" />
+                    <ImageView
+                        android:id="@+id/imgProfil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/todo"
+                        app:srcCompat="@drawable/ic_person_black_24dp"
+                        tools:ignore="RtlHardcoded" />
 
-                <ImageView
-                    android:id="@+id/toolbar_mutasi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="12dp"
-                    android:contentDescription="@string/todo"
-                    app:srcCompat="@drawable/mutasi_spg"
-                    tools:ignore="RtlHardcoded" />
+                    <TextView
+                        android:id="@+id/tvName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Darnadi Santoso"
+                        android:textColor="@color/NormalColorText"
+                        android:textSize="13sp"
+                        tools:ignore="HardcodedText" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Tanggal Masuk"
+                        android:textColor="@color/NormalColorText"
+                        android:textSize="11sp"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/tvDateIn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="TUE, JAN 2018"
+                        android:textColor="@color/NormalColorText"
+                        android:textSize="13sp"
+                        tools:ignore="HardcodedText" />
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:background="@color/DarkSlateBlue" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Toko"
+                        android:textColor="@color/NormalColorText"
+                        android:textSize="11sp"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/tvNamaToko"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Toko Adiguna"
+                        android:textColor="@color/NormalColorText"
+                        android:textSize="13sp"
+                        tools:ignore="HardcodedText" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </androidx.appcompat.widget.Toolbar>
+        </androidx.cardview.widget.CardView>
 
-        <ScrollView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            tools:ignore="UnknownIdInLayout">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="vertical"
-                android:paddingBottom="8dp">
+                android:padding="12dp">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cvSpinner"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="2dp">
+                    android:layout_height="wrap_content" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="5"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/imgProfil"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center"
-                                android:contentDescription="@string/todo"
-                                app:srcCompat="@drawable/ic_person_black_24dp"
-                                tools:ignore="RtlHardcoded" />
-
-                            <TextView
-                                android:id="@+id/tvName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Darnadi Santoso"
-                                android:textColor="@color/NormalColorText"
-                                android:textSize="13sp"
-                                tools:ignore="HardcodedText" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:layout_gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Tanggal Masuk"
-                                android:textColor="@color/NormalColorText"
-                                android:textSize="11sp"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView
-                                android:id="@+id/tvDateIn"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="TUE, JAN 2018"
-                                android:textColor="@color/NormalColorText"
-                                android:textSize="13sp"
-                                tools:ignore="HardcodedText" />
-
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginTop="4dp"
-                                android:layout_marginBottom="4dp"
-                                android:layout_marginStart="32dp"
-                                android:layout_marginEnd="32dp"
-                                android:background="@color/DarkSlateBlue" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Toko"
-                                android:textColor="@color/NormalColorText"
-                                android:textSize="11sp"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView
-                                android:id="@+id/tvNamaToko"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Toko Adiguna"
-                                android:textColor="@color/NormalColorText"
-                                android:textSize="13sp"
-                                tools:ignore="HardcodedText" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
+                <TextView
+                    android:id="@+id/tvNoData"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="4dp"
-                    app:cardCornerRadius="4dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@drawable/background_input_kunjungan"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Tidak ada data"
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
-        </ScrollView>
 
-    </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</RelativeLayout>
 
 </FrameLayout>

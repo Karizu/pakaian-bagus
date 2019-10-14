@@ -1,8 +1,8 @@
 
 package com.example.pakaianbagus.models.user;
 
-import com.example.pakaianbagus.models.Profile;
 import com.example.pakaianbagus.models.Role;
+import com.example.pakaianbagus.models.auth.Profile;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -28,16 +28,16 @@ public class User {
     private String status;
     @SerializedName("email_verified_at")
     @Expose
-    private Object emailVerifiedAt;
+    private String emailVerifiedAt;
     @SerializedName("remember_token")
     @Expose
-    private Object rememberToken;
+    private String rememberToken;
     @SerializedName("created_by")
     @Expose
-    private Object createdBy;
+    private String createdBy;
     @SerializedName("updated_by")
     @Expose
-    private Object updatedBy;
+    private String updatedBy;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -46,10 +46,10 @@ public class User {
     private String updatedAt;
     @SerializedName("deleted_at")
     @Expose
-    private Object deletedAt;
+    private String deletedAt;
     @SerializedName("profile")
     @Expose
-    private com.example.pakaianbagus.models.Profile profile;
+    private com.example.pakaianbagus.models.auth.Profile profile;
     @SerializedName("role")
     @Expose
     private com.example.pakaianbagus.models.Role role;
@@ -102,36 +102,40 @@ public class User {
         this.status = status;
     }
 
-    public Object getEmailVerifiedAt() {
+    public String getEmailVerifiedAt() {
         return emailVerifiedAt;
     }
 
-    public void setEmailVerifiedAt(Object emailVerifiedAt) {
+    public void setEmailVerifiedAt(String emailVerifiedAt) {
         this.emailVerifiedAt = emailVerifiedAt;
     }
 
-    public Object getRememberToken() {
+    public String getRememberToken() {
         return rememberToken;
     }
 
-    public void setRememberToken(Object rememberToken) {
+    public void setRememberToken(String rememberToken) {
         this.rememberToken = rememberToken;
     }
 
-    public Object getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Object createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public Object getUpdatedBy() {
+    public String getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(Object updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public void setDeletedAt(String deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public String getCreatedAt() {
@@ -150,15 +154,11 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public Object getDeletedAt() {
+    public String getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(Object deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
-    public com.example.pakaianbagus.models.Profile getProfile() {
+    public Profile getProfile() {
         return profile;
     }
 

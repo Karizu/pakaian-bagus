@@ -12,6 +12,12 @@ public class KunjunganModel {
         this.datetime = datetime;
     }
 
+    public KunjunganModel(String id, String name, String datetime) {
+        this.id = id;
+        this.name = name;
+        this.datetime = datetime;
+    }
+
     public String getId() {
         return id;
     }

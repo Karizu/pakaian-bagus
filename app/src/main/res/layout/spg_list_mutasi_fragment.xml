@@ -120,7 +120,8 @@
                         android:gravity="center"
                         android:text="Tidak ada data"
                         android:textSize="14sp"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

@@ -8,19 +8,19 @@ public class Group {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private String id;
     @SerializedName("group_id")
     @Expose
-    private Integer groupId;
+    private String groupId;
     @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("created_by")
     @Expose
-    private Object createdBy;
+    private String createdBy;
     @SerializedName("updated_by")
     @Expose
-    private Object updatedBy;
+    private String updatedBy;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -29,21 +29,24 @@ public class Group {
     private String updatedAt;
     @SerializedName("deleted_at")
     @Expose
-    private Object deletedAt;
+    private String deletedAt;
+    @SerializedName("m_place_id")
+    @Expose
+    private String m_place_id;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(Integer groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
@@ -53,22 +56,6 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Object getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(Object createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Object getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(Object updatedBy) {
-        this.updatedBy = updatedBy;
     }
 
     public String getCreatedAt() {
@@ -87,12 +74,35 @@ public class Group {
         this.updatedAt = updatedAt;
     }
 
-    public Object getDeletedAt() {
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(Object deletedAt) {
+    public void setDeletedAt(String deletedAt) {
         this.deletedAt = deletedAt;
     }
 
+    public String getM_place_id() {
+        return m_place_id;
+    }
+
+    public void setM_place_id(String m_place_id) {
+        this.m_place_id = m_place_id;
+    }
 }

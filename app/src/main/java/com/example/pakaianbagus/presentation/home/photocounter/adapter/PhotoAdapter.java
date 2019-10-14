@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +20,23 @@ import com.example.pakaianbagus.models.PlaceWorkModel;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
     private List<PlaceWorkModel> picturesList;
+    private List<Uri> arrayList;
     private Context context;
     public static int sCorner = 15;
     public static int sMargin = 2;
 
     public PhotoAdapter(List<PlaceWorkModel> picturesList, Context context){
         this.picturesList = picturesList;
+        this.context = context;
+    }
+
+    public PhotoAdapter(List<Uri> arrayList, Context context, int i){
+        this.arrayList = arrayList;
         this.context = context;
     }
 

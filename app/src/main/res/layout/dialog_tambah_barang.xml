@@ -45,15 +45,20 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <EditText
-            android:id="@+id/etDialogNamaBarang"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:background="@drawable/background_input"
-            android:hint="@string/nama_barang"/>
+            android:orientation="vertical"
+            android:background="@drawable/background_input_kunjungan">
+
+            <Spinner
+                android:id="@+id/spinnerStock"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etDialogQuantity"

@@ -50,6 +50,7 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
 
     private List<KatalogTokoModel> katalogTokoModels;
     Dialog dialog;
+    String brand_id;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -66,6 +67,12 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
 
         View rootView = inflater.inflate(R.layout.spg_fragment, container, false);
         ButterKnife.bind(this, rootView);
+
+        try {
+            brand_id = Objects.requireNonNull(getArguments()).getString("brand_id");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         katalogTokoModels = new ArrayList<>();
 
@@ -85,6 +92,7 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
     public void getListToko() {
         Loading.show(getActivity());
         KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new Callback<ApiResponse<List<TokoResponse>>>() {
+            @SuppressLint("WrongConstant")
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 Loading.hide(getActivity());
@@ -117,13 +125,14 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
     public void toListSPG(String id) {
         dialog.dismiss();
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("store_id", id);
+        bundle.putString("brand_id", brand_id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListFragment spgListFragment = new SpgListFragment();
         spgListFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListFragment");
         ft.replace(R.id.baseLayoutSpg, spgListFragment);
         ft.commit();
     }
@@ -131,13 +140,14 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
     public void toMutasiSPG(String id) {
         dialog.dismiss();
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("store_id", id);
+        bundle.putString("brand_id", brand_id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListMutasiFragment spgListMutasiFragment = new SpgListMutasiFragment();
         spgListMutasiFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListMutasiFragment");
         ft.replace(R.id.baseLayoutSpg, spgListMutasiFragment);
         ft.commit();
     }

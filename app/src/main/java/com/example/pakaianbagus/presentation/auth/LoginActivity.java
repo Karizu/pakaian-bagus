@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (data != null) {
                             Session.save(new SessionObject(Constanta.AUTH, data.getTokenType() + " " + data.getAccessToken(), true));
                             Session.save(new SessionObject(Constanta.USER_ID, String.valueOf(data.getData().getId())));
-                            Session.save(new SessionObject(Constanta.ROLE_ID, String.valueOf(data.getData().getRoleId())));
+                            Session.save(new SessionObject(Constanta.ROLE_ID, String.valueOf(data.getData().getRole().getName())));
                             Session.save(new SessionObject(Constanta.GROUP_ID, String.valueOf(data.getData().getProfile().getMGroupId())));
                             Session.save(new SessionObject(Constanta.NAME, data.getData().getName()));
                             Session.save(new SessionObject("isLogin", "1"));

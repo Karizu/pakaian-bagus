@@ -6,11 +6,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import com.example.pakaianbagus.presentation.mutasibarang.ListBrandMutasiBarangFragment;
+import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
+import com.example.pakaianbagus.presentation.penjualan.sales.PenjualanListTokoSalesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -48,8 +54,11 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentBarangMasuk = new BarangMasukFragment();
     final Fragment fragmentListTokoBM = new ListTokoBMFragment();
     final Fragment fragmentMutasiSPG = new MutasiBarangSPG();
+    final Fragment fragmentListBrandMutasi = new ListBrandMutasiBarangFragment();
     final Fragment fragmentInputHarian = new InputHarianFragment();
-    final Fragment fragmentPenjualanListToko = new PenjualanBrandFragment();
+    final Fragment fragmentPenjualanListBrand = new PenjualanBrandFragment();
+    final Fragment fragmentPenjualanListToko = new PenjualanListTokoFragment();
+    final Fragment fragmentPenjualanListSalesToko = new PenjualanListTokoSalesFragment();
     final Fragment fragmentMutasiBarang = new MutasiBarangFragment();
     final Fragment katalogFragment = new KatalogBrandFragment();
     final Fragment katalogSpgFragment = new KatalogListBarang();
@@ -83,17 +92,20 @@ public class MainActivity extends AppCompatActivity {
                 if (roleId.equals(SessionManagement.ROLE_MANAGER) ||
                         roleId.equals(SessionManagement.ROLE_KOORDINATOR)) {
                     showDialog();
-                    Log.d("Masuk", "Role id 3 || 4");
                     Button btnBM = dialog.findViewById(R.id.btnBarangMasuk);
                     btnBM.setOnClickListener(v -> {
-                        setFragments(fragmentListTokoBM, "3");
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constanta.FLAG_MUTASI, Constanta.BARANG_MASUK);
+                        setFragments(fragmentListBrandMutasi, "3", bundle);
                         active = fragmentListTokoBM;
                         dialog.dismiss();
                     });
                     Button btnMB = dialog.findViewById(R.id.btnMutasiBarang);
                     btnMB.setOnClickListener(v -> {
-                        setFragments(fragmentMutasiBarang, "3");
-                        active = fragmentMutasiBarang;
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constanta.FLAG_MUTASI, Constanta.MUTASI_BARANG);
+                        setFragments(fragmentListBrandMutasi, "3", bundle);
+                        active = fragmentListTokoBM;
                         dialog.dismiss();
                     });
                 } else if (roleId.equals(SessionManagement.ROLE_SPG)) {
@@ -111,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("date", new DateUtils().getTodayWithFormat("yyyy-MM-dd"));
 
                     setFragments(fragmentInputHarian, "4", bundle);
+                } else if (roleId.equals(SessionManagement.ROLE_SALES)) {
+                    setFragments(fragmentPenjualanListSalesToko, "4");
+                    active = fragmentPenjualanListSalesToko;
                 } else {
                     setFragments(fragmentPenjualanListToko, "4");
                     active = fragmentPenjualanListToko;
@@ -201,14 +216,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        long t = System.currentTimeMillis();
-        if (t - backPressedTime > 2000) {    // 2 secs
-            backPressedTime = t;
-            Toast.makeText(this, "Klik sekali lagi untuk keluar",
-                    Toast.LENGTH_SHORT).show();
-        } else {    // this guy is serious
-            // clean up
-            super.onBackPressed();       // bye
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            long t = System.currentTimeMillis();
+            if (t - backPressedTime > 2000) {    // 2 secs
+                backPressedTime = t;
+                Toast.makeText(this, "Klik sekali lagi untuk keluar",
+                        Toast.LENGTH_SHORT).show();
+            } else {    // this guy is serious
+                // clean up
+                super.onBackPressed();       // bye
+            }
+        } else {
+            getSupportFragmentManager().popBackStack();
         }
     }
 

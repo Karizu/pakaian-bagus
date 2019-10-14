@@ -68,13 +68,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/background_list_inventaris">
+                android:background="@drawable/background_input_kunjungan">
 
                 <Spinner
                     android:id="@+id/spinnerTipeMutasi"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="12dp"
+                    android:textAlignment="center"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/background_input_kunjungan">
+
+                <Spinner
+                    android:id="@+id/spinnerFromPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:textAlignment="center"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/background_input_kunjungan">
+
+                <Spinner
+                    android:id="@+id/spinnerToPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
                     android:textAlignment="center"/>
 
             </LinearLayout>
@@ -84,13 +122,13 @@
                 android:layout_height="12dp"/>
 
             <EditText
-                android:id="@+id/etTujuanMutasi"
+                android:id="@+id/etDeskripsi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textSize="13sp"
                 android:background="@drawable/background_input_kunjungan"
-                android:hint="@string/tujuan_mutasi"/>
+                android:hint="@string/deskripsi"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -155,7 +193,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btnDialogTambah"
+            android:id="@+id/btnTambah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -166,7 +204,7 @@
             android:clickable="true"
             android:background="@drawable/background_button"
             android:textColor="@color/White"
-            android:text="OK"
+            android:text="SUBMIT"
             tools:ignore="HardcodedText"
             android:focusable="true" />
 

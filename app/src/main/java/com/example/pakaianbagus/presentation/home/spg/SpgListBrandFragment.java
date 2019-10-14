@@ -120,7 +120,7 @@ public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
                                 response.getName(),
                                 response.getCode()));
                     }
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+                    @SuppressLint("WrongConstant") LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
                     SpgBrandAdapter adapter = new SpgBrandAdapter(brandList, getContext(), SpgListBrandFragment.this);
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(adapter);
@@ -149,10 +149,10 @@ public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment spgFragment = new SpgListTokoFragment();
-        spgFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, spgFragment);
+        SpgListTokoFragment spgListTokoFragment = new SpgListTokoFragment();
+        spgListTokoFragment.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListTokoFragment");
+        ft.replace(R.id.baseLayout, spgListTokoFragment);
         ft.commit();
     }
 

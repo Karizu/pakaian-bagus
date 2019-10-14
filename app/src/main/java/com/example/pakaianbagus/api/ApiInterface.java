@@ -1,33 +1,48 @@
 package com.example.pakaianbagus.api;
 
+import com.example.pakaianbagus.models.AccountsReceivable;
 import com.example.pakaianbagus.models.AnnouncementDetailResponse;
 import com.example.pakaianbagus.models.AnnouncementResponse;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.models.ChecklistResponse;
+import com.example.pakaianbagus.models.CounterResponse;
 import com.example.pakaianbagus.models.Discount;
+import com.example.pakaianbagus.models.Expend;
 import com.example.pakaianbagus.models.LoginRequest;
 import com.example.pakaianbagus.models.MutationRequest;
 import com.example.pakaianbagus.models.PenerimaanBarangResponse;
 import com.example.pakaianbagus.models.PenjualanResponse;
 import com.example.pakaianbagus.models.SalesReport;
+import com.example.pakaianbagus.models.StandHanger;
 import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.TokoResponse;
+import com.example.pakaianbagus.models.TransactionModel;
 import com.example.pakaianbagus.models.User;
 import com.example.pakaianbagus.models.api.StockCategory;
 import com.example.pakaianbagus.models.api.mutation.Mutation;
+import com.example.pakaianbagus.models.api.mutation.detail.Expedition;
 import com.example.pakaianbagus.models.api.mutation.detail.MutationDetail;
 import com.example.pakaianbagus.models.api.penjualankompetitor.Kompetitor;
 import com.example.pakaianbagus.models.api.salesreport.SalesReportResponse;
 import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
 import com.example.pakaianbagus.models.auth.Auth;
+import com.example.pakaianbagus.models.auth.Group;
+import com.example.pakaianbagus.models.auth.Place;
+import com.example.pakaianbagus.models.detailspg.AttendanceResponse;
+import com.example.pakaianbagus.models.expenditures.Expenditures;
+import com.example.pakaianbagus.models.expenditures.RequestExpenditures;
+import com.example.pakaianbagus.models.mutation.MutationResponse;
 import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
+import com.example.pakaianbagus.models.transaction.Member;
 import com.example.pakaianbagus.models.user.Checklist;
+import com.example.pakaianbagus.models.usermutation.UserMutationResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -35,14 +50,16 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
-    //String BASE_URL = "http://37.72.172.144/pb/pakaianbagus-api/";
+//    String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
+    String BASE_URL = "http://192.168.1.10/pakaian-bagus-api/public/api/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/public/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/";
 
@@ -164,7 +181,7 @@ public interface ApiInterface {
     Call<ApiResponse<MutationDetail>> getDetailMutation(@Path("id") int id);
 
     @POST("mutations")
-    Call<ApiResponse> postDetailMutation(@Body MutationRequest mutationRequest);
+    Call<ApiResponse<MutationResponse>> postDetailMutation(@Body MutationRequest mutationRequest);
 
     @GET("announcements/{id}")
     Call<ApiResponse<AnnouncementDetailResponse>> getDetailAnnouncement(@Path("id") String id);
@@ -174,6 +191,101 @@ public interface ApiInterface {
                                                                       @Query("m_place_id") String id_toko,
                                                                       @Query("type") int type);
 
+    @POST("debtPayments")
+    Call<ApiResponse> postPembayaranPiutang(@Body RequestBody requestBody);
+
+
+    @GET("accountsReceivables")
+    Call<ApiResponse<List<AccountsReceivable>>> getPiutang(@Query("m_member_id") String member_id);
+
+    @GET("members")
+    Call<ApiResponse<List<Member>>> getMember();
+
+    @GET("transactions/{id}")
+    Call<ApiResponse<com.example.pakaianbagus.models.Transaction>> getDetailTransaction(@Path("id") String transaction_id);
+
+    @POST("transactions")
+    Call<ApiResponse> postSalesReportJson(@Body TransactionModel requestBody);
+
+    @POST("counters")
+    Call<ApiResponse<CounterResponse>> postImageFrontView(@Body RequestBody requestBody);
+
+    @Multipart
+    @POST("counterStandHangers")
+    Call<ApiResponse<CounterResponse>> postImageStandHanger(@Part List<MultipartBody.Part> files);
+
+    @POST("counters/{counter_id}")
+    Call<ApiResponse<CounterResponse>> postUpdateImageCounter(@Path("counter_id") String counter_id, @Body RequestBody requestBody);
+
+    @Multipart
+    @POST("counterTwoways")
+    Call<ApiResponse<CounterResponse>> postImageTwoWay(@Part List<MultipartBody.Part> files);
+
+    @Multipart
+    @POST("counterRacks")
+    Call<ApiResponse<CounterResponse>> postImageRack(@Part List<MultipartBody.Part> files);
+
+    @GET("userMutations")
+    Call<ApiResponse<List<UserMutationResponse>>> getUserMutation(@Query("from_group_id") String group_id, @Query("m_brand_id") String brand_id);
+
+    @GET("userMutations/{id}")
+    Call<ApiResponse<UserMutationResponse>> getDetailUserMutation(@Path("id") String id);
+
+    @GET("users")
+    Call<ApiResponse<List<com.example.pakaianbagus.models.user.User>>> getListSpg(@Query("role_id[0]") String role_id, @Query("brand_id") String brand_id, @Query("group_id") String group_id);
+
+    @GET("users/{user_id}")
+    Call<ApiResponse<com.example.pakaianbagus.models.user.User>> getDetailSpg(@Path("user_id") String user_id);
+
+    @GET("groups/{group_id}")
+    Call<ApiResponse<Group>> getDetailPlace(@Path("group_id") String group_id);
+
+    @GET("attendances")
+    Call<ApiResponse<List<AttendanceResponse>>> getAttendance(@Query("user_id") String user_id);
+
+    @GET("places")
+    Call<ApiResponse<List<Place>>> getListPlace(@Query("type") String type);
+
+    @POST("userMutations")
+    Call<ApiResponse<UserMutationResponse>> createUserMutation(@Body RequestBody requestBody);
+
+    @GET("groups")
+    Call<ApiResponse<List<Group>>> getListGroup();
+
+    @GET("expends")
+    Call<ApiResponse<List<Expend>>> getListExpends();
+
+    @Multipart
+    @POST("userExpenditures")
+    Call<ApiResponse<Expenditures>> createExpenditures(@Part List<MultipartBody.Part> files);
+
+    @GET("userExpenditures")
+    Call<ApiResponse<List<Expenditures>>> getListExpenditures(@Query("role_id") String role_id,
+                                                              @Query("group_id") String group_id);
+
+    @GET("userExpenditures")
+    Call<ApiResponse<List<Expenditures>>> getListExpendituresByDate(@Query("date") String date,
+                                                                    @Query("role_id") String role_id,
+                                                              @Query("group_id") String group_id);
+
+    @GET("userExpenditures")
+    Call<ApiResponse<List<Expenditures>>> getListMyExpenditures(@Query("user_id") String user_id);
+
+    @GET("userExpenditures")
+    Call<ApiResponse<List<Expenditures>>> getListMyExpendituresByDate(@Query("date") String date,
+                                                                      @Query("user_id") String user_id);
+
+    @GET("userExpenditures/{id}")
+    Call<ApiResponse<Expenditures>> getDetailKunjungan(@Path("id") String id);
+
+    @POST("mutations/{mutation_id}/verify")
+    Call<ApiResponse<MutationResponse>> verifyMutation(@Path("mutation_id") String mutation_id, @Body RequestBody requestBody);
+
+    @GET("expeditions")
+    Call<ApiResponse<List<Expedition>>> getListExpeditions();
+
+    @GET("stocks")
+    Call<ApiResponse<List<Stock>>> getListStock(@Query("id_store") String id_store);
 
 //    @GET("group")
 //    Call<ApiResponse<List<Treatment>>> getAllInstitution(@Query("type") String type);

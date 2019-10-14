@@ -1,5 +1,6 @@
 package com.example.pakaianbagus.presentation.mutasibarang;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.MutasiHelper;
@@ -17,6 +19,7 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.api.mutation.Mutation;
 import com.example.pakaianbagus.presentation.mutasibarang.adapter.MutasiSpgAdapter;
 import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
@@ -38,6 +41,8 @@ public class MutasiBarangSPG extends Fragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
 
     private List<Mutation> mutationList = new ArrayList<>();
     private MutasiSpgAdapter mutasiSpgAdapter;
@@ -47,6 +52,7 @@ public class MutasiBarangSPG extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,8 +65,10 @@ public class MutasiBarangSPG extends Fragment {
         recyclerView.setAdapter(mutasiSpgAdapter);
 
         try {
-            idBrand = Session.get(Constanta.BRAND).getValue();
-            idToko = Session.get(Constanta.TOKO).getValue();
+            if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)){
+                idBrand = Session.get(Constanta.BRAND).getValue();
+                idToko = Session.get(Constanta.TOKO).getValue();
+            }
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
             idBrand = "1";
@@ -76,14 +84,23 @@ public class MutasiBarangSPG extends Fragment {
         Loading.show(getContext());
         List<Integer> status = new ArrayList<>();
         status.add(3);
-        status.add(4);
         MutasiHelper.getListMutation(status, idBrand, idToko, new RestCallback<ApiResponse<List<Mutation>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Mutation>> body) {
                 Loading.hide(getContext());
-                mutationList.clear();
-                mutationList.addAll(body.getData());
-                mutasiSpgAdapter.notifyDataSetChanged();
+                try {
+                    mutationList.clear();
+                    mutationList.addAll(body.getData());
+                    mutasiSpgAdapter.notifyDataSetChanged();
+                    if (body.getData().size() < 1){
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
@@ -101,12 +118,13 @@ public class MutasiBarangSPG extends Fragment {
     public void onClickItem(Mutation mutation) {
         Bundle bundle = new Bundle();
         bundle.putInt("mutationId", mutation.getId());
+        bundle.putInt("status", mutation.getStatus());
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         Fragment fragment = new MutasiDetail();
         fragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("fragment");
         ft.replace(R.id.baseLayout, fragment);
         ft.commit();
     }

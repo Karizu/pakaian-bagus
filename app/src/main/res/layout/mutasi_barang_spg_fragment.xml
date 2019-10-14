@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -26,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Barang Masuk"
+                android:text="@string/mutasi_barang"
                 android:textAllCaps="true"
                 android:textColor="@color/White"
                 android:textStyle="bold" />
@@ -49,13 +50,24 @@
             android:layout_height="match_parent"
             android:layout_margin="20dp"
             android:elevation="5dp"
-            app:cardCornerRadius="5dp">
+            app:cardCornerRadius="5dp"
+            tools:ignore="UnusedAttribute">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tvNoData"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Tidak ada data"
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
 
         </androidx.cardview.widget.CardView>
 

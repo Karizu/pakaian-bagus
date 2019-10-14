@@ -2,6 +2,7 @@ package com.example.pakaianbagus.presentation.home.spg.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +13,19 @@ import android.widget.TextView;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.KatalogTokoModel;
 import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
+import com.example.pakaianbagus.presentation.mutasibarang.ListTokoMutasiBarangFragment;
 
 import java.util.List;
 
 public class SpgTokoAdapter extends RecyclerView.Adapter<SpgTokoAdapter.ViewHolder> {
     private List<KatalogTokoModel> katalogTokoModels;
     private Context context;
-    private SpgListTokoFragment spgListTokoFragment;
+    private Fragment fragment;
 
-    public SpgTokoAdapter(List<KatalogTokoModel> katalogTokoModels, Context context, SpgListTokoFragment spgListTokoFragment){
+    public SpgTokoAdapter(List<KatalogTokoModel> katalogTokoModels, Context context, Fragment fragment){
         this.katalogTokoModels = katalogTokoModels;
         this.context = context;
-        this.spgListTokoFragment = spgListTokoFragment;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -47,7 +49,11 @@ public class SpgTokoAdapter extends RecyclerView.Adapter<SpgTokoAdapter.ViewHold
 //        Glide.with(context).load(image).apply(RequestOptions.circleCropTransform()).into(holder.imageViewKatalog);
 
         holder.layout.setOnClickListener(view -> {
-            spgListTokoFragment.onClickItem(id);
+            if (fragment instanceof SpgListTokoFragment){
+                ((SpgListTokoFragment)fragment).onClickItem(id);
+            } else if (fragment instanceof ListTokoMutasiBarangFragment){
+                ((ListTokoMutasiBarangFragment)fragment).onClickItem(id);
+            }
         });
     }
 

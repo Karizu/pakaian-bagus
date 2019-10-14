@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.Kunjungan;
+import com.example.pakaianbagus.models.expenditures.Detail;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 
 import java.io.ByteArrayOutputStream;
@@ -34,13 +38,17 @@ import static com.example.pakaianbagus.presentation.home.photocounter.adapter.Ph
 
 public class TambahKunjunganAdapter extends RecyclerView.Adapter<TambahKunjunganAdapter.ViewHolder> {
     private List<Kunjungan> kunjunganModels;
+    private List<Detail> detailList;
     private Context context;
+    private Fragment fragment;
     private Dialog dialog;
     private View v;
 
-    TambahKunjunganAdapter(List<Kunjungan> kunjunganModels, Context context){
+    TambahKunjunganAdapter(List<Kunjungan> kunjunganModels, List<Detail> detailList, Context context, Fragment fragment){
         this.kunjunganModels = kunjunganModels;
+        this.detailList = detailList;
         this.context = context;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -56,6 +64,7 @@ public class TambahKunjunganAdapter extends RecyclerView.Adapter<TambahKunjungan
     @Override
     public void onBindViewHolder(@NonNull TambahKunjunganAdapter.ViewHolder holder, int position){
         final Kunjungan kunjunganModel = kunjunganModels.get(position);
+        final Detail detail = detailList.get(position);
 //        final String id = katalogModel.getId();
         final String name = kunjunganModel.getName();
         final String nominal = kunjunganModel.getNominal();
@@ -82,10 +91,25 @@ public class TambahKunjunganAdapter extends RecyclerView.Adapter<TambahKunjungan
                     case R.id.navigation_ubah:
                         showDialog();
                         ImageView imgClose = dialog.findViewById(R.id.imgClose);
+                        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+                        tvTitle.setText("UBAH NOMINAL");
+                        EditText etNominal = dialog.findViewById(R.id.etQty);
+                        etNominal.setHint("10000");
+                        Button btnUbah = dialog.findViewById(R.id.btnUbah);
+                        btnUbah.setOnClickListener(view -> {
+                            int nom = Integer.parseInt(etNominal.getText().toString());
+                            holder.tvNominal.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(nom));
+                            detail.setAmount(etNominal.getText().toString());
+                            detailList.set(position, detail);
+                            ((TambahKunjunganFragment)fragment).updateData(detailList);
+                            dialog.dismiss();
+                        });
                         imgClose.setOnClickListener(v3 -> dialog.dismiss());
                         break;
                     case R.id.navigation_hapus:
                         kunjunganModels.remove(position);
+                        detailList.remove(position);
+                        ((TambahKunjunganFragment)fragment).updateData(detailList);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, kunjunganModels.size());
                         break;

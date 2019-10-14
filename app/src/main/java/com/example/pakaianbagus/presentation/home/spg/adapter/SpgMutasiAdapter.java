@@ -1,13 +1,16 @@
 package com.example.pakaianbagus.presentation.home.spg.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pakaianbagus.R;
@@ -36,21 +39,34 @@ public class SpgMutasiAdapter extends RecyclerView.Adapter<SpgMutasiAdapter.View
     @Override
     public SpgMutasiAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.content_item_spg, parent, false);
+                .inflate(R.layout.content_item_mutasi_spg, parent, false);
 
         return new SpgMutasiAdapter.ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull SpgMutasiAdapter.ViewHolder holder, int position) {
         final SpgModel spgModel = spgModels.get(position);
-//        final String id = katalogModel.getId();
+        final String id = spgModel.getId();
         final String name = spgModel.getName();
-        final String toko = spgModel.getToko();
+        final String toToko = spgModel.getToToko();
+        final String fromToko = spgModel.getFromToko();
+        final int status = spgModel.getStatus();
 
         holder.textViewName.setText(name);
-        holder.textViewQty.setText(toko);
-        holder.layoutSpg.setOnClickListener(view -> spgListMutasiFragment.onClickLayoutListSPG());
+        holder.textViewDeskripsi.setText(fromToko + " ke "+toToko);
+        switch (status){
+            case 0:
+                holder.imgStatusStripe.setVisibility(View.VISIBLE);
+                holder.imgStatusCheck.setVisibility(View.GONE);
+                break;
+            case 1:
+                holder.imgStatusStripe.setVisibility(View.GONE);
+                holder.imgStatusCheck.setVisibility(View.VISIBLE);
+                break;
+        }
+//        holder.layoutSpg.setOnClickListener(view -> spgListMutasiFragment.onClickLayoutListSPG(id));
     }
 
     @Override
@@ -60,14 +76,18 @@ public class SpgMutasiAdapter extends RecyclerView.Adapter<SpgMutasiAdapter.View
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
-        TextView textViewQty;
+        TextView textViewDeskripsi;
+        ImageView imgStatusCheck;
+        ImageView imgStatusStripe;
         CardView layoutSpg;
 
         ViewHolder(View v) {
             super(v);
 
             textViewName = v.findViewById(R.id.tvName);
-            textViewQty = v.findViewById(R.id.tvNamaToko);
+            textViewDeskripsi = v.findViewById(R.id.tvDeskripsi);
+            imgStatusCheck = v.findViewById(R.id.imgStatusCheck);
+            imgStatusStripe = v.findViewById(R.id.imgStatusStripe);
             layoutSpg = v.findViewById(R.id.cvSpg);
         }
     }

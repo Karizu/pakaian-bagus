@@ -50,6 +50,9 @@ public class MutationRequest {
     @SerializedName("status")
     @Expose
     private int status;
+    @SerializedName("m_brand_id")
+    @Expose
+    private int m_brand_id;
     @SerializedName("details")
     @Expose
     private List<Detail> details = null;
@@ -156,6 +159,15 @@ public class MutationRequest {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+
+    public int getM_brand_id() {
+        return m_brand_id;
+    }
+
+    public void setM_brand_id(int m_brand_id) {
+        this.m_brand_id = m_brand_id;
     }
 
     public List<Detail> getDetails() {

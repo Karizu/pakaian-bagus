@@ -97,6 +97,7 @@ public class ListTokoBMFragment extends Fragment {
     public void getListToko() {
         swipeRefresh.setRefreshing(true);
         KatalogHelper.getListToko(new Constanta().PLACE_TYPE_SHOP, new Callback<ApiResponse<List<TokoResponse>>>() {
+            @SuppressLint("WrongConstant")
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 swipeRefresh.setRefreshing(false);
