@@ -15,6 +15,7 @@ import com.example.pakaianbagus.api.SpgHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.auth.Group;
 import com.example.pakaianbagus.models.auth.Place;
+import com.example.pakaianbagus.models.user.User;
 import com.example.pakaianbagus.presentation.home.spg.SpgListFragment;
 import com.example.pakaianbagus.models.SpgModel;
 import com.example.pakaianbagus.util.dialog.Loading;
@@ -26,12 +27,12 @@ import java.util.List;
 import okhttp3.Headers;
 
 public class SpgAdapter extends RecyclerView.Adapter<SpgAdapter.ViewHolder> {
-    private List<SpgModel> spgModels;
+    private List<User> spgModels;
     private Context context;
     private Dialog dialog;
     private SpgListFragment spgListFragment;
 
-    public SpgAdapter(List<SpgModel> spgModels, Context context, SpgListFragment spgListFragment) {
+    public SpgAdapter(List<User> spgModels, Context context, SpgListFragment spgListFragment) {
         this.spgModels = spgModels;
         this.context = context;
         this.spgListFragment = spgListFragment;
@@ -46,15 +47,16 @@ public class SpgAdapter extends RecyclerView.Adapter<SpgAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull SpgAdapter.ViewHolder holder, int position) {
-        final SpgModel spgModel = spgModels.get(position);
-        final String id = spgModel.getId();
+        final User spgModel = spgModels.get(position);
+        final String id = spgModel.getId()+"";
         final String name = spgModel.getName();
-        final String groupId = spgModel.getToko();
+        final String groupId = spgModel.getProfile().getMGroupId()+"";
+        final String placeId = spgModel.getProfile().getGroup().getMPlaceId()+"";
 
         holder.textViewName.setText(name);
-        getDetailPlace(groupId, holder);
+        getDetailPlace(placeId, holder);
         holder.layoutSpg.setOnClickListener(view ->
-                spgListFragment.onClickLayoutListSPG(id)
+                spgListFragment.onClickLayoutListSPG(id, placeId)
         );
     }
 
@@ -77,14 +79,14 @@ public class SpgAdapter extends RecyclerView.Adapter<SpgAdapter.ViewHolder> {
         }
     }
 
-    private void getDetailPlace(String groupId, SpgAdapter.ViewHolder holder){
+    private void getDetailPlace(String placeId, ViewHolder holder){
         Loading.show(context);
-        SpgHelper.getDetailPlace(groupId, new RestCallback<ApiResponse<Group>>() {
+        SpgHelper.getDetailPlace(placeId, new RestCallback<ApiResponse<Place>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<Group> body) {
+            public void onSuccess(Headers headers, ApiResponse<Place> body) {
                 Loading.hide(context);
                 try {
-                    Group place = body.getData();
+                    Place place = body.getData();
                     holder.tvNamaToko.setText(place.getName());
                 } catch (Exception e){
                     e.printStackTrace();

@@ -28,8 +28,11 @@ import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.kunjungan.adapter.DetailKunjunganAdapter;
 import com.example.pakaianbagus.presentation.home.kunjungan.adapter.KunjunganAdapter;
 import com.example.pakaianbagus.presentation.home.kunjungan.tambahkunjungan.TambahKunjunganFragment;
+import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 import com.example.pakaianbagus.util.dialog.Loading;
+import com.rezkyatinnov.kyandroid.session.Session;
+import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,7 +56,7 @@ public class DetailKunjunganFragment extends Fragment {
 
     private List<KunjunganModel> kunjunganModels;
     private List<Detail> detailList = new ArrayList<>();
-    private String id;
+    private String id, tipeKunjungan;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -82,7 +85,8 @@ public class DetailKunjunganFragment extends Fragment {
 
         try {
             id = Objects.requireNonNull(getArguments()).getString("id");
-        } catch (Exception e){
+            tipeKunjungan = (getArguments() != null ? getArguments().getString(Constanta.KUNJUNGAN_SAYA) : null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -92,7 +96,7 @@ public class DetailKunjunganFragment extends Fragment {
         return rootView;
     }
 
-    private void getDetailKunjungan(){
+    private void getDetailKunjungan() {
         Loading.show(getContext());
         HomeHelper.getDetailKunjungan(id, new Callback<ApiResponse<Expenditures>>() {
             @SuppressLint("WrongConstant")
@@ -113,7 +117,7 @@ public class DetailKunjunganFragment extends Fragment {
                             .apply(RequestOptions.bitmapTransform(
                                     new RoundedCornersTransformation(getContext(), sCorner, sMargin))).into(imgPhotoCounter);
 
-                    for (int i = 0; i < res.size(); i++){
+                    for (int i = 0; i < res.size(); i++) {
                         Detail detail = res.get(i);
                         Detail mDetail = new Detail();
                         mDetail.setDescription(detail.getDescription());
@@ -127,7 +131,7 @@ public class DetailKunjunganFragment extends Fragment {
                     DetailKunjunganAdapter adapter = new DetailKunjunganAdapter(detailList, getActivity());
                     recyclerView.setAdapter(adapter);
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -142,10 +146,13 @@ public class DetailKunjunganFragment extends Fragment {
 
 
     @OnClick(R.id.toolbar_back)
-    public void toolbarBack(){
+    public void toolbarBack() {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constanta.KUNJUNGAN_SAYA, tipeKunjungan);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         KunjunganFragment homeFragment = new KunjunganFragment();
+        homeFragment.setArguments(bundle);
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayout, homeFragment);
         ft.commit();

@@ -24,10 +24,8 @@ import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.Brand;
 import com.example.pakaianbagus.models.BrandResponse;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
-import com.example.pakaianbagus.presentation.home.spg.SpgListTokoFragment;
 import com.example.pakaianbagus.presentation.home.spg.adapter.SpgBrandAdapter;
 import com.example.pakaianbagus.util.Constanta;
-import com.example.pakaianbagus.util.IOnBackPressed;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
@@ -95,12 +93,12 @@ public class ListBrandMutasiBarangFragment extends Fragment {
 
         brandList = new ArrayList<>();
 
-        getListToko();
+        getListBrand();
 
 
         swipeRefresh.setOnRefreshListener(() -> {
             brandList.clear();
-            getListToko();
+            getListBrand();
         });
 
         return rootView;
@@ -113,7 +111,7 @@ public class ListBrandMutasiBarangFragment extends Fragment {
         tvDate.setText(formattedDate);
     }
 
-    public void getListToko() {
+    public void getListBrand() {
         swipeRefresh.setRefreshing(true);
         SpgHelper.getListBrand(new RestCallback<ApiResponse<List<BrandResponse>>>() {
             @Override

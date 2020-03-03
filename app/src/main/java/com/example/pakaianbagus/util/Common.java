@@ -1,12 +1,17 @@
 package com.example.pakaianbagus.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by alfianhpratama on 04/09/2019.
@@ -29,6 +34,19 @@ public class Common {
         cursor.close();
 
         return path;
+    }
+
+    public static String NumberTransaction(){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat s = new SimpleDateFormat("yyMMddHHmmss");
+        String format = s.format(new Date());
+
+        final int min = 10000;
+        final int max = 99999;
+        final int random = new Random().nextInt((max - min) + 1) + min;
+
+        Log.d("NUM RANDOM", random + "");
+
+        return "PB" + format + random;
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {

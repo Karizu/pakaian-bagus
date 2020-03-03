@@ -128,7 +128,8 @@
         android:text="date"
         android:textAllCaps="true"
         android:textColor="@color/DarkSlateBlue"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -151,9 +152,19 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPenjualan"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:padding="10dp"
             android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvNoData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:gravity="center"
+            android:text="Tidak ada data"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
     </androidx.cardview.widget.CardView>
 
@@ -162,9 +173,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/submit"
+        android:visibility="gone"
         android:textColor="@color/White"
         android:background="@drawable/background_button"
-        android:layout_margin="10dp"
-        android:visibility="visible" />
+        android:layout_margin="10dp" />
+
+    <Button
+        android:id="@+id/btnDownlaod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/download"
+        android:textColor="@color/White"
+        android:visibility="gone"
+        android:background="@drawable/background_button"
+        android:layout_margin="10dp" />
 
 </LinearLayout>

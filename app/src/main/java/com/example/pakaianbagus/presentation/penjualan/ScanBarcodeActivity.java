@@ -36,7 +36,7 @@ import okhttp3.Headers;
 public class ScanBarcodeActivity extends AppCompatActivity {
 
     private TextView tvCardText;
-    private String mode;
+    private String mode, store_id, brand_id;
     private Context context;
     private Dialog dialog;
     public static final int KEYCODE_SCAN_LEFT = 229;
@@ -50,6 +50,8 @@ public class ScanBarcodeActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         mode = intent.getExtras().getString("mode");
+        store_id = intent.getExtras().getString("store_id");
+        brand_id = intent.getExtras().getString("brand_id");
 
         tvCardText = findViewById(R.id.tv_code_text);
         startQRScanner();
@@ -91,6 +93,8 @@ public class ScanBarcodeActivity extends AppCompatActivity {
             case "KATALOG":
                 Intent intent = new Intent(ScanBarcodeActivity.this, IntentToFragment.class);
                 intent.putExtra("keyword", scanCode);
+                intent.putExtra("store_id", store_id);
+                intent.putExtra("brand_id", brand_id);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 break;

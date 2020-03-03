@@ -143,7 +143,7 @@ public class TambahChecklistFragment extends Fragment implements IOnBackPressed 
             }
         }
 
-        sessionChecklist.setArraylistChecklist(checklists);
+//        sessionChecklist.setArraylistChecklist(checklists);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         HomeFragment homeFragment = new HomeFragment();

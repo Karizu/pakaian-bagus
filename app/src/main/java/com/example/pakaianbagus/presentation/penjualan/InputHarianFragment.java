@@ -56,6 +56,8 @@ public class InputHarianFragment extends Fragment {
 
     @BindView(R.id.tvDate)
     TextView tvDate;
+    @BindView(R.id.tvNoData)
+    TextView tvNoData;
     @BindView(R.id.tabSalesReport)
     TextView tabSalesReport;
     @BindView(R.id.tabPenjualan)
@@ -74,6 +76,8 @@ public class InputHarianFragment extends Fragment {
     RecyclerView rvPenjualan;
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
+    @BindView(R.id.btnDownlaod)
+    Button btnDownlaod;
 
     private View rootView;
     private String userId;
@@ -110,9 +114,14 @@ public class InputHarianFragment extends Fragment {
             if (isSpg) {
                 placeId = Session.get(Constanta.TOKO).getValue();
                 brandId = Session.get(Constanta.BRAND).getValue();
+                btnSubmit.setVisibility(View.GONE);
+            } else if (roleId.equals(SessionManagement.ROLE_KOORDINATOR) || roleId.equals(SessionManagement.ROLE_MANAGER)){
+                placeId = Objects.requireNonNull(getArguments()).getString("store_id");
+                brandId = Objects.requireNonNull(getArguments()).getString("brand_id");
+                btnDownlaod.setVisibility(View.VISIBLE);
             } else {
-                placeId = Objects.requireNonNull(getArguments()).getString("id_toko");
-                brandId = Objects.requireNonNull(getArguments()).getString("id_brand");
+                placeId = Objects.requireNonNull(getArguments()).getString("store_id");
+                brandId = Objects.requireNonNull(getArguments()).getString("brand_id");
             }
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
@@ -157,6 +166,11 @@ public class InputHarianFragment extends Fragment {
         InputHelper.getPenjualanKompetitor(userId, date, new RestCallback<ApiResponse<List<Kompetitor>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Kompetitor>> body) {
+                if (body.getData().size() > 0){
+                    tvNoData.setVisibility(View.GONE);
+                } else {
+                    tvNoData.setVisibility(View.VISIBLE);
+                }
                 kompetitorList.clear();
                 kompetitorList.addAll(body.getData());
                 kompetitorAdapter.notifyDataSetChanged();
@@ -183,6 +197,7 @@ public class InputHarianFragment extends Fragment {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<SalesReportResponse>> body) {
                 if (body.getData().size() > 0) {
+                    tvNoData.setVisibility(View.GONE);
                     List<SalesReportResponse> responses = body.getData();
                     for (int x = 0; x < responses.size(); x++) {
                         SalesReportResponse reportResponse = body.getData().get(x);
@@ -198,14 +213,18 @@ public class InputHarianFragment extends Fragment {
                             stokToko.setMItemId(reportResponse.getDetails().get(y).getStock().getMItemId());
                             stokToko.setItem(item);
                             stokToko.setArticleCode(reportResponse.getDetails().get(y).getStock().getArticleCode());
-                            stokToko.setPrice(reportResponse.getDetails().get(y).getPrice());
+                            stokToko.setPrice(reportResponse.getDetails().get(y).getStock().getPrice());
+                            stokToko.setTotals(reportResponse.getDetails().get(y).getPrice());
                             stokToko.setQty(reportResponse.getDetails().get(y).getQty());
+                            stokToko.setDiscount(reportResponse.getDetails().get(y).getDiscount());
                             stokToko.setNew(false);
 
                             salesReportList.add(stokToko);
                         }
                     }
                     salesReportAdapter.notifyDataSetChanged();
+                } else {
+                    tvNoData.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -373,7 +392,7 @@ public class InputHarianFragment extends Fragment {
                     newDate.set(year, monthOfYear, dayOfMonth);
                     date = new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd");
                     Loading.show(getContext());
-                    if (getKompetitorData()) {
+                    if (getKompetitorData() && getSalesReport()) {
                         Loading.hide(getContext());
                     }
                 },
@@ -394,8 +413,24 @@ public class InputHarianFragment extends Fragment {
             rvPenjualan.setVisibility(View.GONE);
             tabSalesReport.setTextColor(getResources().getColor(R.color.DarkSlateBlue));
             tabPenjualan.setTextColor(getResources().getColor(R.color.Background));
-            btnSubmit.setVisibility(View.VISIBLE);
+            if (salesReportList.size()>0){
+                tvNoData.setVisibility(View.GONE);
+            } else {
+                tvNoData.setVisibility(View.VISIBLE);
+            }
+            if (isSpg) {
+//                btnSubmit.setVisibility(View.VISIBLE);
+            } else if (roleId.equals(SessionManagement.ROLE_KOORDINATOR) || roleId.equals(SessionManagement.ROLE_MANAGER)){
+                btnSubmit.setVisibility(View.GONE);
+            } else {
+                btnSubmit.setVisibility(View.VISIBLE);
+            }
         } else if (page == 2) {
+            if (kompetitorList.size()>0){
+                tvNoData.setVisibility(View.GONE);
+            } else {
+                tvNoData.setVisibility(View.VISIBLE);
+            }
             rvSales.setVisibility(View.GONE);
             rvPenjualan.setVisibility(View.VISIBLE);
             tabSalesReport.setTextColor(getResources().getColor(R.color.Background));

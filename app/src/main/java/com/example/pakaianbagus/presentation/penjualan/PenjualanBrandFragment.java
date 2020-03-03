@@ -116,7 +116,7 @@ public class PenjualanBrandFragment extends Fragment {
                                 response.getName(),
                                 response.getCode()));
                     }
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
+                    @SuppressLint("WrongConstant") LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayout.VERTICAL, false);
                     PenjualanBrandAdapter adapter = new PenjualanBrandAdapter(brandList, getContext(), PenjualanBrandFragment.this);
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(adapter);
@@ -141,14 +141,14 @@ public class PenjualanBrandFragment extends Fragment {
 
     public void onClickItem(String id) {
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("brand_id", id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        PenjualanListTokoFragment katalogFragment = new PenjualanListTokoFragment();
-        katalogFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.layoutKatalog, katalogFragment);
+        PenjualanListTokoFragment penjualanListTokoFragment = new PenjualanListTokoFragment();
+        penjualanListTokoFragment.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("penjualanListTokoFragment");
+        ft.replace(R.id.layoutKatalog, penjualanListTokoFragment);
         ft.commit();
     }
 

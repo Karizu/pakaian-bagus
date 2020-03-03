@@ -28,6 +28,7 @@ import com.example.pakaianbagus.models.KunjunganModel;
 import com.example.pakaianbagus.presentation.home.kunjungan.tambahkunjungan.TambahKunjunganFragment;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.DateUtils;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
@@ -48,7 +49,7 @@ public class KunjunganFragment extends Fragment {
 
 
     private List<KunjunganModel> kunjunganModels;
-    private String user_id,groupId,roleId;
+    private String user_id,groupId,roleId, roleNumber, tipeKunjungan;
     private String type = null;
 
     @BindView(R.id.recyclerView)
@@ -74,25 +75,37 @@ public class KunjunganFragment extends Fragment {
             user_id = Session.get(Constanta.USER_ID).getValue();
             groupId = Session.get(Constanta.GROUP_ID).getValue();
             roleId = Session.get(Constanta.ROLE_ID).getValue();
+            roleNumber = Session.get(Constanta.ROLE_NUMBER).getValue();
+            tipeKunjungan = (getArguments() != null ? getArguments().getString(Constanta.KUNJUNGAN_SAYA) : null);
+//            roleNumber = "5";
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
         }
 
-        if ((getArguments() != null ? getArguments().getString(Constanta.KUNJUNGAN_SAYA) : null)!= null){
-            tvTitle.setText(getArguments().getString(Constanta.KUNJUNGAN_SAYA));
-            type = Constanta.KUNJUNGAN_SAYA;
+        if (roleId.equals(SessionManagement.ROLE_MANAGER)){
+            if ((getArguments() != null ? getArguments().getString(Constanta.KUNJUNGAN_SAYA) : null)!= null){
+                tvTitle.setText(getArguments().getString(Constanta.KUNJUNGAN_SAYA));
+                type = Constanta.KUNJUNGAN_SAYA;
+                getListMyExpenditures();
+                swipeRefresh.setOnRefreshListener(() -> {
+                    kunjunganModels.clear();
+                    getListMyExpenditures();
+                });
+            } else if ((getArguments() != null ? getArguments().getString(Constanta.KUNJUNGAN_KOORDINATOR) : null)!= null){
+                tvTitle.setText(getArguments().getString(Constanta.KUNJUNGAN_KOORDINATOR));
+                type = Constanta.KUNJUNGAN_KOORDINATOR;
+                getListExpenditures();
+                swipeRefresh.setOnRefreshListener(() -> {
+                    kunjunganModels.clear();
+                    getListExpenditures();
+                });
+            }
+        } else if (roleId.equals(SessionManagement.ROLE_KOORDINATOR)){
+            type = Constanta.KUNJUNGAN_KOORDINATOR;
             getListMyExpenditures();
             swipeRefresh.setOnRefreshListener(() -> {
                 kunjunganModels.clear();
                 getListMyExpenditures();
-            });
-        } else if ((getArguments() != null ? getArguments().getString(Constanta.KUNJUNGAN_KOORDINATOR) : null)!= null){
-            tvTitle.setText(getArguments().getString(Constanta.KUNJUNGAN_KOORDINATOR));
-            type = Constanta.KUNJUNGAN_KOORDINATOR;
-            getListExpenditures();
-            swipeRefresh.setOnRefreshListener(() -> {
-                kunjunganModels.clear();
-                getListExpenditures();
             });
         }
 
@@ -186,7 +199,7 @@ public class KunjunganFragment extends Fragment {
 
     private void getListExpenditures(){
         swipeRefresh.setRefreshing(true);
-        HomeHelper.getListExpenditures(roleId, groupId, new Callback<ApiResponse<List<Expenditures>>>() {
+        HomeHelper.getListExpenditures(roleNumber, groupId, new Callback<ApiResponse<List<Expenditures>>>() {
             @SuppressLint("WrongConstant")
             @Override
             public void onResponse(Call<ApiResponse<List<Expenditures>>> call, Response<ApiResponse<List<Expenditures>>> response) {
@@ -228,7 +241,7 @@ public class KunjunganFragment extends Fragment {
 
     private void getListExpendituresByDate(String date){
         swipeRefresh.setRefreshing(true);
-        HomeHelper.getListExpendituresByDate(date, roleId, groupId, new Callback<ApiResponse<List<Expenditures>>>() {
+        HomeHelper.getListExpendituresByDate(date, roleNumber, groupId, new Callback<ApiResponse<List<Expenditures>>>() {
             @SuppressLint("WrongConstant")
             @Override
             public void onResponse(Call<ApiResponse<List<Expenditures>>> call, Response<ApiResponse<List<Expenditures>>> response) {
@@ -271,6 +284,7 @@ public class KunjunganFragment extends Fragment {
     public void onClickItem(String id){
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
+        bundle.putString(Constanta.KUNJUNGAN_SAYA, tipeKunjungan);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         DetailKunjunganFragment detailKunjunganFragment = new DetailKunjunganFragment();
@@ -291,6 +305,8 @@ public class KunjunganFragment extends Fragment {
                     if (tvTitle.getText().toString().equals("KUNJUNGAN SAYA")) {
                         getListMyExpendituresByDate(new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd"));
                     } else if (tvTitle.getText().toString().equals("KUNJUNGAN KOORDINATOR")) {
+                        getListExpendituresByDate(new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd"));
+                    } else {
                         getListExpendituresByDate(new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd"));
                     }
                 },

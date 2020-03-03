@@ -52,9 +52,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        etUsername.setText("spg_bl");
-        etPassword.setText("1sampai8");
-
         btnLogin.setOnClickListener(v -> {
             Loading.show(LoginActivity.this);
             doLogin();
@@ -124,12 +121,14 @@ public class LoginActivity extends AppCompatActivity {
                             Session.save(new SessionObject(Constanta.AUTH, data.getTokenType() + " " + data.getAccessToken(), true));
                             Session.save(new SessionObject(Constanta.USER_ID, String.valueOf(data.getData().getId())));
                             Session.save(new SessionObject(Constanta.ROLE_ID, String.valueOf(data.getData().getRole().getName())));
+                            Session.save(new SessionObject(Constanta.ROLE_NUMBER, String.valueOf(data.getData().getRole().getId())));
                             Session.save(new SessionObject(Constanta.GROUP_ID, String.valueOf(data.getData().getProfile().getMGroupId())));
                             Session.save(new SessionObject(Constanta.NAME, data.getData().getName()));
                             Session.save(new SessionObject("isLogin", "1"));
-                            if (String.valueOf(data.getData().getRoleId()).equals(SessionManagement.ROLE_SPG)) {
+                            if (data.getData().getRole().getName().equals(SessionManagement.ROLE_SPG)) {
                                 Session.save(new SessionObject(Constanta.TOKO, String.valueOf(data.getData().getProfile().getGroup().getMPlaceId())));
                                 Session.save(new SessionObject(Constanta.BRAND, String.valueOf(data.getData().getProfile().getBrandId())));
+                                Log.d("TAG", data.getData().getProfile().getGroup().getMPlaceId() +" "+ data.getData().getProfile().getBrandId());
                             }
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();

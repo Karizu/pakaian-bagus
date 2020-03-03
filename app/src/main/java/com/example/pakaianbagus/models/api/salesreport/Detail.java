@@ -1,6 +1,7 @@
 
 package com.example.pakaianbagus.models.api.salesreport;
 
+import com.example.pakaianbagus.models.Discount;
 import com.example.pakaianbagus.models.api.mutation.detail.Stock;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -37,9 +38,15 @@ public class Detail {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
+    @SerializedName("m_discount_id")
+    @Expose
+    private String m_discount_id;
     @SerializedName("stock")
     @Expose
     private Stock stock;
+    @SerializedName("discount")
+    @Expose
+    private Discount discount;
 
     public int getId() {
         return id;
@@ -121,11 +128,27 @@ public class Detail {
         this.deletedAt = deletedAt;
     }
 
+    public String getM_discount_id() {
+        return m_discount_id;
+    }
+
+    public void setM_discount_id(String m_discount_id) {
+        this.m_discount_id = m_discount_id;
+    }
+
     public Stock getStock() {
         return stock;
     }
 
     public void setStock(Stock stock) {
         this.stock = stock;
+    }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 }

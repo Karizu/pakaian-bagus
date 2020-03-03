@@ -21,6 +21,8 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.SpgHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.SpgModel;
+import com.example.pakaianbagus.models.auth.Group;
+import com.example.pakaianbagus.models.auth.Place;
 import com.example.pakaianbagus.models.user.User;
 import com.example.pakaianbagus.presentation.home.spg.adapter.SpgAdapter;
 import com.example.pakaianbagus.presentation.home.spg.detailspg.DetailSpgFragment;
@@ -40,9 +42,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Headers;
 
-public class SpgListFragment extends Fragment implements IOnBackPressed {
+public class SpgListFragment extends Fragment {
 
-    private List<SpgModel> spgModels;
+    private List<User> spgModels;
     private String groupId, store_id, brand_id;
 
     @BindView(R.id.recyclerView)
@@ -88,7 +90,7 @@ public class SpgListFragment extends Fragment implements IOnBackPressed {
 
     private void getListSpg(){
         swipeRefresh.setRefreshing(true);
-        SpgHelper.getListSpg(brand_id, groupId, new RestCallback<ApiResponse<List<User>>>() {
+        SpgHelper.getListSpg(brand_id, store_id, new RestCallback<ApiResponse<List<User>>>() {
             @SuppressLint("WrongConstant")
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<User>> body) {
@@ -103,10 +105,9 @@ public class SpgListFragment extends Fragment implements IOnBackPressed {
 
                 for (int i = 0; i < res.size(); i++){
                     User user = res.get(i);
-                    if (user.getRoleId().equals(1)){
-                        spgModels.add(new SpgModel(user.getId()+"",
-                                user.getProfile() != null ? user.getProfile().getFullname() : user.getName(),
-                                user.getProfile() != null ? user.getProfile().getGroup().getId()+"" : "1"));
+                    if (user.getRoleId().equals(Constanta.ROLE_SPG)){
+
+                        spgModels.add(user);
                     }
 
                     SpgAdapter spgAdapter = new SpgAdapter(spgModels, getContext(), SpgListFragment.this);
@@ -130,11 +131,12 @@ public class SpgListFragment extends Fragment implements IOnBackPressed {
         });
     }
 
-    public void onClickLayoutListSPG(String id) {
+    public void onClickLayoutListSPG(String id, String placeId) {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
         bundle.putString("store_id", store_id);
         bundle.putString("brand_id", brand_id);
+        bundle.putString("place_id", placeId);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         DetailSpgFragment detailSpgFragment = new DetailSpgFragment();
@@ -146,23 +148,16 @@ public class SpgListFragment extends Fragment implements IOnBackPressed {
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
+        Bundle bundle = new Bundle();
+        bundle.putString("store_id", store_id);
+        bundle.putString("brand_id", brand_id);
+
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment homeFragment = new SpgListTokoFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, homeFragment);
+        SpgListTokoFragment listTokoFragment = new SpgListTokoFragment();
+        listTokoFragment.setArguments(bundle);
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayoutSpg, listTokoFragment);
         ft.commit();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment homeFragment = new SpgListTokoFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, homeFragment);
-        ft.commit();;
-
-        return false;
     }
 }

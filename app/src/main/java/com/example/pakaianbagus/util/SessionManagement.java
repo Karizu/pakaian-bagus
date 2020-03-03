@@ -29,7 +29,7 @@ public class SessionManagement {
     public static final String KEY_ROLE_ID = "roleId";
     public static final String KEY_BEARER_TOKEN = "token";
     public static final String ROLE_ADMIN = "Admin";
-    public static final String ROLE_MANAGER = "Manager";
+    public static final String ROLE_MANAGER = "Area Manager";
     public static final String ROLE_KOORDINATOR = "Koordinator";
     public static final String ROLE_SPG = "SPG";
     public static final String ROLE_SALES = "Sales";

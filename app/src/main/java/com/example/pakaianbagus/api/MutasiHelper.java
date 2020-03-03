@@ -28,6 +28,12 @@ public class MutasiHelper {
         service.getEndpoint().getListMutation(statusList, id_brand, id_toko).enqueue(callback);
     }
 
+    public static void getListMutationByDate(List<Integer> statusList, String id_brand, String id_toko, String date,
+                                       RestCallback<ApiResponse<List<Mutation>>> callback) {
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().getListMutationByDate(statusList, id_brand, id_toko, date).enqueue(callback);
+    }
+
     public static void getDetailMutation(int id, RestCallback<ApiResponse<MutationDetail>> callback){
         Reztrofit<ApiInterface> service = Api.getService();
         service.getEndpoint().getDetailMutation(id).enqueue(callback);
@@ -41,6 +47,11 @@ public class MutasiHelper {
     public static void verifyMutation(String mutation_id, RequestBody requestBody,RestCallback<ApiResponse<MutationResponse>> callback){
         Reztrofit<ApiInterface> service = Api.getService();
         service.getEndpoint().verifyMutation(mutation_id, requestBody).enqueue(callback);
+    }
+
+    public static void deleteMutation(String mutation_id,RestCallback<ApiResponse<MutationResponse>> callback){
+        Reztrofit<ApiInterface> service = Api.getService();
+        service.getEndpoint().deleteMutation(mutation_id).enqueue(callback);
     }
 
     public static void getUserMutation(String group_id, String brand_id, RestCallback<ApiResponse<List<UserMutationResponse>>> callback) {

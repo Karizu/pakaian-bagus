@@ -13,19 +13,15 @@ import java.util.List;
 
 import static com.example.pakaianbagus.api.ApiHeader.getToken;
 
-/**
- * Created by alfianhpratama on 28/08/2019.
- * Organization: UTeam
- */
 public class SpgHelper {
     public static void getListBrand(RestCallback<ApiResponse<List<BrandResponse>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
         service.getEndpoint().getListBrand().enqueue(callback);
     }
 
-    public static void getListSpg(String brand_id, String group_id, RestCallback<ApiResponse<List<User>>> callback){
+    public static void getListSpg(String brand_id, String place_id, RestCallback<ApiResponse<List<User>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getListSpg("1", brand_id, group_id).enqueue(callback);
+        service.getEndpoint().getListSpg("3", brand_id, place_id).enqueue(callback);
     }
 
     public static void getDetailSpg(String idSpg, RestCallback<ApiResponse<User>> callback){
@@ -33,9 +29,14 @@ public class SpgHelper {
         service.getEndpoint().getDetailSpg(idSpg).enqueue(callback);
     }
 
-    public static void getDetailPlace(String groupId, RestCallback<ApiResponse<Group>> callback){
+    public static void getDetailPlace(String place_id, RestCallback<ApiResponse<Place>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getDetailPlace(groupId).enqueue(callback);
+        service.getEndpoint().getDetailPlace(place_id).enqueue(callback);
+    }
+
+    public static void getDetailPlaceSpg(String place_id, RestCallback<ApiResponse<Place>> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().getDetailPlaceSpg(place_id).enqueue(callback);
     }
 
     public static void getAttendance(String user_id, RestCallback<ApiResponse<List<AttendanceResponse>>> callback){

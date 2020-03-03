@@ -33,9 +33,11 @@ import com.example.pakaianbagus.models.mutation.MutationResponse;
 import com.example.pakaianbagus.presentation.mutasibarang.adapter.MutasiDetailAdapter;
 import com.example.pakaianbagus.presentation.mutasibarang.adapter.MutasiImageAdapter;
 import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
+import com.rezkyatinnov.kyandroid.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,8 @@ import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
+import static com.example.pakaianbagus.util.Constanta.MUTASI_BARANG_SPG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,31 +98,56 @@ public class MutasiDetail extends Fragment {
             mutationId = Objects.requireNonNull(getArguments()).getInt("mutationId");
             status = Objects.requireNonNull(getArguments()).getInt("status");
             flagMutasi = Objects.requireNonNull(getArguments()).getString(Constanta.FLAG_MUTASI);
-            if (status == Constanta.MUTASI_VERIFIED_BY_SPG){
-                btnSubmit.setVisibility(View.VISIBLE);
-                tvStatusDesc.setText(Constanta.WAITING_VERIFY_BY_KOORDINATOR);
-                tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Red));
-            } else {
-                btnSubmit.setVisibility(View.GONE);
-                if (status == Constanta.MUTASI_NOT_VERIFIED){
-                    tvStatusDesc.setText(Constanta.WAITING_VERIFY_BY_SPG);
-                    Log.d("TAG", tvStatusDesc.getText().toString());
+            if (!Objects.equals(flagMutasi, MUTASI_BARANG_SPG)){
+                if (status == Constanta.MUTASI_VERIFIED_BY_SPG){
+                    btnSubmit.setVisibility(View.VISIBLE);
+                    tvStatusDesc.setText(Constanta.WAITING_VERIFY_BY_KOORDINATOR);
                     tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Red));
-                } else if (status == Constanta.MUTASI_VERIFIED_BY_KOORDINATOR){
-                    tvStatusDesc.setText(Constanta.MUTATION_HAS_BEEN_RECEIVED);
-                    Log.d("TAG", tvStatusDesc.getText().toString());
-                    tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Green));
+                } else {
+                    btnSubmit.setVisibility(View.GONE);
+                    if (status == Constanta.MUTASI_NOT_VERIFIED){
+                        tvStatusDesc.setText(Constanta.WAITING_VERIFY_BY_SPG);
+                        tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Red));
+                    } else if (status == Constanta.MUTASI_VERIFIED_BY_KOORDINATOR){
+                        tvStatusDesc.setText(Constanta.MUTATION_HAS_BEEN_RECEIVED);
+                        tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Green));
+                    }
+                }
+            } else {
+                if (status == Constanta.MUTASI_VERIFIED_BY_SPG){
+                    btnSubmit.setVisibility(View.GONE);
+                    tvStatusDesc.setText(Constanta.WAITING_VERIFY_BY_KOORDINATOR);
+                    tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Red));
+                } else {
+                    if (status == Constanta.MUTASI_NOT_VERIFIED){
+                        btnSubmit.setVisibility(View.VISIBLE);
+                        tvStatusDesc.setText(Constanta.WAITING_VERIFY_BY_SPG);
+                        tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Red));
+                    } else if (status == Constanta.MUTASI_VERIFIED_BY_KOORDINATOR){
+                        btnSubmit.setVisibility(View.GONE);
+                        tvStatusDesc.setText(Constanta.MUTATION_HAS_BEEN_RECEIVED);
+                        tvStatusDesc.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.Green));
+                    }
                 }
             }
+
         } catch (Exception e){
             e.printStackTrace();
         }
 
         try {
-            flag = Objects.requireNonNull(getArguments()).getString("flag");
             idToko = Objects.requireNonNull(getArguments()).getString("store_id");
             idBrand = Objects.requireNonNull(getArguments()).getString("brand_id");
-            btnSubmit.setText("Verifikasi");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)) {
+                idBrand = Session.get(Constanta.BRAND).getValue();
+                idToko = Session.get(Constanta.TOKO).getValue();
+                Log.d("ID", idBrand+" "+idToko);
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -189,7 +218,7 @@ public class MutasiDetail extends Fragment {
             RequestBody requestBody;
             Fragment homeFragment;
             Bundle bundle = new Bundle();
-            if (flag != null){
+            if (!flagMutasi.equals(MUTASI_BARANG_SPG)){
                 homeFragment = new MutasiBarangFragment();
                 bundle.putString("store_id", idToko);
                 bundle.putString("brand_id", idBrand);

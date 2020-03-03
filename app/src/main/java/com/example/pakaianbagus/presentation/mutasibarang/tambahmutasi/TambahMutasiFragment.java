@@ -164,7 +164,6 @@ public class TambahMutasiFragment extends Fragment {
             MutasiHelper.postMutasi(mutationRequest, new RestCallback<ApiResponse<MutationResponse>>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse<MutationResponse> body) {
-                    Loading.hide(getContext());
                     try {
                         Log.d("VERIFY", "Masuk post mutasi");
                         MutationResponse mutation = body.getData();
@@ -189,9 +188,28 @@ public class TambahMutasiFragment extends Fragment {
         }
     }
 
-    private void verifyMutationOne(String mutasiId) {
-        Loading.show(getContext());
+    private void deleteMutation(String mutasiId, String msg){
+        MutasiHelper.deleteMutation(mutasiId, new RestCallback<ApiResponse<MutationResponse>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<MutationResponse> body) {
+                Loading.hide(getContext());
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                error.getMessage();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+    }
+
+    private void verifyMutationOne(String mutasiId) {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("status", "1")
@@ -200,7 +218,6 @@ public class TambahMutasiFragment extends Fragment {
         MutasiHelper.verifyMutation(mutasiId, requestBody, new RestCallback<ApiResponse<MutationResponse>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<MutationResponse> body) {
-                Loading.hide(getContext());
                 try {
                     Log.d("VERIFY", "Masuk verify 1");
                     verifyMutationThree(mutasiId);
@@ -212,8 +229,7 @@ public class TambahMutasiFragment extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse error) {
-                Loading.hide(getContext());
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                deleteMutation(mutasiId, error.getMessage());
             }
 
             @Override
@@ -224,8 +240,6 @@ public class TambahMutasiFragment extends Fragment {
     }
 
     private void verifyMutationThree(String mutasiId) {
-        Loading.show(getContext());
-
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("status", "3")
@@ -242,9 +256,11 @@ public class TambahMutasiFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("store_id", store_id);
                     bundle.putString("brand_id", brand_id);
+                    bundle.putString(Constanta.FLAG_MUTASI, flagMutasi);
                     FragmentManager fm = getFragmentManager();
                     FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
                     Fragment fragment = new MutasiBarangFragment();
+                    fragment.setArguments(bundle);
                     ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
                     ft.replace(R.id.baseLayoutMutasi, fragment);
                     ft.commit();
@@ -257,8 +273,7 @@ public class TambahMutasiFragment extends Fragment {
 
             @Override
             public void onFailed(ErrorResponse error) {
-                Loading.hide(getContext());
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                deleteMutation(mutasiId, error.getMessage());
             }
 
             @Override

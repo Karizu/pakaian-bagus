@@ -177,11 +177,11 @@ public class PhotoCounterActivity extends AppCompatActivity {
         } else if (toolbar_title.getText().toString().equals(Constanta.RACK)) {
             postImageRack();
         } else if (toolbar_title.getText().toString().equals(Constanta.WAGON_JAUH)) {
-            postUpdateImageCounter("img_wagon", Constanta.WAGON_DEKAT);
+            postImageRack();
         } else if (toolbar_title.getText().toString().equals(Constanta.WAGON_DEKAT)) {
-            postUpdateImageCounter("img_wagon_detail", Constanta.MEJA_DISPLAY);
-        } else if (toolbar_title.getText().toString().equals(Constanta.MEJA_DISPLAY)) {
-            postUpdateImageCounter("img_other", Constanta.IMAGE_OTHER);
+            postUpdateImageCounter("img_wagon_detail", Constanta.IMAGE_OTHER);
+        } else if (toolbar_title.getText().toString().equals(Constanta.IMAGE_OTHER)) {
+            postUpdateImageCounter("img_other", "null");
         }
     }
 
@@ -205,6 +205,14 @@ public class PhotoCounterActivity extends AppCompatActivity {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intent, REQEUST_CAMERA);
         }
+    }
+
+    @OnClick(R.id.btnSelesai)
+    void onClickBtnSelesai(){
+        Toast.makeText(context, "Photo counter berhasil dikirim", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(PhotoCounterActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override
@@ -387,11 +395,19 @@ public class PhotoCounterActivity extends AppCompatActivity {
                 public void onResponse(Call<ApiResponse<CounterResponse>> call, Response<ApiResponse<CounterResponse>> response) {
                     Loading.hide(context);
                     try {
-                        Toast.makeText(context, "Sukses mengirim foto", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, PhotoCounterActivity.class);
-                        intent.putExtra(Constanta.FLAG_COUNTER, Constanta.WAGON_JAUH);
-                        intent.putExtra("counterId", counterId);
-                        startActivity(intent);
+                        if (toolbar_title.getText().toString().equals(Constanta.WAGON_JAUH)){
+                            Toast.makeText(context, "Sukses mengirim foto", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(context, PhotoCounterActivity.class);
+                            intent.putExtra(Constanta.FLAG_COUNTER, Constanta.WAGON_DEKAT);
+                            intent.putExtra("counterId", counterId);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "Sukses mengirim foto", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(context, PhotoCounterActivity.class);
+                            intent.putExtra(Constanta.FLAG_COUNTER, Constanta.WAGON_JAUH);
+                            intent.putExtra("counterId", counterId);
+                            startActivity(intent);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
 //                    Toast.makeText(context, "Gagal mengirim foto", Toast.LENGTH_SHORT).show();

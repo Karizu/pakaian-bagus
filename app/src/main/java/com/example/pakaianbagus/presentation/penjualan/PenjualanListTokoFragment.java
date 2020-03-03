@@ -40,10 +40,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PenjualanListTokoFragment extends Fragment implements IOnBackPressed {
+public class PenjualanListTokoFragment extends Fragment {
 
 
     private List<KatalogTokoModel> katalogTokoModels;
+    private String brandId;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -71,6 +72,13 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
 
         toolbar_title.setText("PENJUALAN");
         imgBack.setVisibility(View.GONE);
+
+        try {
+            brandId = Objects.requireNonNull(getArguments()).getString("brand_id");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         katalogTokoModels = new ArrayList<>();
 
         getCurrentDateChecklist();
@@ -130,7 +138,8 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
 
     public void onClickItem(String id) {
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("store_id", id);
+        bundle.putString("brand_id", brandId);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
@@ -139,17 +148,5 @@ public class PenjualanListTokoFragment extends Fragment implements IOnBackPresse
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.baseLayoutSpg, inputHarianFragment);
         ft.commit();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();
-
-        return false;
     }
 }

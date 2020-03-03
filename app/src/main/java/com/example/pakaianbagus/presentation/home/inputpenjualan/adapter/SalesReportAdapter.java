@@ -70,7 +70,7 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         holder.tvNamaBarang.setText(stockList.get(position).getItem().getName());
         holder.tvHarga.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(stockList.get(position).getPrice()));
         holder.tvQty.setText(String.valueOf(stockList.get(position).getQty()));
-        holder.total = stockList.get(position).getPrice() * stockList.get(position).getQty();
+        holder.total = stockList.get(position).getTotals() * stockList.get(position).getQty();
 
         Glide.with(context)
                 .applyDefaultRequestOptions(
@@ -83,7 +83,14 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
         final InputSpinnerAdapter adapter = new InputSpinnerAdapter(context, android.R.layout.simple_spinner_item, discounts);
         holder.spDiskon.setAdapter(adapter);
 
-        holder.tvDiskon.setText(discounts.get(0).getValue());
+        try {
+            holder.tvDiskon.setText(stockList.get(position).getDiscount().getValue().length() < 4 ?
+                    stockList.get(position).getDiscount().getValue()+"%":
+                    "Rp. " + NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(stockList.get(position).getDiscount().getValue())));
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         if (fragment instanceof InputPenjualan) {
             holder.spDiskon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -91,7 +98,12 @@ public class SalesReportAdapter extends RecyclerView.Adapter<SalesReportAdapter.
                 public void onItemSelected(AdapterView<?> parent, View view, int index, long id) {
                     if (index > 0) {
                         if (discounts.get(index).getType().equals("2")) {
-                            holder.total = Integer.parseInt(discounts.get(index).getValue()) * stockList.get(position).getQty();
+                            if (Integer.parseInt(discounts.get(index).getValue()) >= stockList.get(position).getPrice()){
+                                Toast.makeText(context, "Promo tidak bisa digunakan \n promo sama atau lebih dari harga", Toast.LENGTH_SHORT).show();
+                            } else {
+                                int dis =(stockList.get(position).getPrice() - Integer.parseInt(discounts.get(index).getValue()));
+                                holder.total = dis * stockList.get(position).getQty();
+                            }
                         } else {
                             int dis = (stockList.get(position).getPrice() * Integer.parseInt(discounts.get(index).getValue()) / 100);
                             holder.total = (stockList.get(position).getPrice() - dis) * stockList.get(position).getQty();

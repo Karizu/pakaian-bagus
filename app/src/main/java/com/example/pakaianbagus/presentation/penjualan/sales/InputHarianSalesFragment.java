@@ -100,7 +100,7 @@ public class InputHarianSalesFragment extends Fragment {
     Dialog dialog;
     Calendar myCalendar;
     String limitHutang, totalHutang;
-    String id, userId;
+    String id, userId, placeId, brandId;
     String NoTrx;
 
     final int REQUEST_CODE = 564;
@@ -128,6 +128,8 @@ public class InputHarianSalesFragment extends Fragment {
 
         try {
             userId = Session.get("UserId").getValue();
+            placeId = Session.get(Constanta.TOKO).getValue();
+            brandId = Session.get(Constanta.BRAND).getValue();
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
         }
@@ -460,7 +462,7 @@ public class InputHarianSalesFragment extends Fragment {
 
     private void addListFromBarcode(String resultData) {
         Loading.show(getContext());
-        InputHelper.getDetailStock(resultData, new RestCallback<ApiResponse<List<Stock>>>() {
+        InputHelper.getDetailStock(resultData, placeId, brandId, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 Loading.hide(getContext());

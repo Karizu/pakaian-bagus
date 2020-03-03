@@ -149,7 +149,7 @@
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/background_button"
-            android:text="Submit"
+            android:text="Verifikasi"
             android:textColor="@color/White"
             tools:ignore="HardcodedText" />
 

@@ -145,7 +145,7 @@ public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
 
     public void onClickItem(String id) {
         Bundle bundle = new Bundle();
-        bundle.putString("id_brand", id);
+        bundle.putString("brand_id", id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

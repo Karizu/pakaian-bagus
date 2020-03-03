@@ -5,23 +5,22 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.KatalogHelper;
@@ -49,7 +48,7 @@ public class SearchKatalogFragment extends Fragment {
     private List<KatalogModel> katalogModels;
     boolean isLoading = false;
     private KatalogAdapter katalogAdapter;
-    private String id, keyword;
+    private String store_id, keyword, brand_id, m_categoty_id;
     private int limit = 10;
     private int offset = 0;
     private EndlessRecyclerViewScrollListener scrollListener;
@@ -97,35 +96,48 @@ public class SearchKatalogFragment extends Fragment {
 
         recyclerView.addOnScrollListener(scrollListener);
 
-        id = Objects.requireNonNull(getArguments()).getString("id");
+        store_id = Objects.requireNonNull(getArguments()).getString("store_id");
+        brand_id = Objects.requireNonNull(getArguments()).getString("brand_id");
         keyword = Objects.requireNonNull(getArguments()).getString("keyword");
+        m_categoty_id = Objects.requireNonNull(getArguments()).getString("m_category_id");
 
-        if (id != null){
+        System.out.println(store_id+" "+brand_id+" "+keyword+" "+m_categoty_id+" ");
+
+        if (m_categoty_id != null){
             swipeRefresh.setOnRefreshListener(() -> {
                 katalogModels.clear();
-                getListStokToko(id, keyword);
+                getListStokTokoByCategory(store_id, brand_id, m_categoty_id);
             });
-            getListStokToko(id, keyword);
+            getListStokTokoByCategory(store_id, brand_id, m_categoty_id);
+        } else {
+            if (store_id != null){
+                swipeRefresh.setOnRefreshListener(() -> {
+                    katalogModels.clear();
+                    getListStokToko(store_id, brand_id, keyword);
+                });
+                getListStokToko(store_id, brand_id, keyword);
+            }
         }
 
         return rootView;
     }
 
-    private void getListStokToko(String id, String keyword){
+    private void getListStokTokoByCategory(String store_id, String brand_id, String m_category_id){
         swipeRefresh.setRefreshing(true);
 
-        KatalogHelper.searchKatalog(id, keyword, limit, offset, new RestCallback<ApiResponse<List<Stock>>>() {
+        KatalogHelper.searchKatalogByCategory(store_id, brand_id, m_category_id, limit, offset, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 swipeRefresh.setRefreshing(false);
-                if (body.getData() != null){
-                    List<Stock> stocks = body.getData();
+                try {
+                    if (body.getData() != null){
+                        List<Stock> stocks = body.getData();
 
-                    if (stocks.size() < 1){
-                        tvNoData.setVisibility(View.VISIBLE);
-                    } else {
-                        tvNoData.setVisibility(View.GONE);
-                    }
+                        if (stocks.size() < 1){
+                            tvNoData.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNoData.setVisibility(View.GONE);
+                        }
 
                         for (int i = 0; i < stocks.size(); i++){
                             Stock stock = stocks.get(i);
@@ -136,9 +148,60 @@ public class SearchKatalogFragment extends Fragment {
                                     stock.getPrice()));
                         }
 
-                    katalogAdapter = new KatalogAdapter(katalogModels, getContext());
-                    recyclerView.setAdapter(katalogAdapter);
+                        katalogAdapter = new KatalogAdapter(katalogModels, getContext());
+                        recyclerView.setAdapter(katalogAdapter);
 
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                swipeRefresh.setRefreshing(false);
+
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+    }
+
+    private void getListStokToko(String store_id, String brand_id, String keyword){
+        swipeRefresh.setRefreshing(true);
+
+        KatalogHelper.searchKatalog(store_id, brand_id, keyword, limit, offset, new RestCallback<ApiResponse<List<Stock>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
+                swipeRefresh.setRefreshing(false);
+                try {
+                    if (body.getData() != null){
+                        List<Stock> stocks = body.getData();
+
+                        if (stocks.size() < 1){
+                            tvNoData.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNoData.setVisibility(View.GONE);
+                        }
+
+                        for (int i = 0; i < stocks.size(); i++){
+                            Stock stock = stocks.get(i);
+                            katalogModels.add(new KatalogModel(stock.getArticleCode(),
+                                    stock.getItem().getName(),
+                                    stock.getItem().getImage(),
+                                    stock.getQty(),
+                                    stock.getPrice()));
+                        }
+
+                        katalogAdapter = new KatalogAdapter(katalogModels, getContext());
+                        recyclerView.setAdapter(katalogAdapter);
+
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
@@ -155,10 +218,10 @@ public class SearchKatalogFragment extends Fragment {
         });
     }
 
-    public void loadNextDataFromApi(int offset) {
+    private void loadNextDataFromApi(int offset) {
         swipeRefresh.setRefreshing(true);
         try {
-            KatalogHelper.searchKatalog(id, keyword, limit, limit*offset, new RestCallback<ApiResponse<List<Stock>>>() {
+            KatalogHelper.searchKatalog(store_id, brand_id, keyword, limit, limit*offset, new RestCallback<ApiResponse<List<Stock>>>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                     swipeRefresh.setRefreshing(false);
@@ -202,7 +265,7 @@ public class SearchKatalogFragment extends Fragment {
     @OnClick(R.id.toolbar_back)
     public void toolbarBack(){
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
+        bundle.putString("id", store_id);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
@@ -212,32 +275,6 @@ public class SearchKatalogFragment extends Fragment {
         ft.replace(R.id.layoutKatalog, katalogFragment);
         ft.commit();
     }
-
-    @SuppressLint("SetTextI18n")
-    @OnClick(R.id.toolbar_search)
-    public void toolbarSearch() {
-        showDialog();
-        TextView toolbar = dialog.findViewById(R.id.tvToolbar);
-        toolbar.setText("SEARCH KATALOG");
-        ImageView imgClose = dialog.findViewById(R.id.imgClose);
-        imgClose.setOnClickListener(v -> dialog.dismiss());
-        EditText etKodeNamaBarang = dialog.findViewById(R.id.etKodeNamaBarang);
-        Button btnCari = dialog.findViewById(R.id.btnCari);
-        btnCari.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("id", id);
-            bundle.putString("keyword", etKodeNamaBarang.getText().toString());
-
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-            KatalogFragment katalogFragment = new KatalogFragment();
-            ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-            ft.replace(R.id.layoutKatalog, katalogFragment);
-            ft.commit();
-        });
-    }
-
-
 
     private void showDialog() {
         dialog = new Dialog(Objects.requireNonNull(getActivity()));

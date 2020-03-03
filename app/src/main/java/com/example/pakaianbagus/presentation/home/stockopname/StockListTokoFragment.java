@@ -114,7 +114,7 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
                         recyclerView.setAdapter(stockTokoAdapter);
                     }
                 } catch (Exception e) {
-                    Log.d("Catch", "getListToko");
+                    Log.d("Catch", "getListBrand");
                     e.printStackTrace();
                 }
             }
@@ -136,10 +136,10 @@ public class StockListTokoFragment extends Fragment implements IOnBackPressed {
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        StockOpnameFragment stockOpnameFragment = new StockOpnameFragment();
-        stockOpnameFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, stockOpnameFragment);
+        StockOpnameVerifyFragment stockOpnameVerifyFragment = new StockOpnameVerifyFragment();
+        stockOpnameVerifyFragment.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("stockOpnameVerifyFragment");
+        ft.replace(R.id.baseLayoutSpg, stockOpnameVerifyFragment);
         ft.commit();
     }
 

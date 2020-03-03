@@ -36,6 +36,9 @@ public class Stock {
     @SerializedName("price")
     @Expose
     private int price;
+    @SerializedName("totals")
+    @Expose
+    private int totals;
     @SerializedName("created_by")
     @Expose
     private Object createdBy;
@@ -67,6 +70,15 @@ public class Stock {
     private int total;
 
     private boolean isNew;
+
+
+    public int getTotals() {
+        return totals;
+    }
+
+    public void setTotals(int totals) {
+        this.totals = totals;
+    }
 
     public int getId() {
         return id;

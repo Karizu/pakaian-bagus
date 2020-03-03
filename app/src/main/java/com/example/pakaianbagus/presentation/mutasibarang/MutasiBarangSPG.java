@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,21 +61,22 @@ public class MutasiBarangSPG extends Fragment {
         View view = inflater.inflate(R.layout.mutasi_barang_spg_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        mutasiSpgAdapter = new MutasiSpgAdapter(mutationList, getContext(), MutasiBarangSPG.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayout.VERTICAL, false));
-        recyclerView.setAdapter(mutasiSpgAdapter);
-
         try {
             if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)){
                 idBrand = Session.get(Constanta.BRAND).getValue();
                 idToko = Session.get(Constanta.TOKO).getValue();
+                Log.d("idToko", idToko);
             }
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
             idBrand = "1";
             idToko = "1";
         }
+
+        mutasiSpgAdapter = new MutasiSpgAdapter(mutationList, getContext(), MutasiBarangSPG.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayout.VERTICAL, false));
+        recyclerView.setAdapter(mutasiSpgAdapter);
 
         getData();
 
@@ -119,6 +122,7 @@ public class MutasiBarangSPG extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putInt("mutationId", mutation.getId());
         bundle.putInt("status", mutation.getStatus());
+        bundle.putString(Constanta.FLAG_MUTASI, Constanta.MUTASI_BARANG_SPG);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

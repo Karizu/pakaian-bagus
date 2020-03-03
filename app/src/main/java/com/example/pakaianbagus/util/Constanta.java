@@ -13,6 +13,7 @@ public class Constanta {
     public static final String AUTH  = "Authorization";
     public static final String USER_ID  = "UserId";
     public static final String ROLE_ID  = "RoleId";
+    public static final String ROLE_NUMBER   = "RoleNumber";
     public static final String GROUP_ID  = "mGroupId";
     public static final String NAME  = "Name";
     public static final String ADMIN  = "Admin";
@@ -34,6 +35,11 @@ public class Constanta {
     public static final String FLAG_MUTASI  = "Flag Mutasi";
     public static final String BARANG_MASUK  = "Barang Masuk";
     public static final String MUTASI_BARANG  = "Mutasi Barang";
+    public static final String MUTASI_BARANG_SPG  = "MUTASI BARANG SPG";
+    public static final String SPG  = "1";
+    public static final String SALES  = "2";
+    public static final String TUNAI  = "1";
+    public static final int ROLE_SPG  = 3;
 
     public static final String WAITING_VERIFY_BY_SPG  = "Menunggu Verifikasi oleh SPG";
     public static final String MUTATION_HAS_BEEN_RECEIVED  = "Barang Telah Diterima";

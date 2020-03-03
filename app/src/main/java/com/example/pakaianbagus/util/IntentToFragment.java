@@ -20,9 +20,12 @@ public class IntentToFragment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intent_to_fragment);
         String keyword = null;
+        String store_id = null, brand_id = null;
         try {
             Intent intent = getIntent();
             keyword = intent.getStringExtra("keyword");
+            store_id = intent.getExtras().getString("store_id");
+            brand_id = intent.getExtras().getString("brand_id");
 
         } catch (Exception e){
             e.printStackTrace();
@@ -34,14 +37,15 @@ public class IntentToFragment extends AppCompatActivity {
             } else if (keyword.equals("Penjualan")){
                 goToPenjualan();
             } else {
-                showFragment(keyword);
+                showFragment(keyword, store_id, brand_id);
             }
         }
     }
 
-    private void showFragment(String keyword){
+    private void showFragment(String keyword, String store_id, String brand_id){
         Bundle bundle = new Bundle();
-        bundle.putString("id", "2");
+        bundle.putString("store_id", store_id);
+        bundle.putString("brand_id", brand_id);
         bundle.putString("keyword", keyword);
 
         FragmentManager fm = getSupportFragmentManager();

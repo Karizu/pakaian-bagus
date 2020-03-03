@@ -35,13 +35,15 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.InputHelper;
 import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
-import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.api.StockCategory;
-import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
 import com.example.pakaianbagus.models.stock.Stock;
+import com.example.pakaianbagus.models.stockopname.Details;
+import com.example.pakaianbagus.models.stockopname.StockOpnameModels;
+import com.example.pakaianbagus.models.stockopname.response.StockOpnameResponse;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockOpnameAdapter;
 import com.example.pakaianbagus.presentation.home.stockopname.adapter.StockSpinnerAdapter;
+import com.example.pakaianbagus.presentation.home.stockopname.detail.DetailStockOpnameFragment;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.Scanner;
 import com.example.pakaianbagus.util.SessionManagement;
@@ -51,7 +53,10 @@ import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,16 +80,35 @@ public class StockOpnameFragment extends Fragment {
     @BindView(R.id.btnAdd)
     ImageView btnAdd;
 
+    @OnClick(R.id.btnSubmit)
+    void onClickSubmit(){
+
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String date = df.format(c);
+        StockOpnameModels model = new StockOpnameModels();
+
+        model.setM_place_id(idToko);
+        model.setDate(date);
+        model.setPlace_type("S");
+        model.setM_brand_id(idBrand);
+
+        model.setDetails(detailsList);
+        doPostStock(model);
+
+    }
+
     private Dialog dialog;
     private String roleId;
-    private List<StockCategoryResponse> stockOpnameArticleList = new ArrayList<>();
-    private List<StockCategoryResponse> stockOpnameCategoryList = new ArrayList<>();
+    private List<StockOpnameResponse> stockOpnameArticleList = new ArrayList<>();
+    private List<StockOpnameResponse> stockOpnameCategoryList = new ArrayList<>();
     private List<StockCategory> categoryList = new ArrayList<>();
     private int choose = Constanta.STOK_ARTIKEL;
     private String idBrand, idToko;
     private StockOpnameAdapter artikelAdapter, kategoriAdapter;
     private final int REQUEST_CODE = 564;
     private final int REQUEST_SCANNER = 999;
+    private List<Details> detailsList = new ArrayList<>();
 
     public StockOpnameFragment() {
     }
@@ -103,6 +127,11 @@ public class StockOpnameFragment extends Fragment {
 
         try {
             roleId = Session.get(Constanta.ROLE_ID).getValue();
+            if (roleId.equals(SessionManagement.ROLE_SPG)){
+                idBrand = Session.get(Constanta.BRAND).getValue();
+                idToko = Session.get(Constanta.TOKO).getValue();
+                Log.d("TAG ID", idBrand+" "+idToko);
+            }
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
         }
@@ -126,11 +155,11 @@ public class StockOpnameFragment extends Fragment {
 
         initData();
 
-        artikelAdapter = new StockOpnameAdapter(stockOpnameArticleList, getContext(), StockOpnameFragment.this);
+        artikelAdapter = new StockOpnameAdapter(stockOpnameArticleList, getContext(), StockOpnameFragment.this, false);
         rvArtikel.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         rvArtikel.setAdapter(artikelAdapter);
 
-        kategoriAdapter = new StockOpnameAdapter(stockOpnameCategoryList, getContext(), StockOpnameFragment.this);
+        kategoriAdapter = new StockOpnameAdapter(stockOpnameCategoryList, getContext(), StockOpnameFragment.this, false);
         rvKategori.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         rvKategori.setAdapter(kategoriAdapter);
 
@@ -145,9 +174,9 @@ public class StockOpnameFragment extends Fragment {
     }
 
     private boolean getDataArticle() {
-        StockHelper.getListStockOpname(idBrand, idToko, 1, new RestCallback<ApiResponse<List<StockCategoryResponse>>>() {
+        StockHelper.getListStockOpname(idBrand, idToko, 1, new RestCallback<ApiResponse<List<StockOpnameResponse>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<StockCategoryResponse>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<StockOpnameResponse>> body) {
                 stockOpnameArticleList.clear();
                 stockOpnameArticleList.addAll(body.getData());
                 artikelAdapter.notifyDataSetChanged();
@@ -167,9 +196,9 @@ public class StockOpnameFragment extends Fragment {
     }
 
     private boolean getDataCategory() {
-        StockHelper.getListStockOpname(idBrand, idToko, 2, new RestCallback<ApiResponse<List<StockCategoryResponse>>>() {
+        StockHelper.getListStockOpname(idBrand, idToko, 2, new RestCallback<ApiResponse<List<StockOpnameResponse>>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<List<StockCategoryResponse>> body) {
+            public void onSuccess(Headers headers, ApiResponse<List<StockOpnameResponse>> body) {
                 stockOpnameCategoryList.clear();
                 stockOpnameCategoryList.addAll(body.getData());
                 kategoriAdapter.notifyDataSetChanged();
@@ -249,7 +278,7 @@ public class StockOpnameFragment extends Fragment {
 
     private void addListFromBarcode(String resultData) {
         Loading.show(getContext());
-        InputHelper.getDetailStock(resultData, new RestCallback<ApiResponse<List<Stock>>>() {
+        InputHelper.getDetailStockSPG(resultData, idToko, idBrand, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 Loading.hide(getContext());
@@ -259,18 +288,32 @@ public class StockOpnameFragment extends Fragment {
                     String mBrandId = String.valueOf(stock.getItem().getMBrandId());
                     boolean placeTrue = idToko.equals(mPlaceId);
                     boolean brandTrue = idBrand.equals(mBrandId);
+                    Log.d("TAG IDS", mBrandId+" "+mPlaceId);
                     if (placeTrue && brandTrue) {
-                        StockOpnameModel model = new StockOpnameModel();
-                        model.setType(1);
-                        model.setmPlaceId(idToko);
-                        model.setmItemId(String.valueOf(stock.getItem().getId()));
-                        model.setPlaceType("S");
-                        model.setArticleCode(stock.getArticleCode());
-                        model.setSizeCode(stock.getSizeCode());
-                        model.setQty(stock.getQty() + 1);
+                        Date c = Calendar.getInstance().getTime();
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                        String date = df.format(c);
+                        StockOpnameModels model = new StockOpnameModels();
+
+                        model.setM_place_id(idToko);
+                        model.setDate(date);
+                        model.setPlace_type("S");
+                        model.setM_brand_id(idBrand);
+
+                        Details details = new Details();
+                        details.setType("2");
+                        details.setM_item_id(stock.getItem().getId()+"");
+                        details.setM_category_id(stock.getItem().getMCategoryId()+"");
+                        details.setArticle_code(stock.getArticleCode());
+                        details.setSize_code(stock.getSizeCode());
+                        details.setQty(String.valueOf(stock.getQty()+1));
+
+                        detailsList.add(details);
+                        model.setDetails(detailsList);
 
                         doPostStock(model);
                     } else {
+                        Log.d("TAG", "MASUK SO");
                         Toast.makeText(getContext(), "Tolong scan barcode sesuai dengan toko dan brand anda", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -310,12 +353,18 @@ public class StockOpnameFragment extends Fragment {
             btnAdd.setOnClickListener(v -> {
                 dialog.dismiss();
                 StockCategory response = (StockCategory) spinner.getSelectedItem();
-                StockOpnameModel data = new StockOpnameModel();
-                data.setType(2);
-                data.setmPlaceId(String.valueOf(response.getMPlaceId()));
-                data.setmCategoryId(String.valueOf(response.getMCategoryId()));
-                data.setPlaceType("S");
-                data.setQty(Integer.parseInt(etQuantity.getText().toString()));
+                StockOpnameModels data = new StockOpnameModels();
+
+
+
+                Details details = new Details();
+                details.setType("2");
+//                details.setSize_code(response.ge);
+//                data.setType(2);
+//                data.setmPlaceId(String.valueOf(response.getMPlaceId()));
+//                data.setmCategoryId(String.valueOf(response.getMCategoryId()));
+//                data.setPlaceType("S");
+//                data.setQty(Integer.parseInt(etQuantity.getText().toString()));
 
                 doPostStock(data);
             });
@@ -324,7 +373,7 @@ public class StockOpnameFragment extends Fragment {
         }
     }
 
-    public void doPostStock(StockOpnameModel data) {
+    public void doPostStock(StockOpnameModels data) {
         Loading.show(getContext());
 
         StockHelper.postStockOpname(data, new RestCallback<ApiResponse>() {
@@ -400,6 +449,21 @@ public class StockOpnameFragment extends Fragment {
                 Loading.hide(getContext());
             }
         });
+    }
+
+    public void onClickItem(String id){
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+        bundle.putString("id_brand", idBrand);
+        bundle.putString("id_toko", idToko);
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        DetailStockOpnameFragment detailStockOpnameFragment = new DetailStockOpnameFragment();
+        detailStockOpnameFragment.setArguments(bundle);
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("detailStockOpnameFragment");
+        ft.replace(R.id.mainBaseStockOpname, detailStockOpnameFragment);
+        ft.commit();
     }
 
     @OnClick(R.id.toolbar_search)

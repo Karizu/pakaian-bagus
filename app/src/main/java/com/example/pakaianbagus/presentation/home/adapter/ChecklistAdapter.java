@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,6 +120,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
                     checklistList.get(position).setChecked(false);
                     checklist = checklist.replaceAll(checklistList.get(position).getName() + ", ", "");
                 }
+                Log.d("LIST CHECKLIST", checklist);
                 ((HomeFragment) fragment).setChecklistItem(checklist);
             });
             if (checklistList.get(position).isChecked()) {

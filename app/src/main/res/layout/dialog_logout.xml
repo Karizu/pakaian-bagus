@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="LOGOUT"
+            android:gravity="center"
             android:textColor="@color/Black"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />

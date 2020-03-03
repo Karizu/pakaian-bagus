@@ -141,7 +141,7 @@ public class KatalogFragment extends Fragment {
     public void onClickItem(String id) {
         Bundle bundle = new Bundle();
         bundle.putString("id", id);
-        bundle.putString("id_brand", idBrand);
+        bundle.putString("brand_id", idBrand);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();

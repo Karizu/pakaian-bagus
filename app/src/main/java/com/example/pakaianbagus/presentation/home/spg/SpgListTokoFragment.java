@@ -96,23 +96,27 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Response<ApiResponse<List<TokoResponse>>> response) {
                 Loading.hide(getActivity());
-                if (Objects.requireNonNull(response.body()).getData() != null) {
-                    List<TokoResponse> tokoResponse = response.body().getData();
-                    for (int i = 0; i < tokoResponse.size(); i++) {
-                        TokoResponse dataToko = tokoResponse.get(i);
-                        katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
+                try {
+                    if (Objects.requireNonNull(response.body()).getData() != null) {
+                        List<TokoResponse> tokoResponse = response.body().getData();
+                        for (int i = 0; i < tokoResponse.size(); i++) {
+                            TokoResponse dataToko = tokoResponse.get(i);
+                            katalogTokoModels.add(new KatalogTokoModel(dataToko.getId(), dataToko.getName(), dataToko.getType()));
+                        }
+                        SpgTokoAdapter spgTokoAdapter = new SpgTokoAdapter(katalogTokoModels, getContext(), SpgListTokoFragment.this);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                                LinearLayout.VERTICAL, false));
+                        recyclerView.setAdapter(spgTokoAdapter);
                     }
-                    SpgTokoAdapter spgTokoAdapter = new SpgTokoAdapter(katalogTokoModels, getContext(), SpgListTokoFragment.this);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                            LinearLayout.VERTICAL, false));
-                    recyclerView.setAdapter(spgTokoAdapter);
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<List<TokoResponse>>> call, @NonNull Throwable t) {
                 Loading.hide(getActivity());
-                Log.d("List Toko Katalog", t.getMessage());
+                t.printStackTrace();
 
             }
         });

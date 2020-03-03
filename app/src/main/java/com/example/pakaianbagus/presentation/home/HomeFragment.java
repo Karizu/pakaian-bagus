@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 
 import com.example.pakaianbagus.presentation.home.piutang.PiutangListTokoFragment;
+import com.example.pakaianbagus.util.SessionChecklist;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -80,6 +82,10 @@ import com.rezkyatinnov.kyandroid.session.SessionObject;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -91,6 +97,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -126,6 +133,8 @@ public class HomeFragment extends Fragment {
     SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
+    @BindView(R.id.btnTambah)
+    Button btnTambah;
 
     Dialog dialog;
     List<News> newsPager = new ArrayList<>();
@@ -134,7 +143,7 @@ public class HomeFragment extends Fragment {
     List<RoleChecklist> checklists;
     ChecklistAdapter checklistAdapter;
     SessionManagement sessionManagement;
-    //SessionChecklist sessionChecklist;
+    SessionChecklist sessionChecklist;
     int Flag = 0;
     Calendar myCalendar;
     EditText startDate;
@@ -168,6 +177,7 @@ public class HomeFragment extends Fragment {
 
         checklists = new ArrayList<>();
         sessionManagement = new SessionManagement(Objects.requireNonNull(getActivity()));
+        sessionChecklist = new SessionChecklist(getActivity());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -183,24 +193,24 @@ public class HomeFragment extends Fragment {
                 brandId = Session.get(Constanta.BRAND).getValue();
                 tokoId = Session.get(Constanta.TOKO).getValue();
             }
-            if (roleId.equals(SessionManagement.ROLE_KOORDINATOR)
-                    || roleId.equals(SessionManagement.ROLE_MANAGER)
-                    || roleId.equals(SessionManagement.ROLE_ADMIN)) {
-                Log.d(TAG, "masuk if");
-                hideItemForManagerScreen();
-            } else if (roleId.equals(SessionManagement.ROLE_SALES)) {
-                hideItemForSales();
-            } else {
-                hideItemForSPGScreen();
-            }
         } catch (SessionNotFoundException e) {
             e.printStackTrace();
             groupId = "4";
             scheduleId = "1";
             userId = "1";
-            roleId = "1";
+            roleId = SessionManagement.ROLE_SPG;
             brandId = "1";
             tokoId = "1";
+        }
+
+        if (roleId.equals(SessionManagement.ROLE_KOORDINATOR)
+                || roleId.equals(SessionManagement.ROLE_MANAGER)
+                || roleId.equals(SessionManagement.ROLE_ADMIN)) {
+            hideItemForManagerScreen();
+        } else if (roleId.equals(SessionManagement.ROLE_SALES)) {
+            hideItemForSales();
+        } else {
+            hideItemForSPGScreen();
         }
 
         swipeRefresh.setOnRefreshListener(() -> {
@@ -211,6 +221,7 @@ public class HomeFragment extends Fragment {
             if (checklists != null) {
                 checklists.clear();
             }
+            checklistssss.clear();
             getListChecklist();
         });
 
@@ -260,10 +271,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void getData() {
+        checklistssss.clear();
+        newsPager.clear();
         setTextCheckInOut();
         getCurrentDateChecklist();
         getAnnouncement();
         getListChecklist();
+
     }
 
     private void getCurrentDateChecklist() {
@@ -310,6 +324,30 @@ public class HomeFragment extends Fragment {
 ////        });
 //    }
 
+    @OnClick(R.id.btnTambah)
+    void tambahChecklist() {
+        showDialog(R.layout.dialog_tambah_checklist);
+        EditText etChecklist = dialog.findViewById(R.id.etDialogChecklist);
+        ImageView btnClose = dialog.findViewById(R.id.imgClose);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        Button btnTambah = dialog.findViewById(R.id.btnDialogTambah);
+        btnTambah.setOnClickListener(v -> {
+            if (etChecklist.getText().length() < 1) {
+                etChecklist.setError("Field ini harus diisi");
+            } else {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd");
+                Checklist checklist = new Checklist();
+                checklist.setName(etChecklist.getText().toString());
+                checklist.setId(UUID.randomUUID().toString());
+                checklistssss.add(checklist);
+                sessionChecklist.setArraylistChecklist(checklistssss);
+                getListChecklist();
+
+                dialog.dismiss();
+            }
+        });
+    }
+
     private void getListChecklist() {
         swipeRefresh.setRefreshing(true);
         HomeHelper.getListChecklist(getContext(), new Callback<ApiResponse<List<ChecklistResponse>>>() {
@@ -326,7 +364,30 @@ public class HomeFragment extends Fragment {
                             tvNoData.setVisibility(View.VISIBLE);
                         } else {
                             tvNoData.setVisibility(View.GONE);
+                        }
 
+                        if (sessionChecklist.getArrayListChecklist() != null) {
+                            Log.d("ArrayList IF", sessionChecklist.getArrayListChecklist());
+                            checklistssss.clear();
+
+                            try {
+                                JSONArray jsonArray = new JSONArray(sessionChecklist.getArrayListChecklist());
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                                    Checklist checklist = new Checklist();
+                                    checklist.setId(jsonObject.getString("id"));
+                                    checklist.setName(jsonObject.getString("name"));
+
+                                    checklistssss.add(checklist);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            getUserChecklist(checklistssss);
+
+                        } else {
                             for (int i = 0; i < res.size(); i++) {
                                 ChecklistResponse checklistResponse = res.get(i);
                                 Checklist checklist = new Checklist();
@@ -337,68 +398,6 @@ public class HomeFragment extends Fragment {
 
                             getUserChecklist(checklistssss);
                         }
-
-                        /*for (int i = 0; i < res.size(); i++) {
-                            RoleChecklist roleChecklist = res.get(i);
-                            RoleChecklist myObject = new RoleChecklist();
-                            Checklist myObject2 = new Checklist();
-                            if (roleChecklist.getChecklist() != null) {
-                                myObject.setId(roleChecklist.getId());
-                                myObject.setCreated_at(date);
-                                myObject2.setId(roleChecklist.getChecklist().getId());
-                                myObject2.setName(roleChecklist.getChecklist().getName());
-                                myObject.setChecklist(myObject2);
-                                checklists.add(myObject);
-                            } else {
-                                myObject.setId(roleChecklist.getId());
-                                myObject.setCreated_at(date);
-                                myObject2.setId(roleChecklist.getId());
-                                myObject2.setName("Lorem Ipsum Lorem Ipsum");
-                                myObject.setChecklist(myObject2);
-                                checklists.add(myObject);
-                            }
-
-                            roleChecklistModels.add(new RoleChecklistModel(roleChecklist.getId(),
-                                    roleChecklist.getChecklist_id(),
-                                    roleChecklist.getChecklist()));
-                        }*/
-
-//                        if (sessionChecklist.getArrayListChecklist() != null) {
-//                            Log.d("ArrayList IF", sessionChecklist.getArrayListChecklist());
-//                            checklists.clear();
-//                            roleChecklistModels.clear();
-//
-//                            try {
-//                                JSONArray jsonArray = new JSONArray(sessionChecklist.getArrayListChecklist());
-//                                for (int i = 0; i < jsonArray.length(); i++) {
-//                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                                    JSONObject jsonObjeckChecklist = jsonObject.getJSONObject("checklist");
-//
-////                                    if (!String.valueOf(jsonObject.get("created_at")).equals(date)) {
-////                                        sessionChecklist.logoutUser();
-////                                        getActivity().finish();
-////                                        startActivity(getActivity().getIntent());
-////                                    }
-//
-//                                    RoleChecklist myObject = new RoleChecklist();
-//                                    myObject.setId(String.valueOf(jsonObject.get("id")));
-//
-//                                    Checklist checklist = new Checklist();
-//                                    checklist.setId(String.valueOf(jsonObjeckChecklist.get("id")));
-//                                    checklist.setName(String.valueOf(jsonObjeckChecklist.get("name")));
-//                                    myObject.setChecklist(checklist);
-//
-//                                    checklists.add(myObject);
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                            checklistAdapter = new ChecklistAdapter(checklists, getActivity(), 0, HomeFragment.this);
-//
-//                        } else {
-//                            sessionChecklist.setArraylistChecklist(checklists);
-
                     } else {
                         tvNoData.setVisibility(View.VISIBLE);
                     }
@@ -426,13 +425,15 @@ public class HomeFragment extends Fragment {
                 if (Objects.requireNonNull(response.body()).getData() != null) {
                     List<com.example.pakaianbagus.models.user.Checklist> checklistsUser = response.body().getData();
 
-                    for (int x = 0; x < checklists.size(); x++) {
-                        String item = checklists.get(x).getName();
+                    for (int i = 0; i < checklists.size(); i++) {
+                        String item = checklists.get(i).getName();
+
                         for (int y = 0; y < checklistsUser.size(); y++) {
                             String[] userItem = checklistsUser.get(y).getChecklists().split("\\s*,\\s*");
+
                             for (String s : userItem) {
                                 if (s.equalsIgnoreCase(item)) {
-                                    checklists.get(x).setChecked(true);
+                                    checklists.get(i).setChecked(true);
                                 }
                             }
                         }
@@ -447,13 +448,16 @@ public class HomeFragment extends Fragment {
                     try {
                         if (checklists.size() == sumc) {
                             btnSubmit.setEnabled(false);
+                            btnTambah.setEnabled(false);
                             //btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.background_photo_counter));
                             btnSubmit.setBackgroundColor(getResources().getColor(R.color.Gray));
+                            btnTambah.setBackgroundColor(getResources().getColor(R.color.Gray));
                         } else {
                             //btnSubmit.setBackgroundColor(getResources().getColor(R.color.DarkSlateBlue));
                             btnSubmit.setBackground(Objects.requireNonNull(getContext()).getResources().getDrawable(R.drawable.btn_rounded_blackyellow));
                         }
-                    } catch (Exception ignore){}
+                    } catch (Exception ignore) {
+                    }
                 }
 
                 checklistAdapter = new ChecklistAdapter(checklists, getContext(), HomeFragment.this);
@@ -590,6 +594,7 @@ public class HomeFragment extends Fragment {
         layout2.setVisibility(View.VISIBLE);
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.VISIBLE);
+//        button.setVisibility(View.GONE);
 
         LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
         layout1.setWeightSum(2f);
@@ -610,6 +615,7 @@ public class HomeFragment extends Fragment {
         layout2.setVisibility(View.VISIBLE);
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.VISIBLE);
+//        button.setVisibility(View.GONE);
 
         LinearLayout layout1 = rootView.findViewById(R.id.layoutHeaderIcon02);
         layout1.setWeightSum(2f);
@@ -630,6 +636,7 @@ public class HomeFragment extends Fragment {
         layout2.setVisibility(View.VISIBLE);
         Button button = rootView.findViewById(R.id.btnTambah);
         button.setVisibility(View.VISIBLE);
+//        button.setVisibility(View.GONE);
 
         LinearLayout layoutHead = rootView.findViewById(R.id.layoutHeaderIcon01);
         layoutHead.setWeightSum(2f);
@@ -681,6 +688,8 @@ public class HomeFragment extends Fragment {
             fragment = new StockOpnameFragment();
             args.putString("id_brand", brandId);
             args.putString("id_toko", tokoId);
+        } else if (roleId.equals(SessionManagement.ROLE_KOORDINATOR) || roleId.equals(SessionManagement.ROLE_MANAGER)) {
+            fragment = new StockListBrandFragment();
         } else {
             fragment = new StockListBrandFragment();
         }
@@ -691,7 +700,7 @@ public class HomeFragment extends Fragment {
     }
 
     @OnClick(R.id.btnPiutang)
-    void onClickBtnPiutang(){
+    void onClickBtnPiutang() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         PiutangListTokoFragment piutangListTokoFragment = new PiutangListTokoFragment();
@@ -949,7 +958,7 @@ public class HomeFragment extends Fragment {
                     dialog.dismiss();
                 });
                 Date c = Calendar.getInstance().getTime();
-                String formattedDate = new DateUtils().formatDateToString(c, "hh:mm");
+                String formattedDate = new DateUtils().formatDateToString(c, "HH:mm");
                 tvTime.setText(formattedDate);
             }
 
@@ -1001,14 +1010,14 @@ public class HomeFragment extends Fragment {
                     setTextCheckInOut();
                 });
                 Date c = Calendar.getInstance().getTime();
-                String formattedDate = new DateUtils().formatDateToString(c, "hh:mm");
+                String formattedDate = new DateUtils().formatDateToString(c, "HH:mm");
                 tvTime.setText(formattedDate);
             }
 
             @Override
             public void onFailed(ErrorResponse error) {
                 Loading.hide(getContext());
-                Log.d("TAG CheckIN", error.getMessage());
+                Log.d("TAG CheckOUT", error.getMessage());
             }
 
             @Override
@@ -1052,7 +1061,7 @@ public class HomeFragment extends Fragment {
                 FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
                 KunjunganFragment kunjunganFragment = new KunjunganFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("kunjunganKoordinator", "KUNJUNGAN KOORDINATOR");
+                bundle.putString(Constanta.KUNJUNGAN_KOORDINATOR, "KUNJUNGAN KOORDINATOR");
                 kunjunganFragment.setArguments(bundle);
                 ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
                 ft.replace(R.id.baseLayout, kunjunganFragment).addToBackStack("kunjunganFragment");
@@ -1066,10 +1075,10 @@ public class HomeFragment extends Fragment {
                 FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
                 KunjunganFragment kunjunganFragment = new KunjunganFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
+                bundle.putString(Constanta.KUNJUNGAN_SAYA, "KUNJUNGAN SAYA");
                 kunjunganFragment.setArguments(bundle);
-                ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-                ft.replace(R.id.baseLayout, kunjunganFragment).addToBackStack("kunjunganFragment");
+                ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("kunjunganFragment");
+                ft.replace(R.id.baseLayout, kunjunganFragment);
                 ft.commit();
             });
         } else {
@@ -1077,10 +1086,10 @@ public class HomeFragment extends Fragment {
             FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
             KunjunganFragment kunjunganFragment = new KunjunganFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("kunjunganSaya", "KUNJUNGAN SAYA");
+            bundle.putString(Constanta.KUNJUNGAN_SAYA, "KUNJUNGAN SAYA");
             kunjunganFragment.setArguments(bundle);
-            ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-            ft.replace(R.id.baseLayout, kunjunganFragment).addToBackStack("kunjunganFragment");
+            ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("kunjunganFragment");
+            ft.replace(R.id.baseLayout, kunjunganFragment);
             ft.commit();
         }
     }
@@ -1198,13 +1207,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void doLogout() {
-        Session.clear();
-        LocalData.clear();
+        showDialog(R.layout.dialog_logout);
+        Button btn_ya = dialog.findViewById(R.id.btnYa);
+        Button btn_no = dialog.findViewById(R.id.btnTidak);
+        btn_ya.setOnClickListener(v -> {
+            dialog.dismiss();
+            Session.clear();
+            LocalData.clear();
 
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        Objects.requireNonNull(getActivity()).finish();
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            Objects.requireNonNull(getActivity()).finish();
+        });
+
+        btn_no.setOnClickListener(v -> dialog.dismiss());
     }
 
     @OnClick(R.id.toolbar_notif)

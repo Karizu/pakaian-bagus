@@ -20,9 +20,14 @@ import java.util.List;
  */
 public class InputHelper {
 
-    public static void getDetailStock(String barcode, RestCallback<ApiResponse<List<Stock>>> callback){
+    public static void getDetailStock(String barcode, String place_id, String brand_id, RestCallback<ApiResponse<List<Stock>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().getDetailStockBarcode(barcode).enqueue(callback);
+        service.getEndpoint().getDetailStockBarcode(barcode, place_id, brand_id).enqueue(callback);
+    }
+
+    public static void getDetailStockSPG(String barcode, String place_id, String brand_id, RestCallback<ApiResponse<List<Stock>>> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().getDetailStockBarcodeSPG(barcode, place_id, brand_id).enqueue(callback);
     }
 
     public static void getDiscount(RestCallback<ApiResponse<List<Discount>>> callback){

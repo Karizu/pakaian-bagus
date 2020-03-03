@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -65,7 +66,7 @@ import okhttp3.RequestBody;
 public class DetailSpgFragment extends Fragment {
 
     Dialog dialog;
-    String id, store_id, brand_id;
+    String id, store_id, brand_id, placeId;
     private List<DetailSpgModel> detailSpgModels;
     private List<String> tokoList = new ArrayList<>();
     private List<String> tokoIdList = new ArrayList<>();
@@ -82,6 +83,8 @@ public class DetailSpgFragment extends Fragment {
     TextView tvDateIn;
     @BindView(R.id.tvNoData)
     TextView tvNoData;
+    @BindView(R.id.tvNamaToko)
+    TextView tvNamaToko;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -93,16 +96,19 @@ public class DetailSpgFragment extends Fragment {
 
         try {
             id = Objects.requireNonNull(getArguments()).getString("id");
+            placeId = Objects.requireNonNull(getArguments()).getString("place_id");
             store_id = Objects.requireNonNull(getArguments()).getString("store_id");
             brand_id = Objects.requireNonNull(getArguments()).getString("brand_id");
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         detailSpgModels = new ArrayList<>();
 
         getDetailSpg();
+        getDetailPlace();
         getAttendance();
+        getFromPlace(placeId);
 
         return rootView;
     }
@@ -122,7 +128,7 @@ public class DetailSpgFragment extends Fragment {
         ft.commit();
     }
 
-    private void getAttendance(){
+    private void getAttendance() {
         Loading.show(getContext());
         SpgHelper.getAttendance(id, new RestCallback<ApiResponse<List<AttendanceResponse>>>() {
             @SuppressLint("WrongConstant")
@@ -132,13 +138,13 @@ public class DetailSpgFragment extends Fragment {
                 try {
                     List<AttendanceResponse> res = body.getData();
 
-                    if (res.size() < 1){
+                    if (res.size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
 
-                    for (int i = 0; i < res.size(); i++){
+                    for (int i = 0; i < res.size(); i++) {
                         AttendanceResponse response = res.get(i);
                         detailSpgModels.add(new DetailSpgModel(
                                 getDate(response.getCreatedAt(), true),
@@ -146,9 +152,12 @@ public class DetailSpgFragment extends Fragment {
                                 getDate(response.getCheckOut() != null ? response.getCheckIn() : Constanta.BELUM_ABSEN, false)));
                     }
 
-                    if (res.get(0).getGroup().getId() != null){
-                        asalTokoId = String.valueOf(res.get(0).getGroup().getId());
-                        getDetailPlace(String.valueOf(res.get(0).getGroup().getId()));
+                    try {
+                        if (res.get(0).getGroup().getId() != null) {
+                            asalTokoId = String.valueOf(res.get(0).getGroup().getId());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
                     DetailSpgAdapter detailSpgAdapter = new DetailSpgAdapter(detailSpgModels, getContext());
@@ -157,7 +166,7 @@ public class DetailSpgFragment extends Fragment {
                             false));
                     recyclerView.setAdapter(detailSpgAdapter);
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -175,7 +184,7 @@ public class DetailSpgFragment extends Fragment {
         });
     }
 
-    private void getDetailSpg(){
+    private void getDetailSpg() {
         Loading.show(getContext());
         SpgHelper.getDetailSpg(id, new RestCallback<ApiResponse<User>>() {
             @Override
@@ -189,7 +198,7 @@ public class DetailSpgFragment extends Fragment {
                             getDate(response.getProfile().getEntryDate(), true) :
                             getDate(response.getCreatedAt(), true));
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -206,8 +215,35 @@ public class DetailSpgFragment extends Fragment {
         });
     }
 
+    private void getDetailPlace() {
+        Loading.show(getContext());
+        SpgHelper.getDetailPlaceSpg(placeId, new RestCallback<ApiResponse<Place>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<Place> body) {
+                Loading.hide(getContext());
+                try {
+                    Place place = body.getData();
+                    tvNamaToko.setText(place.getName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                error.getMessage();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+    }
+
     @SuppressLint("SimpleDateFormat")
-    private static String getDate(String strDate, boolean asDate){
+    private static String getDate(String strDate, boolean asDate) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date newDate = null;
         try {
@@ -215,27 +251,27 @@ public class DetailSpgFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (asDate){
+        if (asDate) {
             format = new SimpleDateFormat("dd MMM yyyy");
         } else {
             format = new SimpleDateFormat("hh:mm");
         }
 
-        if (strDate.equals(Constanta.BELUM_ABSEN)){
+        if (strDate.equals(Constanta.BELUM_ABSEN)) {
             return Constanta.BELUM_ABSEN;
         } else {
             return format.format(Objects.requireNonNull(newDate));
         }
     }
 
-    private void getDetailPlace(String groupId){
-        SpgHelper.getDetailPlace(groupId, new RestCallback<ApiResponse<Group>>() {
+    private void getFromPlace(String placeId) {
+        SpgHelper.getDetailPlace(placeId, new RestCallback<ApiResponse<Place>>() {
             @Override
-            public void onSuccess(Headers headers, ApiResponse<Group> body) {
+            public void onSuccess(Headers headers, ApiResponse<Place> body) {
                 try {
-                    Group place = body.getData();
+                    Place place = body.getData();
                     asalToko = place.getName();
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -255,6 +291,8 @@ public class DetailSpgFragment extends Fragment {
 
     private void settingTokoSpinner(Spinner spinnerTujuanToko) {
         Loading.show(getContext());
+        tokoList.clear();
+        tokoIdList.clear();
         SpgHelper.getListGroup(new RestCallback<ApiResponse<List<Group>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Group>> body) {
@@ -263,16 +301,16 @@ public class DetailSpgFragment extends Fragment {
                     List<Group> res = body.getData();
                     tokoList.add("Pilih Tujuan Toko");
                     tokoIdList.add("null");
-                    for (int i = 0; i < res.size(); i++){
+                    for (int i = 0; i < res.size(); i++) {
                         Group place = res.get(i);
                         tokoList.add(place.getName());
                         tokoIdList.add(String.valueOf(place.getId()));
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getActivity()), R.layout.spinner_item, tokoList){
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getActivity()), R.layout.spinner_item, tokoList) {
                     @Override
                     public boolean isEnabled(int position) {
                         return position != 0;
@@ -313,7 +351,7 @@ public class DetailSpgFragment extends Fragment {
     }
 
     @OnClick(R.id.toolbar_mutasi)
-    void onClickToolbarMutasi(){
+    void onClickToolbarMutasi() {
         showDialog();
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> dialog.dismiss());
@@ -324,7 +362,7 @@ public class DetailSpgFragment extends Fragment {
         EditText etDeskripsi = dialog.findViewById(R.id.etDialogDeskripsi);
         Button btnCreateMutasi = dialog.findViewById(R.id.btnDialogTambah);
         btnCreateMutasi.setOnClickListener(view -> {
-            if (tujuanTokoId == null || etDeskripsi.getText().toString().equals("")){
+            if (tujuanTokoId == null || etDeskripsi.getText().toString().equals("")) {
                 Toast.makeText(getContext(), "Silahkan lengkapi form isian", Toast.LENGTH_SHORT).show();
             } else {
                 createMutasi(etDeskripsi.getText().toString());
@@ -332,7 +370,7 @@ public class DetailSpgFragment extends Fragment {
         });
     }
 
-    private void createMutasi(String note){
+    private void createMutasi(String note) {
         Loading.show(getContext());
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -349,7 +387,7 @@ public class DetailSpgFragment extends Fragment {
                 dialog.dismiss();
                 try {
                     Toast.makeText(getContext(), "Mutation Created", Toast.LENGTH_SHORT).show();
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

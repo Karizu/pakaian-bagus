@@ -43,6 +43,7 @@ import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.home.HomeFragment;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.PenjualanKompetitorAdapter;
 import com.example.pakaianbagus.presentation.home.inputpenjualan.adapter.SalesReportAdapter;
+import com.example.pakaianbagus.util.Common;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.DateUtils;
 import com.example.pakaianbagus.util.Scanner;
@@ -263,7 +264,7 @@ public class InputPenjualan extends Fragment {
 
     private void addListFromBarcode(String resultData) {
         Loading.show(getContext());
-        InputHelper.getDetailStock(resultData, new RestCallback<ApiResponse<List<Stock>>>() {
+        InputHelper.getDetailStock(resultData, placeId, brandId, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 Loading.hide(getContext());
@@ -272,6 +273,7 @@ public class InputPenjualan extends Fragment {
                     stock.setNew(true);
                     String mPlaceId = String.valueOf(stock.getMPlaceId());
                     String mBrandId = String.valueOf(stock.getItem().getMBrandId());
+                    Log.d("TAG ID", placeId+" = "+mPlaceId+" "+brandId+" = "+mBrandId);
                     boolean placeTrue = placeId.equals(mPlaceId);
                     boolean brandTrue = brandId.equals(mBrandId);
                     if (placeTrue && brandTrue) {
@@ -357,20 +359,21 @@ public class InputPenjualan extends Fragment {
                 detail.setStockId(salesReportTemp.get(x).getId());
                 detail.setQty(salesReportTemp.get(x).getQty());
                 detail.setPrice(salesReportTemp.get(x).getTotal());
+                detail.setM_discount_id(salesReportTemp.get(x).getDiscount().getId()+"");
                 details.add(detail);
             }
 
             SalesReport salesReport = new SalesReport();
 
             salesReport.setSalesId(userId);
-            salesReport.setNo("2");
+            salesReport.setNo(Common.NumberTransaction());
             salesReport.setDate(date);
             salesReport.setFrom(String.valueOf(from));
             salesReport.setTotalQty(String.valueOf(totalQty));
             salesReport.setTotalPrice(String.valueOf(totalPrice));
             salesReport.setDescription(description.toString());
-            salesReport.setType("1");
-            salesReport.setPaymentMethod("1");
+            salesReport.setType(Constanta.SPG);
+            salesReport.setPaymentMethod(Constanta.TUNAI);
             salesReport.setDetails(details);
 
             InputHelper.postSalesReport(salesReport, new RestCallback<ApiResponse>() {

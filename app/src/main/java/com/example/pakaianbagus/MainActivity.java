@@ -1,7 +1,11 @@
 package com.example.pakaianbagus;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,6 +14,8 @@ import android.os.Bundle;
 import com.example.pakaianbagus.presentation.mutasibarang.ListBrandMutasiBarangFragment;
 import com.example.pakaianbagus.presentation.penjualan.PenjualanListTokoFragment;
 import com.example.pakaianbagus.presentation.penjualan.sales.PenjualanListTokoSalesFragment;
+import com.example.pakaianbagus.util.MyAlarm;
+import com.example.pakaianbagus.util.SessionChecklist;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.fragment.app.Fragment;
@@ -40,6 +46,7 @@ import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 import com.rezkyatinnov.kyandroid.session.SessionObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -67,6 +74,27 @@ public class MainActivity extends AppCompatActivity {
     Fragment active = fragmentHome;
     Dialog dialog;
     String roleId, brandId, tokoId;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+    private BroadcastReceiver br;
+    private SessionChecklist sessionChecklist;
+
+    public class MyReceiver extends BroadcastReceiver {
+
+        public MyReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("TAG", "onReceiver");
+            try {
+                Toast.makeText(MainActivity.this, "onReceiver", Toast.LENGTH_SHORT).show();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     @SuppressLint("CommitTransaction")
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -127,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     setFragments(fragmentPenjualanListSalesToko, "4");
                     active = fragmentPenjualanListSalesToko;
                 } else {
-                    setFragments(fragmentPenjualanListToko, "4");
+                    setFragments(fragmentPenjualanListBrand, "4");
                     active = fragmentPenjualanListToko;
                 }
                 return true;
@@ -168,13 +196,37 @@ public class MainActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.main_container, fragmentInputHarian, "4").commit();
             navigation.setSelectedItemId(R.id.navigation_penjualan);
         } else if (data != null && data.contentEquals("Penjualan")) {
-            fm.beginTransaction().add(R.id.main_container, fragmentPenjualanListToko, "4").commit();
+            fm.beginTransaction().add(R.id.main_container, fragmentPenjualanListBrand, "4").commit();
             navigation.setSelectedItemId(R.id.navigation_penjualan);
         } else {
             fm.beginTransaction().add(R.id.main_container, fragmentHome, "1").commit();
         }
 
+        // Set the alarm to start at 21:32 PM
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        Log.d("TIME", String.valueOf(calendar.getTimeInMillis()));
+//        calendar.set(Calendar.HOUR_OF_DAY, 14);
+//        calendar.set(Calendar.MINUTE, 49);
+
+//        setAlarm(calendar.getTimeInMillis());
+
     }
+
+//    private void setAlarm(long time) {
+//        //getting the alarm manager
+//        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//        //creating a new intent specifying the broadcast receiver
+//        Intent i = new Intent(this, MyAlarm.class);
+//
+//        //creating a pending intent using the intent
+//        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
+//
+//        //setting the repeating alarm that will be fired every day
+//        Objects.requireNonNull(am).setRepeating(AlarmManager.RTC, time, AlarmManager.INTERVAL_DAY, pi);
+//        Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show();
+//    }
 
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -195,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
     private void doReset(String date) {
         Session.save(new SessionObject("check", SessionManagement.CHECK_OUT));
         Session.save(new SessionObject("the_day", date));
+        sessionChecklist = new SessionChecklist(MainActivity.this);
+        sessionChecklist.logoutUser();
     }
 
     private void setFragments(Fragment fragment, String string) {

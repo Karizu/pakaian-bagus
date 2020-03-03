@@ -240,7 +240,7 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="55dp"
                                         android:background="@drawable/custom_ripple"
                                         android:gravity="center"
                                         android:orientation="vertical"
@@ -269,7 +269,7 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="55dp"
                                         android:background="@drawable/custom_ripple"
                                         android:gravity="center"
                                         android:orientation="vertical"
@@ -298,7 +298,7 @@
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="55dp"
                                         android:background="@drawable/custom_ripple"
                                         android:gravity="center"
                                         android:orientation="vertical"
@@ -321,7 +321,7 @@
                                     android:layout_margin="4dp"
                                     android:layout_weight="1"
                                     android:background="?android:attr/selectableItemBackground"
-                                    android:visibility="visible"
+                                    android:visibility="gone"
                                     app:cardCornerRadius="3dp"
                                     app:cardElevation="4dp">
 

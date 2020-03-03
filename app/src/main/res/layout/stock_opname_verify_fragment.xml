@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainBaseStockOpname"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/LightSteelBlue" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#6f3df8"
+            android:minHeight="?attr/actionBarSize">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/toolbar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_keyboard_backspace_white_24dp"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center_vertical"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:text="STOCK OPNAME"
+                    android:textStyle="bold"
+                    android:textColor="@color/White" />
+
+                <ImageView
+                    android:id="@+id/btnBarcode"
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/todo"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/ic_scan_barcode" />
+
+                <ImageView
+                    android:id="@+id/btnAdd"
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/todo"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/ic_add_white" />
+
+                <ImageView
+                    android:id="@+id/toolbar_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_filter_list_black_24dp"
+                    tools:ignore="RtlHardcoded" />
+
+                <ImageView
+                    android:id="@+id/toolbar_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_search_black_24dp"
+                    tools:ignore="RtlHardcoded" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:text="STOCK ARTIKEL"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/DarkSlateBlue"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="10dp"
+                    tools:ignore="UnusedAttribute">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvArtikel"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="10dp"
+                        android:visibility="visible" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvKategori"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="10dp"
+                        android:visibility="visible" />
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/verifikasi"
+            android:textColor="@color/White"
+            android:visibility="gone"
+            android:background="@drawable/background_button"
+            android:layout_margin="10dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

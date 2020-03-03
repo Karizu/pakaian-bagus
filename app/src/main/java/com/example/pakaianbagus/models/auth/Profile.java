@@ -1,6 +1,7 @@
 
 package com.example.pakaianbagus.models.auth;
 
+import com.example.pakaianbagus.models.stock.Brand;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -45,7 +46,7 @@ public class Profile {
     @SerializedName("deleted_at")
     @Expose
     private Object deletedAt;
-    @SerializedName("brand_id")
+    @SerializedName("m_brand_id")
     @Expose
     private int brandId;
     @SerializedName("group")
@@ -53,7 +54,7 @@ public class Profile {
     private Group group;
     @SerializedName("brand")
     @Expose
-    private Object brand;
+    private Brand brand;
 
     public int getUserId() {
         return userId;
@@ -179,7 +180,7 @@ public class Profile {
         return brand;
     }
 
-    public void setBrand(Object brand) {
+    public void setBrand(Brand brand) {
         this.brand = brand;
     }
 

@@ -1,7 +1,9 @@
 package com.example.pakaianbagus.presentation.mutasibarang;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -24,6 +26,7 @@ import com.example.pakaianbagus.models.api.mutation.Mutation;
 import com.example.pakaianbagus.presentation.mutasibarang.adapter.MutasiBarangAdapter;
 import com.example.pakaianbagus.presentation.mutasibarang.tambahmutasi.TambahMutasiFragment;
 import com.example.pakaianbagus.util.Constanta;
+import com.example.pakaianbagus.util.DateUtils;
 import com.example.pakaianbagus.util.SessionManagement;
 import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
@@ -32,6 +35,7 @@ import com.rezkyatinnov.kyandroid.session.Session;
 import com.rezkyatinnov.kyandroid.session.SessionNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,12 +74,12 @@ public class MutasiBarangFragment extends Fragment {
             idBrand = Objects.requireNonNull(getArguments()).getString("brand_id");
             flagMutasi = Objects.requireNonNull(getArguments()).getString(Constanta.FLAG_MUTASI);
             Log.d("TAG", Objects.requireNonNull(flagMutasi));
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)){
+            if (Session.get(Constanta.ROLE_ID).getValue().equals(SessionManagement.ROLE_SPG)) {
                 idBrand = Session.get(Constanta.BRAND).getValue();
                 idToko = Session.get(Constanta.TOKO).getValue();
             }
@@ -89,7 +93,7 @@ public class MutasiBarangFragment extends Fragment {
                 LinearLayout.VERTICAL, false));
         recyclerView.setAdapter(mutasiSpgAdapter);
 
-        if (flagMutasi.equals(Constanta.BARANG_MASUK)){
+        if (flagMutasi.equals(Constanta.BARANG_MASUK)) {
             getDataForIncome();
             swipeRefresh.setOnRefreshListener(this::getDataForIncome);
         } else {
@@ -97,9 +101,43 @@ public class MutasiBarangFragment extends Fragment {
             swipeRefresh.setOnRefreshListener(this::getDataForMutation);
         }
 
-
-
         return rootView;
+    }
+
+    private void getDataForIncomeByDate(String date) {
+        swipeRefresh.setRefreshing(true);
+        List<Integer> status = new ArrayList<>();
+        status.clear();
+        status.add(4);
+        MutasiHelper.getListMutationByDate(status, idBrand, idToko, date, new RestCallback<ApiResponse<List<Mutation>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<Mutation>> body) {
+                swipeRefresh.setRefreshing(false);
+                try {
+                    mutationList.clear();
+                    mutationList.addAll(body.getData());
+                    mutasiSpgAdapter.notifyDataSetChanged();
+                    if (body.getData().size() < 1) {
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                swipeRefresh.setRefreshing(false);
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
     }
 
     private void getDataForIncome() {
@@ -115,12 +153,49 @@ public class MutasiBarangFragment extends Fragment {
                     mutationList.clear();
                     mutationList.addAll(body.getData());
                     mutasiSpgAdapter.notifyDataSetChanged();
-                    if (body.getData().size() < 1){
+                    if (body.getData().size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                swipeRefresh.setRefreshing(false);
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+    }
+
+    private void getDataForMutationByDate(String date) {
+        swipeRefresh.setRefreshing(true);
+        List<Integer> status = new ArrayList<>();
+        status.clear();
+        status.add(3);
+        status.add(5);
+        MutasiHelper.getListMutationByDate(status, idBrand, idToko, date, new RestCallback<ApiResponse<List<Mutation>>>() {
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<Mutation>> body) {
+                swipeRefresh.setRefreshing(false);
+                try {
+                    mutationList.clear();
+                    mutationList.addAll(body.getData());
+                    mutasiSpgAdapter.notifyDataSetChanged();
+                    if (body.getData().size() < 1) {
+                        tvNoData.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoData.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -152,12 +227,12 @@ public class MutasiBarangFragment extends Fragment {
                     mutationList.clear();
                     mutationList.addAll(body.getData());
                     mutasiSpgAdapter.notifyDataSetChanged();
-                    if (body.getData().size() < 1){
+                    if (body.getData().size() < 1) {
                         tvNoData.setVisibility(View.VISIBLE);
                     } else {
                         tvNoData.setVisibility(View.GONE);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -178,6 +253,7 @@ public class MutasiBarangFragment extends Fragment {
     public void onClickItem(Mutation mutation) {
         Bundle bundle = new Bundle();
         bundle.putInt("mutationId", mutation.getId());
+        bundle.putInt("status", mutation.getStatus());
         bundle.putString("store_id", idToko);
         bundle.putString("brand_id", idBrand);
         bundle.putString(Constanta.FLAG_MUTASI, flagMutasi);
@@ -191,8 +267,28 @@ public class MutasiBarangFragment extends Fragment {
         ft.commit();
     }
 
+    @OnClick(R.id.toolbar_filter)
+    void onClickFilter() {
+        Calendar newCalendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getContext()),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    Calendar newDate = Calendar.getInstance();
+                    newDate.set(year, monthOfYear, dayOfMonth);
+                    if (flagMutasi.equals(Constanta.BARANG_MASUK)) {
+                        getDataForIncomeByDate(new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd"));
+                    } else {
+                        getDataForMutationByDate(new DateUtils().formatDateToString(newDate.getTime(), "yyyy-MM-dd"));
+                    }
+                },
+                newCalendar.get(Calendar.YEAR),
+                newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show();
+    }
+
     @OnClick(R.id.toolbar_add)
-    void onClickAddMutasi(){
+    void onClickAddMutasi() {
         Bundle bundle = new Bundle();
         bundle.putString("store_id", idToko);
         bundle.putString("brand_id", idBrand);

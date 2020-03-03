@@ -36,6 +36,8 @@ import com.example.pakaianbagus.models.mutation.MutationResponse;
 import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Item;
 import com.example.pakaianbagus.models.stock.Stock;
+import com.example.pakaianbagus.models.stockopname.StockOpnameModels;
+import com.example.pakaianbagus.models.stockopname.response.StockOpnameResponse;
 import com.example.pakaianbagus.models.transaction.Member;
 import com.example.pakaianbagus.models.user.Checklist;
 import com.example.pakaianbagus.models.usermutation.UserMutationResponse;
@@ -47,6 +49,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -58,8 +61,8 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-//    String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
-    String BASE_URL = "http://192.168.1.10/pakaian-bagus-api/public/api/";
+    String BASE_URL = "http://37.72.172.144/pb-v2/public/api/";
+//    String BASE_URL = "http://192.168.1.4/pakaian-bagus-api/public/api/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/public/";
     //String BASE_URL = "http://37.72.172.144/pb-v1/";
 
@@ -82,20 +85,24 @@ public interface ApiInterface {
     Call<ApiResponse<List<BrandResponse>>> getListBrand();
 
     @GET("stocks")
-    Call<ApiResponse<List<Stock>>> getListStokToko(@Query("id_store") String id_store,
-                                                   @Query("id_brand") String idBrand,
+    Call<ApiResponse<List<Stock>>> getListStokToko(@Query("m_place_id") String id_store,
+                                                   @Query("m_brand_id") String idBrand,
                                                    @Query("limit") int limit,
                                                    @Query("offset") int offset);
 
-    @GET("stok_toko/getAllArtikel")
-    Call<ApiResponse<List<Stock>>> searchKatalog(@Query("id_store") String id_store,
-                                                 @Query("is_exist") String is_exist,
-                                                 @Query("is_vip") String is_vip,
-                                                 @Query("keyword") String keyword,
+    @GET("stocks")
+    Call<ApiResponse<List<Stock>>> searchKatalog(@Query("m_place_id") String id_store,
+                                                 @Query("m_brand_id") String idBrand,
+                                                 @Query("article_code") String keyword,
                                                  @Query("limit") int limit,
-                                                 @Query("offset") int offset,
-                                                 @Query("order_by") String order_by,
-                                                 @Query("order_type") String order_type);
+                                                 @Query("offset") int offset);
+
+    @GET("stocks")
+    Call<ApiResponse<List<Stock>>> searchKatalogByCategory(@Query("m_place_id") String id_store,
+                                                 @Query("m_brand_id") String idBrand,
+                                                 @Query("m_category_id") String m_category_id,
+                                                 @Query("limit") int limit,
+                                                 @Query("offset") int offset);
 
     @GET("stok_toko/getAllArtikelWithStokToko")
     Call<ApiResponse<List<Stock>>> searchBarangPenjualan(@Query("keyword") String keyword);
@@ -136,7 +143,14 @@ public interface ApiInterface {
                                                             @Query("date") String date);
 
     @GET("stocks")
-    Call<ApiResponse<List<Stock>>> getDetailStockBarcode(@Query("article_code") String barcode);
+    Call<ApiResponse<List<Stock>>> getDetailStockBarcode(@Query("article_code") String barcode,
+                                                         @Query("m_place_id") String place_id,
+                                                         @Query("m_brand_id") String brand_id);
+
+    @GET("stocks")
+    Call<ApiResponse<List<Stock>>> getDetailStockBarcodeSPG(@Query("article_code") String barcode,
+                                                            @Query("m_place_id") String place_id,
+                                                            @Query("m_brand_id") String brand_id);
 
     @GET("discounts")
     Call<ApiResponse<List<Discount>>> getDiscount();
@@ -169,13 +183,23 @@ public interface ApiInterface {
     Call<ApiResponse<List<StockCategory>>> getListStockbyToko(@Query("m_place_id") String idToko,
                                                               @Query("m_brand_id") String idBrand);
 
+    @GET("stocks")
+    Call<ApiResponse<List<Stock>>> getSelisihStok(@Query("m_place_id") String m_place_id,
+                                                  @Query("article_code") String article_code);
+
     @POST("stockOpnames")
-    Call<ApiResponse> postStockOpname(@Body StockOpnameModel data);
+    Call<ApiResponse> postStockOpname(@Body StockOpnameModels data);
 
     @GET("mutations")
     Call<ApiResponse<List<Mutation>>> getListMutation(@Query("status[]") List<Integer> status,
                                                       @Query("m_brand_id") String id_brand,
                                                       @Query("m_place_id") String id_toko);
+
+    @GET("mutations")
+    Call<ApiResponse<List<Mutation>>> getListMutationByDate(@Query("status[]") List<Integer> status,
+                                                            @Query("m_brand_id") String id_brand,
+                                                            @Query("m_place_id") String id_toko,
+                                                            @Query("date") String date);
 
     @GET("mutations/{id}")
     Call<ApiResponse<MutationDetail>> getDetailMutation(@Path("id") int id);
@@ -187,9 +211,9 @@ public interface ApiInterface {
     Call<ApiResponse<AnnouncementDetailResponse>> getDetailAnnouncement(@Path("id") String id);
 
     @GET("stockOpnames")
-    Call<ApiResponse<List<StockCategoryResponse>>> getListStockOpname(@Query("m_brand_id") String id_brand,
-                                                                      @Query("m_place_id") String id_toko,
-                                                                      @Query("type") int type);
+    Call<ApiResponse<List<StockOpnameResponse>>> getListStockOpname(@Query("m_brand_id") String id_brand,
+                                                                    @Query("m_place_id") String id_toko,
+                                                                    @Query("type") int type);
 
     @POST("debtPayments")
     Call<ApiResponse> postPembayaranPiutang(@Body RequestBody requestBody);
@@ -232,19 +256,22 @@ public interface ApiInterface {
     Call<ApiResponse<UserMutationResponse>> getDetailUserMutation(@Path("id") String id);
 
     @GET("users")
-    Call<ApiResponse<List<com.example.pakaianbagus.models.user.User>>> getListSpg(@Query("role_id[0]") String role_id, @Query("brand_id") String brand_id, @Query("group_id") String group_id);
+    Call<ApiResponse<List<com.example.pakaianbagus.models.user.User>>> getListSpg(@Query("role_id[0]") String role_id, @Query("m_brand_id") String brand_id, @Query("m_place_id") String place_id);
 
     @GET("users/{user_id}")
     Call<ApiResponse<com.example.pakaianbagus.models.user.User>> getDetailSpg(@Path("user_id") String user_id);
 
-    @GET("groups/{group_id}")
-    Call<ApiResponse<Group>> getDetailPlace(@Path("group_id") String group_id);
+    @GET("places/{place_id}")
+    Call<ApiResponse<Place>> getDetailPlace(@Path("place_id") String place_id);
 
     @GET("attendances")
     Call<ApiResponse<List<AttendanceResponse>>> getAttendance(@Query("user_id") String user_id);
 
     @GET("places")
     Call<ApiResponse<List<Place>>> getListPlace(@Query("type") String type);
+
+    @GET("places/{place_id}")
+    Call<ApiResponse<Place>> getDetailPlaceSpg(@Path("place_id") String place_id);
 
     @POST("userMutations")
     Call<ApiResponse<UserMutationResponse>> createUserMutation(@Body RequestBody requestBody);
@@ -266,7 +293,7 @@ public interface ApiInterface {
     @GET("userExpenditures")
     Call<ApiResponse<List<Expenditures>>> getListExpendituresByDate(@Query("date") String date,
                                                                     @Query("role_id") String role_id,
-                                                              @Query("group_id") String group_id);
+                                                                    @Query("group_id") String group_id);
 
     @GET("userExpenditures")
     Call<ApiResponse<List<Expenditures>>> getListMyExpenditures(@Query("user_id") String user_id);
@@ -280,6 +307,9 @@ public interface ApiInterface {
 
     @POST("mutations/{mutation_id}/verify")
     Call<ApiResponse<MutationResponse>> verifyMutation(@Path("mutation_id") String mutation_id, @Body RequestBody requestBody);
+
+    @DELETE("mutations/{mutation_id}")
+    Call<ApiResponse<MutationResponse>> deleteMutation(@Path("mutation_id") String mutation_id);
 
     @GET("expeditions")
     Call<ApiResponse<List<Expedition>>> getListExpeditions();

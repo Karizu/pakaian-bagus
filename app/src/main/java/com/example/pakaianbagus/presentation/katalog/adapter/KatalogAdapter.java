@@ -18,7 +18,9 @@ import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.models.KatalogModel;
 import com.example.pakaianbagus.util.RoundedCornersTransformation;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter.sCorner;
 import static com.example.pakaianbagus.presentation.home.photocounter.adapter.PhotoAdapter.sMargin;
@@ -136,7 +138,8 @@ public class KatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String qty = String.valueOf(katalogModels.get(position).getQty());
             viewHolder.textViewQty.setText(qty+ " pcs");
             String kode = String.valueOf(katalogModels.get(position).getKode());
-            viewHolder.textViewKode.setText(kode);
+            int mPrice = Integer.parseInt(kode);
+            viewHolder.textViewKode.setText("Rp. " + NumberFormat.getNumberInstance(Locale.US).format(mPrice));
             String img = katalogModels.get(position).getImage();
             Glide.with(context)
                     .applyDefaultRequestOptions(new RequestOptions()

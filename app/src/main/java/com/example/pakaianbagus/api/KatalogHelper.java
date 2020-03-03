@@ -20,7 +20,7 @@ public class KatalogHelper {
         service.getEndpoint().getListToko(type).enqueue(callback);
         //SessionManagement session = new SessionManagement(context);
         //HashMap<String, String> user = session.getUserDetails();
-        //service.getEndpoint().getListToko(user.get(SessionManagement.KEY_BEARER_TOKEN)).enqueue(callback);
+        //service.getEndpoint().getListBrand(user.get(SessionManagement.KEY_BEARER_TOKEN)).enqueue(callback);
     }
 
     public static void getListStokToko(String id, String idBrand, int limit, int offset, RestCallback<ApiResponse<List<Stock>>> callback){
@@ -28,9 +28,14 @@ public class KatalogHelper {
         service.getEndpoint().getListStokToko(id, idBrand, limit, offset).enqueue(callback);
     }
 
-    public static void searchKatalog(String id_store, String keyword, int limit, int offset, RestCallback<ApiResponse<List<Stock>>> callback){
+    public static void searchKatalog(String id_store, String brand_id, String keyword, int limit, int offset, RestCallback<ApiResponse<List<Stock>>> callback){
         Reztrofit<ApiInterface> service = Reztrofit.getInstance();
-        service.getEndpoint().searchKatalog(id_store, "false", "false", keyword, limit, offset, "nama_barang", "desc").enqueue(callback);
+        service.getEndpoint().searchKatalog(id_store, brand_id, keyword, limit, offset).enqueue(callback);
+    }
+
+    public static void searchKatalogByCategory(String id_store, String brand_id, String m_category_id, int limit, int offset, RestCallback<ApiResponse<List<Stock>>> callback){
+        Reztrofit<ApiInterface> service = Reztrofit.getInstance();
+        service.getEndpoint().searchKatalogByCategory(id_store, brand_id, m_category_id, limit, offset).enqueue(callback);
     }
 
     public static void getListBrand(RestCallback<ApiResponse<List<BrandResponse>>> callback){

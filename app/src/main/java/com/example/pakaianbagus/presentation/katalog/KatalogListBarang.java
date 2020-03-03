@@ -1,18 +1,25 @@
 package com.example.pakaianbagus.presentation.katalog;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,17 +33,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
 import com.example.pakaianbagus.api.KatalogHelper;
+import com.example.pakaianbagus.api.StockHelper;
 import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.KatalogModel;
+import com.example.pakaianbagus.models.stock.Category;
 import com.example.pakaianbagus.models.stock.Stock;
 import com.example.pakaianbagus.presentation.katalog.adapter.KatalogAdapter;
 import com.example.pakaianbagus.presentation.penjualan.ScanBarcodeActivity;
 import com.example.pakaianbagus.util.Constanta;
 import com.example.pakaianbagus.util.EndlessRecyclerViewScrollListener;
+import com.example.pakaianbagus.util.Scanner;
 import com.example.pakaianbagus.util.SessionManagement;
+import com.example.pakaianbagus.util.dialog.Loading;
 import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
 import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 import com.rezkyatinnov.kyandroid.session.Session;
@@ -72,10 +84,12 @@ public class KatalogListBarang extends Fragment {
     private List<KatalogModel> katalogModels;
     boolean isLoading = false;
     private KatalogAdapter katalogAdapter;
-    private String id, idBrand, roleId;
-    private List<String> kategori;
+    private String store_id, brand_id, roleId, kategoriesId;
+    private List<String> kategori, kategoriId;
     private List<String> terbaru;
     private Spinner spinnerKategori, spinnerTerbaru;
+    private final int REQUEST_CODE = 564;
+    private final int REQUEST_SCANNER = 999;
 
     public KatalogListBarang() {
     }
@@ -114,10 +128,19 @@ public class KatalogListBarang extends Fragment {
         };
         recyclerView.addOnScrollListener(scrollListener);
 
-        id = Objects.requireNonNull(getArguments()).getString("id");
-        idBrand = Objects.requireNonNull(getArguments()).getString("id_brand");
+        if (roleId.equals(SessionManagement.ROLE_SPG)) {
+            try {
+                store_id = Session.get(Constanta.TOKO).getValue();
+                brand_id = Session.get(Constanta.BRAND).getValue();
+            } catch (SessionNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            store_id = Objects.requireNonNull(getArguments()).getString("id");
+            brand_id = Objects.requireNonNull(getArguments()).getString("brand_id");
+        }
 
-        if (id != null) {
+        if (store_id != null) {
             swipeRefresh.setOnRefreshListener(() -> {
                 katalogModels.clear();
                 getListStokToko();
@@ -133,15 +156,32 @@ public class KatalogListBarang extends Fragment {
     void onClickFilter() {
         showDialog(R.layout.dialog_filter_katalog);
         kategori = new ArrayList<>();
+        kategoriId = new ArrayList<>();
         terbaru = new ArrayList<>();
         spinnerKategori = dialog.findViewById(R.id.spinnerKategori);
         spinnerTerbaru = dialog.findViewById(R.id.spinnerTerbaru);
+        spinnerTerbaru.setVisibility(View.GONE);
         ImageView btnClose = dialog.findViewById(R.id.imgClose);
         btnClose.setOnClickListener(v -> dialog.dismiss());
         Button btnApply = dialog.findViewById(R.id.btnApply);
         btnApply.setOnClickListener(v -> {
-            dialog.dismiss();
-            //setsomething this
+            if (kategoriesId!=null){
+                dialog.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putString("store_id", store_id);
+                bundle.putString("brand_id", brand_id);
+                bundle.putString("m_category_id", kategoriesId);
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+                SearchKatalogFragment katalogFragment = new SearchKatalogFragment();
+                katalogFragment.setArguments(bundle);
+                ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+                ft.replace(R.id.layoutKatalog, katalogFragment);
+                ft.commit();
+            } else {
+                Toast.makeText(getContext(), "Silahkan pilih kategori", Toast.LENGTH_SHORT).show();
+            }
+
         });
         setSpinnerKategori();
         setSpinnerTerbaru();
@@ -197,48 +237,64 @@ public class KatalogListBarang extends Fragment {
     }
 
     private void setSpinnerKategori() {
+        Loading.show(getContext());
         kategori.add("Pilih Kategori");
-//        kategoriId.add("KI");
-        for (int i = 0; i < 5; i++) {
-//            CategoryModel category = res.get(i);
-            kategori.add("Kategori " + i);
-//            kategoriId.add(category.getId());
-        }
+        kategoriId.add("null");
 
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),
-                        R.layout.layout_spinner_text, kategori) {
-                    @Override
-                    public boolean isEnabled(int position) {
-                        return position != 0;
-                    }
-                };
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(R.layout.layout_spinner_dropdown);
-        // attaching data adapter to spinner
-        spinnerKategori.setAdapter(dataAdapter);
-
-        spinnerKategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        StockHelper.getListCategories(new RestCallback<ApiResponse<List<Category>>>() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                if (subKategori != null) {
-//                    subKategori.clear();
-//                    subKategoriId.clear();
-//                }
-//
-//                setSpinnerNestedKatgori(position);
-//
-//                if (position != 0) {
-//                    kategoriesId = kategoriId.get(position);
-//                } else {
-//                    kategoriesId = null;
-//                }
+            public void onSuccess(Headers headers, ApiResponse<List<Category>> body) {
+                Loading.hide(getContext());
+                try {
+                    List<Category> res = body.getData();
+                    for (int i = 0; i < res.size(); i++) {
+                        Category category = res.get(i);
+                        kategori.add(category.getName());
+                        kategoriId.add(category.getId() + "");
+                    }
+
+                    // Creating adapter for spinner
+                    ArrayAdapter<String> dataAdapter =
+                            new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),
+                                    R.layout.layout_spinner_text, kategori) {
+                                @Override
+                                public boolean isEnabled(int position) {
+                                    return position != 0;
+                                }
+                            };
+
+                    dataAdapter.setDropDownViewResource(R.layout.layout_spinner_dropdown);
+                    spinnerKategori.setAdapter(dataAdapter);
+
+                    spinnerKategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (position != 0) {
+                                kategoriesId = kategoriId.get(position);
+                            } else {
+                                kategoriesId = null;
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(getContext());
+                error.getMessage();
+            }
+
+            @Override
+            public void onCanceled() {
 
             }
         });
@@ -247,7 +303,7 @@ public class KatalogListBarang extends Fragment {
     private void getListStokToko() {
         swipeRefresh.setRefreshing(true);
 
-        KatalogHelper.getListStokToko(id, idBrand, limit, offset, new RestCallback<ApiResponse<List<Stock>>>() {
+        KatalogHelper.getListStokToko(store_id, brand_id, limit, offset, new RestCallback<ApiResponse<List<Stock>>>() {
             @Override
             public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                 swipeRefresh.setRefreshing(false);
@@ -291,8 +347,8 @@ public class KatalogListBarang extends Fragment {
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
-        bundle.putString("id_brand", idBrand);
+        bundle.putString("id", store_id);
+        bundle.putString("id_brand", brand_id);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         KatalogFragment katalogFragment = new KatalogFragment();
@@ -300,6 +356,28 @@ public class KatalogListBarang extends Fragment {
         ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
         ft.replace(R.id.layoutKatalog, katalogFragment);
         ft.commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SCANNER && resultCode == Activity.RESULT_OK) {
+            String resultData = data.getStringExtra("scan_data");
+
+            Bundle bundle = new Bundle();
+            bundle.putString("store_id", store_id);
+            bundle.putString("brand_id", brand_id);
+            bundle.putString("keyword", resultData);
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+            SearchKatalogFragment katalogFragment = new SearchKatalogFragment();
+            katalogFragment.setArguments(bundle);
+            ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+            ft.replace(R.id.layoutKatalog, katalogFragment);
+            ft.commit();
+
+            dialog.dismiss();
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -314,14 +392,19 @@ public class KatalogListBarang extends Fragment {
         Button btnScanBarcode = dialog.findViewById(R.id.btnScanBarcode);
         btnScanBarcode.setVisibility(View.VISIBLE);
         btnScanBarcode.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ScanBarcodeActivity.class);
-            intent.putExtra("mode", "KATALOG");
-            startActivity(intent);
+            if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{Manifest.permission.CAMERA}, REQUEST_CODE);
+            } else {
+                Intent intent = new Intent(getContext(), Scanner.class);
+                startActivityForResult(intent, REQUEST_SCANNER);
+            }
         });
         Button btnCari = dialog.findViewById(R.id.btnCari);
         btnCari.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
-            bundle.putString("id", id);
+            bundle.putString("store_id", store_id);
+            bundle.putString("brand_id", brand_id);
             bundle.putString("keyword", etKodeNamaBarang.getText().toString());
 
             if (etKodeNamaBarang.getText().toString().equals("")) {
@@ -348,7 +431,7 @@ public class KatalogListBarang extends Fragment {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
         try {
-            KatalogHelper.getListStokToko(id, idBrand, limit, limit * offset, new RestCallback<ApiResponse<List<Stock>>>() {
+            KatalogHelper.getListStokToko(store_id, brand_id, limit, limit * offset, new RestCallback<ApiResponse<List<Stock>>>() {
                 @Override
                 public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
                     swipeRefresh.setRefreshing(false);

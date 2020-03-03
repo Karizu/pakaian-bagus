@@ -54,7 +54,7 @@
             android:textSize="13sp"
             android:gravity="center"
             android:background="@drawable/background_input"
-            android:hint="Kode / Nama Barang"/>
+            android:hint="Article Code"/>
 
         <Button
             android:id="@+id/btnCari"

@@ -23,100 +23,165 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pakaianbagus.R;
+import com.example.pakaianbagus.api.StockHelper;
+import com.example.pakaianbagus.models.ApiResponse;
 import com.example.pakaianbagus.models.StockOpnameModel;
 import com.example.pakaianbagus.models.api.stockopname.StockCategoryResponse;
+import com.example.pakaianbagus.models.stock.Stock;
+import com.example.pakaianbagus.models.stockopname.Details;
+import com.example.pakaianbagus.models.stockopname.StockOpnameModels;
+import com.example.pakaianbagus.models.stockopname.response.Detail;
+import com.example.pakaianbagus.models.stockopname.response.StockOpnameResponse;
 import com.example.pakaianbagus.presentation.home.stockopname.StockOpnameFragment;
+import com.example.pakaianbagus.util.dialog.Loading;
+import com.rezkyatinnov.kyandroid.reztrofit.ErrorResponse;
+import com.rezkyatinnov.kyandroid.reztrofit.RestCallback;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import okhttp3.Headers;
+
 public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.ViewHolder> {
-    private List<StockCategoryResponse> stockList;
+    private List<StockOpnameResponse> stockList;
     private Context context;
     private Dialog dialog;
     private Fragment fragment;
+    private Boolean isVerify;
+    private int selisih = 0;
+    private List<Details> detailsList = new ArrayList<>();
 
-    public StockOpnameAdapter(List<StockCategoryResponse> stockList, Context context, Fragment fragment) {
+    public StockOpnameAdapter(List<StockOpnameResponse> stockList, Context context, Fragment fragment) {
         this.stockList = stockList;
         this.context = context;
         this.fragment = fragment;
     }
 
+    public StockOpnameAdapter(List<StockOpnameResponse> stockList, Context context, Fragment fragment, Boolean isVerify) {
+        this.stockList = stockList;
+        this.context = context;
+        this.fragment = fragment;
+        this.isVerify = isVerify;
+    }
+
     @NonNull
     @Override
     public StockOpnameAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item_stockopname, parent, false);
-        return new StockOpnameAdapter.ViewHolder(v);
+        if (isVerify){
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item_stockopname_verify, parent, false);
+            return new StockOpnameAdapter.ViewHolder(v);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item_stockopname, parent, false);
+            return new StockOpnameAdapter.ViewHolder(v);
+        }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull StockOpnameAdapter.ViewHolder holder, int position) {
-        final StockCategoryResponse stock = stockList.get(position);
-        final int qty = stock.getQty();
+        final StockOpnameResponse stock = stockList.get(position);
+        final List<Detail> details = stockList.get(position).getDetails();
+        final Detail detail = details.get(0);
+        final int qty = detail.getQty();
 
-        String name;
-        if (stock.getType() == 1) {
-            name = stock.getItem().getName();
+        String name = null;
+        if (detail.getType() == 1) {
+            try {
+                name = detail.getArticleCode()+"/"+detail.getItem().getName();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         } else {
-            name = stock.getCategory().getName();
+            try {
+                name = detail.getCategory().getName();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         holder.textViewName.setText(name);
-        holder.textViewQty.setText(qty + " pcs");
 
-        holder.imageViewMore.setOnClickListener(v -> {
-            View v1 = v.findViewById(R.id.btnMore);
-            PopupMenu pm = new PopupMenu(Objects.requireNonNull(context), v1);
-            pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
-            pm.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.navigation_ubah) {
-                    showDialog(context);
-                    ImageView imgClose = dialog.findViewById(R.id.imgClose);
-                    EditText etQty = dialog.findViewById(R.id.etQty);
-                    Button btnUbah = dialog.findViewById(R.id.btnUbah);
-                    btnUbah.setOnClickListener(v2 -> {
-                        if (!etQty.getText().toString().equals("")) {
-                            dialog.dismiss();
-                            stock.setQty(Integer.parseInt(etQty.getText().toString()));
-                            holder.textViewQty.setText(stock.getQty() + " pcs");
-                            doPosting(stock, stock.getType());
-                        } else {
-                            Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    imgClose.setOnClickListener(v2 -> dialog.dismiss());
-                }
-                return true;
+        if (isVerify){
+            getSelisihStok(stock.getMPlaceId()+"", detail.getArticleCode(), qty, holder);
+        } else {
+            holder.textViewQty.setText(qty + " pcs");
+            holder.imageViewMore.setOnClickListener(v -> {
+                View v1 = v.findViewById(R.id.btnMore);
+                PopupMenu pm = new PopupMenu(Objects.requireNonNull(context), v1);
+                pm.getMenuInflater().inflate(R.menu.menu_options, pm.getMenu());
+                pm.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.navigation_ubah) {
+                        showDialog(context);
+                        ImageView imgClose = dialog.findViewById(R.id.imgClose);
+                        EditText etQty = dialog.findViewById(R.id.etQty);
+                        Button btnUbah = dialog.findViewById(R.id.btnUbah);
+                        btnUbah.setOnClickListener(v2 -> {
+                            if (!etQty.getText().toString().equals("")) {
+                                dialog.dismiss();
+                                detail.setQty(Integer.parseInt(etQty.getText().toString()));
+                                holder.textViewQty.setText(detail.getQty() + " pcs");
+                                doPosting(stock, detail.getType());
+                            } else {
+                                Toast.makeText(context, "Harap isi field", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        imgClose.setOnClickListener(v2 -> dialog.dismiss());
+                    }
+                    return true;
+                });
+                pm.show();
             });
-            pm.show();
-        });
+        }
 
-        /*holder.layoutListStock.setOnClickListener(view -> {
-//            View viewSheet = LayoutInflater.from(view.getContext()).inflate(R.layout.find_outreach_worker_bottom_sheet_dialog, null);
-//            Log.d( "onClick: ",String.valueOf(viewSheet));
-//            final BottomSheetDialog dialog = new BottomSheetDialog(view.getContext());
-//            dialog.setContentView(viewSheet);
-//            dialog.show();
-        });*/
+        holder.layoutListStock.setOnClickListener(view -> {
+//            if (fragment instanceof StockOpnameFragment){
+//                ((StockOpnameFragment)fragment).onClickItem(stock.getId()+"");
+//            }
+        });
     }
 
-    private void doPosting(StockCategoryResponse response, int type) {
-        StockOpnameModel data = new StockOpnameModel();
+    private void doPosting(StockOpnameResponse response, int type) {
+        StockOpnameModels data = new StockOpnameModels();
         if (type == 1) {
-            data.setType(1);
-            data.setmPlaceId(String.valueOf(response.getMPlaceId()));
-            data.setmItemId(String.valueOf(response.getMItemId()));
-            data.setPlaceType(response.getPlaceType());
-            data.setArticleCode(response.getArticleCode());
-            data.setSizeCode(response.getSizeCode());
-            data.setQty(response.getQty());
+
+            Details details = new Details();
+            details.setType("1");
+            details.setM_item_id(response.getDetails().get(0).getItem().getId()+"");
+            details.setM_category_id(response.getDetails().get(0).getItem().getMCategoryId()+"");
+            details.setArticle_code(response.getDetails().get(0).getArticleCode());
+            details.setSize_code(response.getDetails().get(0).getSizeCode());
+            details.setQty(String.valueOf(response.getDetails().get(0).getQty()+1));
+
+            detailsList.add(details);
+
+            Date c = Calendar.getInstance().getTime();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String date = df.format(c);
+
+            data.setM_place_id(response.getMPlaceId()+"");
+            data.setDate(date);
+            data.setPlace_type("S");
+            data.setM_brand_id(response.getDetails().get(0).getItem().getMBrandId()+"");
+
+            data.setDetails(detailsList);
+
+//            data.setType(1);
+//            data.setmPlaceId(String.valueOf(response.getMPlaceId()));
+//            data.setmItemId(String.valueOf(response.getMItemId()));
+//            data.setPlaceType(response.getPlaceType());
+//            data.setArticleCode(response.getArticleCode());
+//            data.setSizeCode(response.getSizeCode());
+//            data.setQty(response.getQty());
         } else {
-            data.setType(2);
-            data.setmPlaceId(String.valueOf(response.getMPlaceId()));
-            data.setmCategoryId(String.valueOf(response.getMCategoryId()));
-            data.setPlaceType(response.getPlaceType());
-            data.setQty(response.getQty());
+//            data.setType(2);
+//            data.setmPlaceId(String.valueOf(response.getMPlaceId()));
+//            data.setmCategoryId(String.valueOf(response.getMCategoryId()));
+//            data.setPlaceType(response.getPlaceType());
+//            data.setQty(response.getQty());
         }
         ((StockOpnameFragment) fragment).doPostStock(data);
     }
@@ -155,5 +220,36 @@ public class StockOpnameAdapter extends RecyclerView.Adapter<StockOpnameAdapter.
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    private void getSelisihStok(String place_id, String article_code, int qty, StockOpnameAdapter.ViewHolder holder){
+        Loading.show(context);
+        StockHelper.getSelisihStok(place_id, article_code, new RestCallback<ApiResponse<List<Stock>>>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(Headers headers, ApiResponse<List<Stock>> body) {
+                Loading.hide(context);
+                List<Stock> res = body.getData();
+                for (int i = 0; i < res.size(); i++){
+                    Stock stock = res.get(i);
+                    selisih = stock.getQty() - qty;
+                }
+                holder.textViewQty.setText(qty + " pcs selisih "+selisih);
+                if (selisih != 0){
+                    holder.textViewQty.setTextColor(context.getResources().getColor(R.color.Red));
+                }
+            }
+
+            @Override
+            public void onFailed(ErrorResponse error) {
+                Loading.hide(context);
+                error.getMessage();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
     }
 }

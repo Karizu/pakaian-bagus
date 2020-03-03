@@ -52,8 +52,8 @@
                 android:paddingEnd="8dp"
                 android:gravity="right"
                 android:text="2 PCS"
-                android:textSize="13sp"
-                tools:ignore="HardcodedText,RtlSymmetry" />
+                android:textSize="11sp"
+                tools:ignore="HardcodedText,RtlSymmetry,SmallSp" />
 
         </LinearLayout>
 

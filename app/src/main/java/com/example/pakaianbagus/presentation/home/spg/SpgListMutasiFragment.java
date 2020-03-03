@@ -38,9 +38,10 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Headers;
 
-public class SpgListMutasiFragment extends Fragment implements IOnBackPressed {
+public class SpgListMutasiFragment extends Fragment {
     private List<SpgModel> spgModels;
     private String groupId, store_id, brand_id;
 
@@ -76,23 +77,6 @@ public class SpgListMutasiFragment extends Fragment implements IOnBackPressed {
 
         getListUserMutation(groupId, brand_id);
         return rootView;
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        Bundle bundle = new Bundle();
-        bundle.putString("store_id", store_id);
-        bundle.putString("brand_id", brand_id);
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment listTokoFragment = new SpgListTokoFragment();
-        listTokoFragment.setArguments(bundle);
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, listTokoFragment);
-        ft.commit();
-
-        return false;
     }
 
     private void getListUserMutation(String group_id, String brand_id){
@@ -143,5 +127,20 @@ public class SpgListMutasiFragment extends Fragment implements IOnBackPressed {
 
             }
         });
+    }
+
+    @OnClick(R.id.toolbar_back)
+    public void toolbarBack() {
+        Bundle bundle = new Bundle();
+        bundle.putString("store_id", store_id);
+        bundle.putString("brand_id", brand_id);
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+        SpgListTokoFragment listTokoFragment = new SpgListTokoFragment();
+        listTokoFragment.setArguments(bundle);
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        ft.replace(R.id.baseLayoutSpg, listTokoFragment);
+        ft.commit();
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.example.pakaianbagus.MainActivity;
+import com.example.pakaianbagus.models.Checklist;
 import com.example.pakaianbagus.models.RoleChecklist;
 import com.example.pakaianbagus.presentation.auth.SignInActivity;
 import com.google.gson.Gson;
@@ -68,10 +69,9 @@ public class SessionChecklist {
         return checklist;
     }
 
-    public void setArraylistChecklist(List<RoleChecklist> data){
+    public void setArraylistChecklist(List<Checklist> data){
         Gson gson = new Gson();
-        List<RoleChecklist> textList = new ArrayList<>();
-        textList.addAll(data);
+        List<Checklist> textList = new ArrayList<>(data);
         String jsonText = gson.toJson(textList);
         editor.putString("key", jsonText);
         editor.apply();
@@ -79,9 +79,8 @@ public class SessionChecklist {
 
     public String getArrayListChecklist(){
         Gson gson = new Gson();
-        String jsonText = pref.getString("key", null);
 
-        return jsonText;
+        return pref.getString("key", null);
     }
 
     public void checkLogin(){
