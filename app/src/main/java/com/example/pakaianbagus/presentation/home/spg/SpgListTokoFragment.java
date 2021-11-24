@@ -136,7 +136,7 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListFragment spgListFragment = new SpgListFragment();
         spgListFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListFragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.baseLayoutSpg, spgListFragment);
         ft.commit();
     }
@@ -151,19 +151,23 @@ public class SpgListTokoFragment extends Fragment implements IOnBackPressed {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListMutasiFragment spgListMutasiFragment = new SpgListMutasiFragment();
         spgListMutasiFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListMutasiFragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.baseLayoutSpg, spgListMutasiFragment);
         ft.commit();
     }
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListBrandFragment spgListBrandFragment = new SpgListBrandFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, spgListBrandFragment);
-        ft.commit();
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        SpgListBrandFragment spgListBrandFragment = new SpgListBrandFragment();
+//        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+//        ft.replace(R.id.baseLayoutSpg, spgListBrandFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 
     @Override

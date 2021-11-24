@@ -1043,8 +1043,8 @@ public class HomeFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListBrandFragment spgListBrandFragment = new SpgListBrandFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListBrandFragment");
-        ft.replace(R.id.baseLayout, spgListBrandFragment).addToBackStack("spgListBrandFragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
+        ft.replace(R.id.baseLayout, spgListBrandFragment);
         ft.commit();
     }
 

@@ -469,17 +469,21 @@ public class TambahMutasiFragment extends Fragment {
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        Bundle bundle = new Bundle();
-        bundle.putString("store_id", store_id);
-        bundle.putString("brand_id", brand_id);
-        bundle.putString(Constanta.FLAG_MUTASI, flagMutasi);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        MutasiBarangFragment mutasiFragment = new MutasiBarangFragment();
-        mutasiFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutTambahMutasi, mutasiFragment);
-        ft.commit();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("store_id", store_id);
+//        bundle.putString("brand_id", brand_id);
+//        bundle.putString(Constanta.FLAG_MUTASI, flagMutasi);
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        MutasiBarangFragment mutasiFragment = new MutasiBarangFragment();
+//        mutasiFragment.setArguments(bundle);
+//        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+//        ft.replace(R.id.baseLayoutTambahMutasi, mutasiFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 
     @OnClick(R.id.btnTambah)

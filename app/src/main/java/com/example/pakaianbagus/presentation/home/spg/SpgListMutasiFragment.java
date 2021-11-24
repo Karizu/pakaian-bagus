@@ -131,16 +131,20 @@ public class SpgListMutasiFragment extends Fragment {
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        Bundle bundle = new Bundle();
-        bundle.putString("store_id", store_id);
-        bundle.putString("brand_id", brand_id);
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListTokoFragment listTokoFragment = new SpgListTokoFragment();
-        listTokoFragment.setArguments(bundle);
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, listTokoFragment);
-        ft.commit();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("store_id", store_id);
+//        bundle.putString("brand_id", brand_id);
+//
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        SpgListTokoFragment listTokoFragment = new SpgListTokoFragment();
+//        listTokoFragment.setArguments(bundle);
+//        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+//        ft.replace(R.id.baseLayoutSpg, listTokoFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 }

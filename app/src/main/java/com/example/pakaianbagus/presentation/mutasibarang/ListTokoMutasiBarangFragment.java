@@ -137,18 +137,22 @@ public class ListTokoMutasiBarangFragment extends Fragment {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         MutasiBarangFragment mutasiBarangFragment = new MutasiBarangFragment();
         mutasiBarangFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("mutasiBarangFragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.baseLayoutSpg, mutasiBarangFragment);
         ft.commit();
     }
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        ListBrandMutasiBarangFragment listBrandMutasiBarangFragment = new ListBrandMutasiBarangFragment();
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutSpg, listBrandMutasiBarangFragment);
-        ft.commit();
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        ListBrandMutasiBarangFragment listBrandMutasiBarangFragment = new ListBrandMutasiBarangFragment();
+//        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+//        ft.replace(R.id.baseLayoutSpg, listBrandMutasiBarangFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 }

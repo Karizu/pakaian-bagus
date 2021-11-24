@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             Session.save(new SessionObject(Constanta.GROUP_ID, SessionManagement.ROLE_ADMIN));
             Session.save(new SessionObject(Constanta.NAME, "Admin"));
             Session.save(new SessionObject(Constanta.ADMIN, "1"));
-            Session.save(new SessionObject("isLogin", "1"));
+            Session.save(new SessionObject(Constanta.IS_LOGIN, "1"));
             Loading.hide(getApplicationContext());
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                             Session.save(new SessionObject(Constanta.ROLE_NUMBER, String.valueOf(data.getData().getRole().getId())));
                             Session.save(new SessionObject(Constanta.GROUP_ID, String.valueOf(data.getData().getProfile().getMGroupId())));
                             Session.save(new SessionObject(Constanta.NAME, data.getData().getName()));
-                            Session.save(new SessionObject("isLogin", "1"));
+                            Session.save(new SessionObject(Constanta.IS_LOGIN, "1"));
                             if (data.getData().getRole().getName().equals(SessionManagement.ROLE_SPG)) {
                                 Session.save(new SessionObject(Constanta.TOKO, String.valueOf(data.getData().getProfile().getGroup().getMPlaceId())));
                                 Session.save(new SessionObject(Constanta.BRAND, String.valueOf(data.getData().getProfile().getBrandId())));

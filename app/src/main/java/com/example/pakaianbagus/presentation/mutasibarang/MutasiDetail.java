@@ -302,23 +302,27 @@ public class MutasiDetail extends Fragment {
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        Bundle bundle = new Bundle();
-        bundle.putString("store_id", idToko);
-        bundle.putString("brand_id", idBrand);
-        bundle.putString(Constanta.FLAG_MUTASI, flagMutasi);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        Fragment homeFragment;
-
-        if (flag != null){
-            homeFragment = new MutasiBarangFragment();
-        } else {
-            homeFragment = new MutasiBarangSPG();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("store_id", idToko);
+//        bundle.putString("brand_id", idBrand);
+//        bundle.putString(Constanta.FLAG_MUTASI, flagMutasi);
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        Fragment homeFragment;
+//
+//        if (flag != null){
+//            homeFragment = new MutasiBarangFragment();
+//        } else {
+//            homeFragment = new MutasiBarangSPG();
+//        }
+//        homeFragment.setArguments(bundle);
+//        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+//        ft.replace(R.id.baseLayout, homeFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
         }
-        homeFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();
     }
 
     private void showDialog(int layout) {

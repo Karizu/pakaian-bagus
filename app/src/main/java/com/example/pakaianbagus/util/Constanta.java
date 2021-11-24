@@ -11,6 +11,7 @@ public class Constanta {
     public static final String KEY_AUTH_INVALID = "AuthInvalid";
 
     public static final String AUTH  = "Authorization";
+    public static final String IS_LOGIN  = "isLogin";
     public static final String USER_ID  = "UserId";
     public static final String ROLE_ID  = "RoleId";
     public static final String ROLE_NUMBER   = "RoleNumber";

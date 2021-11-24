@@ -44,7 +44,7 @@ import okhttp3.Headers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
+public class SpgListBrandFragment extends Fragment {
 
     View rootView;
     private List<Brand> brandList;
@@ -151,30 +151,22 @@ public class SpgListBrandFragment extends Fragment implements IOnBackPressed {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         SpgListTokoFragment spgListTokoFragment = new SpgListTokoFragment();
         spgListTokoFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("spgListTokoFragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.baseLayout, spgListTokoFragment);
         ft.commit();
     }
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.baseLayout, homeFragment);
-        ft.commit();
-
-        return false;
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        HomeFragment homeFragment = new HomeFragment();
+//        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+//        ft.replace(R.id.baseLayout, homeFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 }

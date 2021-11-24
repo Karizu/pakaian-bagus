@@ -1,0 +1,25 @@
+-- Merging decision tree log ---
+manifest
+ADDED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml:3:1-7:12
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml:3:1-7:12
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml:3:1-7:12
+	package
+		ADDED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml:5:5-52
+		INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+		INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml:4:5-63
+uses-sdk
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+		ADDED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+		INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+		ADDED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml
+		INJECTED from E:\ProjectAndroid\PakaianBagus\pb-latest\pakaian-bagus-android\slidedatetimepicker-master\src\main\AndroidManifest.xml

@@ -115,17 +115,22 @@ public class DetailSpgFragment extends Fragment {
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        Bundle bundle = new Bundle();
-        bundle.putString("id", id);
-        bundle.putString("store_id", store_id);
-        bundle.putString("brand_id", brand_id);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        SpgListFragment spgListFragment = new SpgListFragment();
-        spgListFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
-        ft.replace(R.id.baseLayoutDetailSpg, spgListFragment);
-        ft.commit();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("id", id);
+//        bundle.putString("store_id", store_id);
+//        bundle.putString("brand_id", brand_id);
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        SpgListFragment spgListFragment = new SpgListFragment();
+//        spgListFragment.setArguments(bundle);
+//        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out);
+//        ft.replace(R.id.baseLayoutDetailSpg, spgListFragment);
+//        ft.commit();
+
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 
     private void getAttendance() {

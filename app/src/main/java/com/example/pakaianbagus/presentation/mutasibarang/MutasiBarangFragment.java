@@ -262,7 +262,7 @@ public class MutasiBarangFragment extends Fragment {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         Fragment fragment = new MutasiDetail();
         fragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("fragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.baseLayoutMutasi, fragment);
         ft.commit();
     }
@@ -298,7 +298,7 @@ public class MutasiBarangFragment extends Fragment {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         Fragment fragment = new TambahMutasiFragment();
         fragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("fragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.baseLayoutMutasi, fragment);
         ft.commit();
     }

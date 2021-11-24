@@ -164,18 +164,22 @@ public class ListBrandMutasiBarangFragment extends Fragment {
         FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
         ListTokoMutasiBarangFragment listTokoMutasiBarangFragment = new ListTokoMutasiBarangFragment();
         listTokoMutasiBarangFragment.setArguments(bundle);
-        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack("listTokoMutasiBarangFragment");
+        ft.setCustomAnimations(R.animator.fade_in, R.animator.fade_out).addToBackStack(null);
         ft.replace(R.id.layoutKatalog, listTokoMutasiBarangFragment);
         ft.commit();
     }
 
     @OnClick(R.id.toolbar_back)
     public void toolbarBack() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
-        HomeFragment homeFragment = new HomeFragment();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        ft.replace(R.id.layoutKatalog, homeFragment);
-        ft.commit();
+//        FragmentManager fm = getFragmentManager();
+//        FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
+//        HomeFragment homeFragment = new HomeFragment();
+//        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+//        ft.replace(R.id.layoutKatalog, homeFragment);
+//        ft.commit();
+        int count = Objects.requireNonNull(getFragmentManager()).getBackStackEntryCount();
+        if (count != 0) {
+            Objects.requireNonNull(getFragmentManager()).popBackStack();
+        }
     }
 }
